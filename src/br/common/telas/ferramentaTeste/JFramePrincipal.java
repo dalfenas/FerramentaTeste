@@ -256,6 +256,9 @@ public class JFramePrincipal extends javax.swing.JFrame
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
         jPanel1 = new javax.swing.JPanel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMnuArq = new javax.swing.JMenu();
+        jMnuArqCfg = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FerramentaTeste");
@@ -285,6 +288,20 @@ public class JFramePrincipal extends javax.swing.JFrame
         jPanel1.setLayout(null);
         jSplitPane1.setRightComponent(jPanel1);
 
+        jMnuArq.setText("Arquivo");
+
+        jMnuArqCfg.setText("Configuração");
+        jMnuArqCfg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMnuArqCfgActionPerformed(evt);
+            }
+        });
+        jMnuArq.add(jMnuArqCfg);
+
+        jMenuBar1.add(jMnuArq);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -293,7 +310,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
         );
 
         pack();
@@ -459,6 +476,19 @@ public class JFramePrincipal extends javax.swing.JFrame
             pm.show(this, location.x, location.y);
         }
     }//GEN-LAST:event_jTree1MouseClicked
+
+    private void jMnuArqCfgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnuArqCfgActionPerformed
+        // TODO add your handling code here:
+        ConfigDialog myDialog = new ConfigDialog(this, true, "Do you like Java?");
+            System.err.println("After opening dialog.");
+            if(myDialog.getAnswer()) {
+                System.err.println("The answer stored in CustomDialog is 'true' (i.e. user clicked yes button.)");
+            }
+            else {
+                System.err.println("The answer stored in CustomDialog is 'false' (i.e. user clicked no button.)");
+            }
+
+    }//GEN-LAST:event_jMnuArqCfgActionPerformed
 
     public void disablePanels() {
         jPanel1 = new JPanel();
@@ -921,6 +951,9 @@ public class JFramePrincipal extends javax.swing.JFrame
         return retorno;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMnuArq;
+    private javax.swing.JMenuItem jMnuArqCfg;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
