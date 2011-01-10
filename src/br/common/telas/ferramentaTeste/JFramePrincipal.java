@@ -479,15 +479,14 @@ public class JFramePrincipal extends javax.swing.JFrame
 
     private void jMnuArqCfgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnuArqCfgActionPerformed
         // TODO add your handling code here:
-        ConfigDialog myDialog = new ConfigDialog(this, true, "Do you like Java?");
-            System.err.println("After opening dialog.");
-            if(myDialog.getAnswer()) {
-                System.err.println("The answer stored in CustomDialog is 'true' (i.e. user clicked yes button.)");
-            }
-            else {
-                System.err.println("The answer stored in CustomDialog is 'false' (i.e. user clicked no button.)");
-            }
-
+        ConfigDialog myDialog = new ConfigDialog(this, true);
+        System.err.println("After opening dialog.");
+        if(myDialog.getAnswer()) {
+            System.err.println("The answer stored in CustomDialog is 'true' (i.e. user clicked yes button.)");
+        }
+        else {
+            System.err.println("The answer stored in CustomDialog is 'false' (i.e. user clicked no button.)");
+        }
     }//GEN-LAST:event_jMnuArqCfgActionPerformed
 
     public void disablePanels() {
