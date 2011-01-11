@@ -8,12 +8,16 @@ import br.org.fdte.OGridTableModel;
 import br.org.fdte.dao.AtributoDAO;
 import br.org.fdte.dao.CaracterizacaoTstValidacaoDAO;
 import br.org.fdte.dao.ClasseValidacaoDAO;
+import br.org.fdte.dao.ConfigDao;
 import br.org.fdte.dao.DocumentoDAO;
 import br.org.fdte.dao.EspecificoDAO;
 import br.org.fdte.persistence.CaracterizacaoTesteValidacao;
 import br.org.fdte.persistence.ClasseValidacao;
+import br.org.fdte.persistence.Config;
 import br.org.fdte.persistence.Especificos;
 import br.org.fdte.persistence.TemplateDocumento;
+import java.io.File;
+import java.io.FileFilter;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JOptionPane;
@@ -25,28 +29,27 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
     private OGrid gridNegativos;
     private OGrid gridOpcionais;
     private OGrid gridRepeticoes;
-
-    private final static String actionInserir = "Inserir";     
+    private final static String actionInserir = "Inserir";
 
     /** Creates new form CadTesteCaseValidacao */
-    public CadTesteCaseValidacao(JFramePrincipal jFramePrincipal)  {
+    public CadTesteCaseValidacao(JFramePrincipal jFramePrincipal) {
         this.jFramePrincipal = jFramePrincipal;
 
         initComponents();
-        initCombos();       
+        initCombos();
 
-        setBounds(200,0,jFramePrincipal.PANEL_WIDTH,jFramePrincipal.PANEL_HEIGHT);
-        
+        setBounds(200, 0, jFramePrincipal.PANEL_WIDTH, jFramePrincipal.PANEL_HEIGHT);
+
         gridPositivos = new OGrid();
         gridNegativos = new OGrid();
         gridOpcionais = new OGrid();
         gridRepeticoes = new OGrid();
-        
-        gridPositivos.setBounds(0,180,400,190); //x,y,width,height
-        gridNegativos.setBounds(400,180,400,190); //x,y,width,height
-        gridOpcionais.setBounds(0,435,400,190);
-        gridRepeticoes.setBounds(400,435,400,190);
-        
+
+        gridPositivos.setBounds(0, 180, 400, 190); //x,y,width,height
+        gridNegativos.setBounds(400, 180, 400, 190); //x,y,width,height
+        gridOpcionais.setBounds(0, 435, 400, 190);
+        gridRepeticoes.setBounds(400, 435, 400, 190);
+
         ColumnConfiguration c = new ColumnConfiguration();
         c.setTitle("id");
         c.setFieldType(ColumnConfiguration.FieldType.SEQ);
@@ -56,7 +59,7 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         gridNegativos.addColumn(c);
         gridOpcionais.addColumn(c);
         gridRepeticoes.addColumn(c);
-       
+
         // ID_TEXT_COMBO
         c = new ColumnConfiguration();
         c.setTitle("Atributo");
@@ -79,7 +82,7 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         gridOpcionais.addColumn(c);
         gridRepeticoes.addColumn(c);
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("N");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(40);
@@ -104,16 +107,15 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         add(gridPositivos);
         add(gridNegativos);
         add(gridOpcionais);
-        add(gridRepeticoes);        
+        add(gridRepeticoes);
     }
 
-     public void setRegistro(String nome) {
-       // initCombos();
+    public void setRegistro(String nome) {
+        // initCombos();
 
         if (nome.equalsIgnoreCase("") == true) {
             limparRegistro();
-        }
-        else {
+        } else {
             limparRegistro();
             popularRegistro(nome);
         }
@@ -131,8 +133,8 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         buttonGroupPositivo = new javax.swing.ButtonGroup();
         buttonGroupNegativo = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
-        jcmbDocEntrada = new javax.swing.JComboBox();
-        jlblDocEntrada = new javax.swing.JLabel();
+        jcmbWorkflow = new javax.swing.JComboBox();
+        jlblWorkflow = new javax.swing.JLabel();
         jTxtFieldComentario = new javax.swing.JTextField();
         jButtonSalvar = new javax.swing.JButton();
         jButtonSair = new javax.swing.JButton();
@@ -164,6 +166,8 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jLabel15 = new javax.swing.JLabel();
         jcmbClassSaidaPos = new javax.swing.JComboBox();
         jcmbClassSaidaNeg = new javax.swing.JComboBox();
+        jcmbDocEntrada = new javax.swing.JComboBox();
+        jlblDocEntrada = new javax.swing.JLabel();
 
         setLayout(null);
 
@@ -171,12 +175,12 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         add(jLabel1);
         jLabel1.setBounds(0, 0, 34, 14);
 
-        add(jcmbDocEntrada);
-        jcmbDocEntrada.setBounds(160, 20, 100, 20);
+        add(jcmbWorkflow);
+        jcmbWorkflow.setBounds(130, 20, 160, 20);
 
-        jlblDocEntrada.setText("Documento Entrada");
-        add(jlblDocEntrada);
-        jlblDocEntrada.setBounds(160, 0, 130, 14);
+        jlblWorkflow.setText("Workflow");
+        add(jlblWorkflow);
+        jlblWorkflow.setBounds(130, 0, 130, 14);
         add(jTxtFieldComentario);
         jTxtFieldComentario.setBounds(0, 70, 300, 20);
 
@@ -264,18 +268,18 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jLabel12.setBounds(0, 380, 100, 20);
 
         add(jcmbDocSaidaNeg);
-        jcmbDocSaidaNeg.setBounds(530, 20, 100, 20);
+        jcmbDocSaidaNeg.setBounds(660, 20, 100, 20);
 
         jLabel2.setText("Documento Saida Negativa");
         add(jLabel2);
-        jLabel2.setBounds(530, 0, 170, 14);
+        jLabel2.setBounds(660, 0, 170, 14);
 
         add(jcmbDocSaidaPos);
-        jcmbDocSaidaPos.setBounds(340, 20, 100, 20);
+        jcmbDocSaidaPos.setBounds(470, 20, 100, 20);
 
         jLabel3.setText("Documento Saida Positiva");
         add(jLabel3);
-        jLabel3.setBounds(340, 0, 150, 14);
+        jLabel3.setBounds(470, 0, 150, 14);
 
         buttonGroupPositivo.add(jrdbTodosPos);
         jrdbTodosPos.setSelected(true);
@@ -296,164 +300,178 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
 
         jLabel14.setText(" Validação Saida Positiva");
         add(jLabel14);
-        jLabel14.setBounds(340, 50, 170, 14);
+        jLabel14.setBounds(470, 50, 170, 14);
 
         jLabel15.setText("Validação Saida Negativa");
         add(jLabel15);
-        jLabel15.setBounds(530, 50, 170, 14);
+        jLabel15.setBounds(660, 50, 170, 14);
 
         add(jcmbClassSaidaPos);
-        jcmbClassSaidaPos.setBounds(340, 70, 100, 20);
+        jcmbClassSaidaPos.setBounds(470, 70, 100, 20);
 
         add(jcmbClassSaidaNeg);
-        jcmbClassSaidaNeg.setBounds(530, 70, 100, 20);
+        jcmbClassSaidaNeg.setBounds(660, 70, 100, 20);
+
+        add(jcmbDocEntrada);
+        jcmbDocEntrada.setBounds(320, 20, 100, 20);
+
+        jlblDocEntrada.setText("Documento Entrada");
+        add(jlblDocEntrada);
+        jlblDocEntrada.setBounds(320, 0, 130, 14);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
 
-       if (validarCampos() < 0)
+        if (validarCampos() < 0) {
             return;
+        }
 
-       CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
-       if (tstVal == null )
+        CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
+        if (tstVal == null) {
             tstVal = new CaracterizacaoTesteValidacao();
-       else {
-         if (JOptionPane.YES_OPTION !=
-                JOptionPane.showConfirmDialog(this,"Teste de Validação " + jTxtFieldName.getText() + " já existe. Deseja sobrescrevê-lo?","Sobrescrever entidade",2))
-             return;
-       }
+        } else {
+            if (JOptionPane.YES_OPTION
+                    != JOptionPane.showConfirmDialog(this, "Teste de Validação " + jTxtFieldName.getText() + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
+                return;
+            }
+        }
 
-       tstVal = new CaracterizacaoTesteValidacao();
-       tstVal.setNome(jTxtFieldName.getText());
-       tstVal.setComentario(jTxtFieldComentario.getText());
-       tstVal.setDocumentoSaidaNegativa(DocumentoDAO.getDocumento(jcmbDocSaidaNeg.getSelectedItem().toString()));
-       tstVal.setDocumentoSaidaPositiva(DocumentoDAO.getDocumento(jcmbDocSaidaPos.getSelectedItem().toString()));
-       tstVal.setClasseValidacaoSaidaNegativa(jcmbClassSaidaNeg.getSelectedItem().toString());
-       tstVal.setClasseValidacaoSaidaPositiva(jcmbClassSaidaPos.getSelectedItem().toString());
-       tstVal.setDocumentoEntrada(DocumentoDAO.getDocumento(jcmbDocEntrada.getSelectedItem().toString()));       
+        tstVal = new CaracterizacaoTesteValidacao();
+        tstVal.setNome(jTxtFieldName.getText());
+        tstVal.setComentario(jTxtFieldComentario.getText());
+        tstVal.setDocumentoSaidaNegativa(DocumentoDAO.getDocumento(jcmbDocSaidaNeg.getSelectedItem().toString()));
+        tstVal.setDocumentoSaidaPositiva(DocumentoDAO.getDocumento(jcmbDocSaidaPos.getSelectedItem().toString()));
+        tstVal.setClasseValidacaoSaidaNegativa(jcmbClassSaidaNeg.getSelectedItem().toString());
+        tstVal.setClasseValidacaoSaidaPositiva(jcmbClassSaidaPos.getSelectedItem().toString());
+        tstVal.setDocumentoEntrada(DocumentoDAO.getDocumento(jcmbDocEntrada.getSelectedItem().toString()));
 
-       if (jrdbNPos.isSelected())
-           tstVal.setCasosPositivos(Integer.parseInt(jTextFieldNPos.getText()));
-       else
-           tstVal.setCasosPositivos(0);
+        if (jrdbNPos.isSelected()) {
+            tstVal.setCasosPositivos(Integer.parseInt(jTextFieldNPos.getText()));
+        } else {
+            tstVal.setCasosPositivos(0);
+        }
 
-       if(jrdbNNeg.isSelected())
-           tstVal.setCasosNegativos(Integer.parseInt(jTextFieldNNeg.getText()));
-       else
-           tstVal.setCasosNegativos(0);
+        if (jrdbNNeg.isSelected()) {
+            tstVal.setCasosNegativos(Integer.parseInt(jTextFieldNNeg.getText()));
+        } else {
+            tstVal.setCasosNegativos(0);
+        }
 
-       int retorno = CaracterizacaoTstValidacaoDAO.save(tstVal);
+        int retorno = CaracterizacaoTstValidacaoDAO.save(tstVal);
 
-       
 
-       //salvar os grids específicos
-       removerGrids();
-       salvarGrids();
+
+        //salvar os grids específicos
+        removerGrids();
+        salvarGrids();
 
         //se foi insercao de cadastro de validação o retorno é 0;
         if (retorno == 0) {
             jFramePrincipal.addNode(jTxtFieldName.getText());
             jFramePrincipal.atualizarCampos(AtualizacaoTela.entidadeTesteValidacao);
+        } else {
+            JOptionPane.showMessageDialog(this, "Caracterizacao de Teste de Validação " + jTxtFieldName.getText() + " atualizado");
         }
-        else {
-           JOptionPane.showMessageDialog(this,"Caracterizacao de Teste de Validação " + jTxtFieldName.getText() + " atualizado");
-         }
-             
+
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
     private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed
         //setVisible(false);
         jFramePrincipal.disablePanels();
     }//GEN-LAST:event_jButtonSairActionPerformed
-  
+
     private void popularRegistro(String nome) {
 
-      CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(nome);
+        CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(nome);
 
-      if (tstVal != null) {
+        if (tstVal != null) {
 
-          jTxtFieldName.setText(tstVal.getNome());
-          jTxtFieldName.setEditable(false);
-          jTxtFieldComentario.setText(tstVal.getComentario());
-          jcmbDocEntrada.setSelectedItem(tstVal.getDocumentoEntrada().getNome());
-          jcmbClassSaidaPos.setSelectedItem(tstVal.getClasseValidacaoSaidaPositiva());
-          jcmbClassSaidaNeg.setSelectedItem(tstVal.getClasseValidacaoSaidaNegativa());
-          if (tstVal.getDocumentoSaidaPositiva() != null)
-             jcmbDocSaidaPos.setSelectedItem(tstVal.getDocumentoSaidaPositiva().getNome());
-          if (tstVal.getDocumentoSaidaNegativa() != null)
-             jcmbDocSaidaNeg.setSelectedItem(tstVal.getDocumentoSaidaNegativa().getNome());
-          
+            jTxtFieldName.setText(tstVal.getNome());
+            jTxtFieldName.setEditable(false);
+            jTxtFieldComentario.setText(tstVal.getComentario());
+            jcmbDocEntrada.setSelectedItem(tstVal.getDocumentoEntrada().getNome());
+            jcmbClassSaidaPos.setSelectedItem(tstVal.getClasseValidacaoSaidaPositiva());
+            jcmbClassSaidaNeg.setSelectedItem(tstVal.getClasseValidacaoSaidaNegativa());
+            if (tstVal.getDocumentoSaidaPositiva() != null) {
+                jcmbDocSaidaPos.setSelectedItem(tstVal.getDocumentoSaidaPositiva().getNome());
+            }
+            if (tstVal.getDocumentoSaidaNegativa() != null) {
+                jcmbDocSaidaNeg.setSelectedItem(tstVal.getDocumentoSaidaNegativa().getNome());
+            }
 
-          if (tstVal.getCasosPositivos() > 0) {
-              jrdbNPos.setSelected(true);
-              jTextFieldNPos.setText(((Integer)tstVal.getCasosPositivos()).toString());
-          }
-          else {
-              jTextFieldNPos.setText("");              
-              jrdbTodosRep.setSelected(true);
-          }
 
-          if(tstVal.getCasosNegativos() > 0) {
-              jrdbNNeg.setSelected(true);
-              jTextFieldNNeg.setText(((Integer)tstVal.getCasosNegativos()).toString());
-          }
-          else {
-              jTextFieldNNeg.setText("");              
-              jrdbTodosNeg.setSelected(true);
-          }
+            if (tstVal.getCasosPositivos() > 0) {
+                jrdbNPos.setSelected(true);
+                jTextFieldNPos.setText(((Integer) tstVal.getCasosPositivos()).toString());
+            } else {
+                jTextFieldNPos.setText("");
+                jrdbTodosRep.setSelected(true);
+            }
 
-          
-          Vector <Object> vectorEspecifico = null;
-          Vector <Vector> vectorPositivo = new Vector();
-          Vector <Vector> vectorNegativo = new Vector();
-          Vector <Vector> vectorOpcionais = new Vector();
-          Vector <Vector> vectorRepeticao = new Vector();                 
-          
-          
-          for (Especificos especifico : tstVal.getEspecificosCollection()) {
-              vectorEspecifico = new Vector();
-              
-              vectorEspecifico.add(especifico.getOrderId());
-              vectorEspecifico.add(especifico.getAtributo().getId());
-              Boolean todos;
-              if (especifico.getQuantidade() > 0) {
-                  todos = false;    
-                  vectorEspecifico.add(todos);
-                  vectorEspecifico.add(especifico.getQuantidade());
-              }
-              else {    
-                 todos = true;               
-                 vectorEspecifico.add(todos);
-                 vectorEspecifico.add(0);
-              }
-              
-              if (especifico.getTipo().equalsIgnoreCase("P"))
-                  vectorPositivo.addElement(vectorEspecifico);
-              
-              if (especifico.getTipo().equalsIgnoreCase("N"))
-                 vectorNegativo.addElement(vectorEspecifico);
-              
-              if (especifico.getTipo().equalsIgnoreCase("O"))
-                  vectorOpcionais.addElement(vectorEspecifico);
-              
-              if (especifico.getTipo().equalsIgnoreCase("R"))
-                  vectorRepeticao.addElement(vectorEspecifico);
-          }           
-          
-          gridPositivos.fillGrid(vectorPositivo);
-          gridNegativos.fillGrid(vectorNegativo);
-          gridOpcionais.fillGrid(vectorOpcionais);
-          gridRepeticoes.fillGrid(vectorRepeticao);
-        }       
+            if (tstVal.getCasosNegativos() > 0) {
+                jrdbNNeg.setSelected(true);
+                jTextFieldNNeg.setText(((Integer) tstVal.getCasosNegativos()).toString());
+            } else {
+                jTextFieldNNeg.setText("");
+                jrdbTodosNeg.setSelected(true);
+            }
+
+
+            Vector<Object> vectorEspecifico = null;
+            Vector<Vector> vectorPositivo = new Vector();
+            Vector<Vector> vectorNegativo = new Vector();
+            Vector<Vector> vectorOpcionais = new Vector();
+            Vector<Vector> vectorRepeticao = new Vector();
+
+
+            for (Especificos especifico : tstVal.getEspecificosCollection()) {
+                vectorEspecifico = new Vector();
+
+                vectorEspecifico.add(especifico.getOrderId());
+                vectorEspecifico.add(especifico.getAtributo().getId());
+                Boolean todos;
+                if (especifico.getQuantidade() > 0) {
+                    todos = false;
+                    vectorEspecifico.add(todos);
+                    vectorEspecifico.add(especifico.getQuantidade());
+                } else {
+                    todos = true;
+                    vectorEspecifico.add(todos);
+                    vectorEspecifico.add(0);
+                }
+
+                if (especifico.getTipo().equalsIgnoreCase("P")) {
+                    vectorPositivo.addElement(vectorEspecifico);
+                }
+
+                if (especifico.getTipo().equalsIgnoreCase("N")) {
+                    vectorNegativo.addElement(vectorEspecifico);
+                }
+
+                if (especifico.getTipo().equalsIgnoreCase("O")) {
+                    vectorOpcionais.addElement(vectorEspecifico);
+                }
+
+                if (especifico.getTipo().equalsIgnoreCase("R")) {
+                    vectorRepeticao.addElement(vectorEspecifico);
+                }
+            }
+
+            gridPositivos.fillGrid(vectorPositivo);
+            gridNegativos.fillGrid(vectorNegativo);
+            gridOpcionais.fillGrid(vectorOpcionais);
+            gridRepeticoes.fillGrid(vectorRepeticao);
+        }
     }
 
     private void limparRegistro() {
         jTxtFieldName.setText("");
         jTxtFieldName.setEditable(true);
         jTxtFieldComentario.setText("");
-        jcmbDocEntrada.setSelectedItem("");
+        jcmbWorkflow.setSelectedItem("");
         jcmbDocSaidaPos.setSelectedItem("");
         jcmbDocSaidaNeg.setSelectedItem("");
+        jcmbDocEntrada.setSelectedItem("");
         jcmbClassSaidaPos.setSelectedItem("");
         jcmbClassSaidaNeg.setSelectedItem("");
         jTextFieldNNeg.setText("");
@@ -463,93 +481,122 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jrdbTodosNeg.setSelected(true);
         jrdbTodosRep.setSelected(true);
         jrdbTodosOp.setSelected(true);
-        
-        
-        limparGrid( (OGridTableModel)gridPositivos.getOGridTableModel());
-        limparGrid( (OGridTableModel)gridNegativos.getOGridTableModel());
-        limparGrid( (OGridTableModel)gridOpcionais.getOGridTableModel());
-        limparGrid( (OGridTableModel)gridRepeticoes.getOGridTableModel());
-       
-    }
-    
-    private void limparGrid( OGridTableModel tableModel) {        
-        //Limpar registros que estejam no grid de Valores       
-        int nRow =  tableModel.getRowCount();
-        for (int i = 0; i < nRow; i++)
-            tableModel.deleteLine(i);
+
+
+        limparGrid((OGridTableModel) gridPositivos.getOGridTableModel());
+        limparGrid((OGridTableModel) gridNegativos.getOGridTableModel());
+        limparGrid((OGridTableModel) gridOpcionais.getOGridTableModel());
+        limparGrid((OGridTableModel) gridRepeticoes.getOGridTableModel());
+
     }
 
-    private void initCombos() {       
-         
+    private void limparGrid(OGridTableModel tableModel) {
+        //Limpar registros que estejam no grid de Valores       
+        int nRow = tableModel.getRowCount();
+        for (int i = 0; i < nRow; i++) {
+            tableModel.deleteLine(i);
+        }
+    }
+
+    private void initCombos() {
+
         jcmbClassSaidaPos.removeAllItems();
-        jcmbClassSaidaNeg.removeAllItems();         
+        jcmbClassSaidaNeg.removeAllItems();
         jcmbClassSaidaPos.addItem("");
         jcmbClassSaidaNeg.addItem("");
 
-        jcmbDocEntrada.addItem("");
+        jcmbWorkflow.addItem("");
         jcmbDocSaidaPos.addItem("");
         jcmbDocSaidaNeg.addItem("");
+        jcmbDocEntrada.addItem("");
 
-         List<TemplateDocumento> lstDocumento = DocumentoDAO.getAll();
-         for (TemplateDocumento doc : lstDocumento) {
-             jcmbDocEntrada.addItem(doc.getNome());
-             jcmbDocSaidaPos.addItem(doc.getNome());
-             jcmbDocSaidaNeg.addItem(doc.getNome());
-         }
+        List<TemplateDocumento> lstDocumento = DocumentoDAO.getAll();
+        for (TemplateDocumento doc : lstDocumento) {
+            jcmbDocEntrada.addItem(doc.getNome());
+            jcmbDocSaidaPos.addItem(doc.getNome());
+            jcmbDocSaidaNeg.addItem(doc.getNome());
+        }
 
-         List<ClasseValidacao> lstClasse = ClasseValidacaoDAO.getAll();
-         for (ClasseValidacao cv : lstClasse) {
-             jcmbClassSaidaPos.addItem(cv.getNome());
-             jcmbClassSaidaNeg.addItem(cv.getNome());
-         }
-     }
+        List<ClasseValidacao> lstClasse = ClasseValidacaoDAO.getAll();
+        for (ClasseValidacao cv : lstClasse) {
+            jcmbClassSaidaPos.addItem(cv.getNome());
+            jcmbClassSaidaNeg.addItem(cv.getNome());
+        }
+
+        //lrb 11/01/2011 Montar um filtro para buscar nomes dos wml que se
+        //encontram no diretorio de workflows configurado no sistema
+
+        //Obtendo o diretorio de workflows
+        List<Config> lstConfig = ConfigDao.getAll();
+        Config config = lstConfig.get(0);
+
+
+        File inputFolder = new File(config.getWorkflowdir());
+
+        // Filtramos primeiro somente os arquivos de workflow (WML)
+        File[] listOfWorkflows = inputFolder.listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File arg0) {
+                return !arg0.isDirectory() && arg0.getName().toLowerCase().endsWith(".wml");
+            }
+        });
+
+        for (File workflowName : listOfWorkflows) {
+            jcmbWorkflow.addItem(workflowName.getName());
+        }
+
+
+    }
 
     private void salvarGrids() {
-       salvarGrid("P",gridPositivos);
-       salvarGrid("N",gridNegativos);
-       salvarGrid("O",gridOpcionais);
-       salvarGrid("R",gridRepeticoes);
+        salvarGrid("P", gridPositivos);
+        salvarGrid("N", gridNegativos);
+        salvarGrid("O", gridOpcionais);
+        salvarGrid("R", gridRepeticoes);
     }
 
     private void removerGrids() {
         CaracterizacaoTesteValidacao tstVal =
-                    CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
-        CaracterizacaoTstValidacaoDAO.removeEspecificos(tstVal.getId());       
+                CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
+        CaracterizacaoTstValidacaoDAO.removeEspecificos(tstVal.getId());
     }
 
     private void salvarGrid(String tipo, OGrid grid) {
-       CaracterizacaoTesteValidacao caracTesteVal;
+        CaracterizacaoTesteValidacao caracTesteVal;
 
-       caracTesteVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
+        caracTesteVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
 
-       Vector<Especificos> especificos = new Vector();
-       Vector<Vector> dataGrid = grid.getGridData();
-       Vector <Object> vector = new Vector(4);
+        Vector<Especificos> especificos = new Vector();
+        Vector<Vector> dataGrid = grid.getGridData();
+        Vector<Object> vector = new Vector(4);
 
         for (int index = 0; index < dataGrid.size(); index++) {
 
             Especificos especifico = new Especificos();
             vector.clear();
 
-            for(int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 vector.add(i, null);
             }
 
-            for (int indexC = 0; indexC < dataGrid.get(index).size(); indexC++){
-                vector.set(indexC,dataGrid.get(index).get(indexC));
+            for (int indexC = 0; indexC < dataGrid.get(index).size(); indexC++) {
+                vector.set(indexC, dataGrid.get(index).get(indexC));
             }
 
-           if (vector.get(0)!= null)
-               especifico.setOrderId(Long.parseLong(vector.get(0).toString()));
+            if (vector.get(0) != null) {
+                especifico.setOrderId(Long.parseLong(vector.get(0).toString()));
+            }
 
-           if (vector.get(1) != null)
+            if (vector.get(1) != null) {
                 especifico.setAtributo(AtributoDAO.get(Long.parseLong(vector.get(1).toString())));
+            }
 
-            if (vector.get(2) == null || (Boolean)vector.get(2) == false) {
+            if (vector.get(2) == null || (Boolean) vector.get(2) == false) {
                 if (vector.get(3) != null && Integer.parseInt(vector.get(3).toString()) > 0) {
                     especifico.setQuantidade(Integer.parseInt(vector.get(3).toString()));
                 }
-            }            
+            }
 
             especifico.setTipo(tipo);
             especifico.setIdCaracterizacaoTesteValidacao(caracTesteVal);
@@ -557,20 +604,19 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
             especificos.add(especifico);
         }
 
-        for (int i = 0; i<especificos.size(); i++) {
+        for (int i = 0; i < especificos.size(); i++) {
             EspecificoDAO.save(especificos.get(i));
         }
     }
 
     private int validarCampos() {
-         int retorno = 0;
-         if (jcmbDocEntrada.getSelectedItem() == "") {
-            JOptionPane.showMessageDialog(this,"Escolha um Documento de Entrada");
+        int retorno = 0;
+        if (jcmbDocEntrada.getSelectedItem() == "") {
+            JOptionPane.showMessageDialog(this, "Escolha um Documento de Entrada");
             retorno = -1;
-         }
-         return retorno;
- }
-
+        }
+        return retorno;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroupNegativo;
     private javax.swing.ButtonGroup buttonGroupPositivo;
@@ -600,8 +646,10 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
     private javax.swing.JComboBox jcmbDocEntrada;
     private javax.swing.JComboBox jcmbDocSaidaNeg;
     private javax.swing.JComboBox jcmbDocSaidaPos;
+    private javax.swing.JComboBox jcmbWorkflow;
     private javax.swing.JLabel jlblDocEntrada;
     private javax.swing.JLabel jlblPositivo;
+    private javax.swing.JLabel jlblWorkflow;
     private javax.swing.JRadioButton jrdbNNeg;
     private javax.swing.JRadioButton jrdbNPos;
     private javax.swing.JRadioButton jrdbTodosNeg;
@@ -613,20 +661,22 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
     @Override
     public void atualizarTela() {
 
-        jcmbDocEntrada.removeAllItems();
+        jcmbWorkflow.removeAllItems();
         jcmbDocSaidaPos.removeAllItems();
         jcmbDocSaidaNeg.removeAllItems();
+        jcmbDocEntrada.removeAllItems();
 
-        jcmbDocEntrada.addItem("");
+        jcmbWorkflow.addItem("");
         jcmbDocSaidaPos.addItem("");
         jcmbDocSaidaNeg.addItem("");
+        jcmbDocEntrada.addItem("");
 
-         List<TemplateDocumento> lstDocumento = DocumentoDAO.getAll();
-         for (TemplateDocumento doc : lstDocumento) {
-             jcmbDocEntrada.addItem(doc.getNome());
-             jcmbDocSaidaPos.addItem(doc.getNome());
-             jcmbDocSaidaNeg.addItem(doc.getNome());
-         }
+        List<TemplateDocumento> lstDocumento = DocumentoDAO.getAll();
+        for (TemplateDocumento doc : lstDocumento) {
+            jcmbDocEntrada.addItem(doc.getNome());
+            jcmbDocSaidaPos.addItem(doc.getNome());
+            jcmbDocSaidaNeg.addItem(doc.getNome());
+        }
 
         ComboBoxAtributo cba = new ComboBoxAtributo();
         gridPositivos.getOGridTableModel().getColumnConfiguration(1).setcBoxDataSource(cba);
@@ -638,5 +688,4 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         gridRepeticoes.getOGridTableModel().getColumnConfiguration(1).setcBoxDataSource(cba);
         gridRepeticoes.configureTableColumns();
     }
-
 }
