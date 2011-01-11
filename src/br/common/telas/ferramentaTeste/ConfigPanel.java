@@ -1,5 +1,7 @@
 package br.common.telas.ferramentaTeste;
 
+import br.org.fdte.dao.ConfigDao;
+import br.org.fdte.persistence.Config;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JDialog;
@@ -9,6 +11,7 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
 
     private JDialog owner;
     private boolean answer;
+
     public boolean getAnswer() {
         return answer;
     }
@@ -19,6 +22,19 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
         this.owner = owner;
         okButton.addActionListener(this);
         cancelButton.addActionListener(this);
+        initDirectories();
+    }
+
+    private void initDirectories() {
+
+        long id = 1706;
+        Config config = ConfigDao.get(id);
+
+        txtWorkflow.setText(config.getWorkflowdir());
+        txtTestCase.setText(config.getTestecasedir());
+        txtResults.setText(config.getResultdir());
+
+
     }
 
     /** This method is called from within the constructor to
@@ -31,11 +47,11 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtWorkflow = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtTestCase = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        txtResults = new javax.swing.JTextField();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
@@ -46,6 +62,11 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
         jLabel3.setText("Diretório de Resultados de Teste");
 
         okButton.setText("Ok");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
 
         cancelButton.setText("Cancel");
 
@@ -57,7 +78,7 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                        .addComponent(txtWorkflow, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
                         .addGap(106, 106, 106))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -66,7 +87,7 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
                         .addComponent(jLabel2)
                         .addContainerGap(257, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                        .addComponent(txtTestCase, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
                         .addGap(106, 106, 106))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -74,7 +95,7 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(okButton)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE))
+                            .addComponent(txtResults, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cancelButton)
                         .addGap(31, 31, 31))))
@@ -85,15 +106,15 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
                 .addGap(30, 30, 30)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtWorkflow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtTestCase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtResults, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(okButton)
@@ -101,9 +122,24 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_okButtonActionPerformed
     
+    @Override
     public void actionPerformed(ActionEvent e) {
+        
+        long id = 1706;
+        Config config = ConfigDao.get(id);
+        
         if(okButton == e.getSource()) {
+            config.setWorkflowdir(txtWorkflow.getText());
+            config.setTestecasedir(txtTestCase.getText());
+            config.setResultdir(txtResults.getText());
+            ConfigDao.save(config);
+
+            System.out.println();
             System.err.println("User chose yes.");
             answer = true;            
         }
@@ -111,6 +147,11 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
             System.err.println("User chose no.");
             answer = false;            
         }
+        
+        System.out.println(txtWorkflow.getText());
+        System.out.println(txtTestCase.getText());
+        System.out.println(txtResults.getText());
+
         owner.setVisible(false);
     }
 
@@ -119,10 +160,10 @@ public class ConfigPanel extends javax.swing.JPanel implements ActionListener {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JButton okButton;
+    private javax.swing.JTextField txtResults;
+    private javax.swing.JTextField txtTestCase;
+    private javax.swing.JTextField txtWorkflow;
     // End of variables declaration//GEN-END:variables
 
 }

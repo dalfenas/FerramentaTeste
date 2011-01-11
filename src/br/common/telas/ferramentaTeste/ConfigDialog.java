@@ -18,6 +18,7 @@ public class ConfigDialog extends JDialog { //implements ActionListener {
     //public ConfigDialog(JFrame frame, boolean modal, String myMessage) {
     public ConfigDialog(JFrame frame, boolean modal) {
         super(frame, modal);
+        setTitle("Configuração dos diretórios");
         myPanel = new ConfigPanel(this);
         getContentPane().add(myPanel);
         pack();
