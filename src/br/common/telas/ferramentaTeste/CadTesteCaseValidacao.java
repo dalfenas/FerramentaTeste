@@ -8,12 +8,10 @@ import br.org.fdte.OGridTableModel;
 import br.org.fdte.dao.AtributoDAO;
 import br.org.fdte.dao.CaracterizacaoTstValidacaoDAO;
 import br.org.fdte.dao.ClasseValidacaoDAO;
-import br.org.fdte.dao.ConfigDao;
 import br.org.fdte.dao.DocumentoDAO;
 import br.org.fdte.dao.EspecificoDAO;
 import br.org.fdte.persistence.CaracterizacaoTesteValidacao;
 import br.org.fdte.persistence.ClasseValidacao;
-import br.org.fdte.persistence.Config;
 import br.org.fdte.persistence.Especificos;
 import br.org.fdte.persistence.TemplateDocumento;
 import java.io.File;
@@ -133,8 +131,6 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         buttonGroupPositivo = new javax.swing.ButtonGroup();
         buttonGroupNegativo = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
-        jcmbWorkflow = new javax.swing.JComboBox();
-        jlblWorkflow = new javax.swing.JLabel();
         jTxtFieldComentario = new javax.swing.JTextField();
         jButtonSalvar = new javax.swing.JButton();
         jButtonSair = new javax.swing.JButton();
@@ -174,13 +170,6 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jLabel1.setText("Nome");
         add(jLabel1);
         jLabel1.setBounds(0, 0, 34, 14);
-
-        add(jcmbWorkflow);
-        jcmbWorkflow.setBounds(130, 20, 160, 20);
-
-        jlblWorkflow.setText("Workflow");
-        add(jlblWorkflow);
-        jlblWorkflow.setBounds(130, 0, 130, 14);
         add(jTxtFieldComentario);
         jTxtFieldComentario.setBounds(0, 70, 300, 20);
 
@@ -268,18 +257,18 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jLabel12.setBounds(0, 380, 100, 20);
 
         add(jcmbDocSaidaNeg);
-        jcmbDocSaidaNeg.setBounds(660, 20, 100, 20);
+        jcmbDocSaidaNeg.setBounds(530, 20, 100, 20);
 
         jLabel2.setText("Documento Saida Negativa");
         add(jLabel2);
-        jLabel2.setBounds(660, 0, 170, 14);
+        jLabel2.setBounds(530, 0, 170, 14);
 
         add(jcmbDocSaidaPos);
-        jcmbDocSaidaPos.setBounds(470, 20, 100, 20);
+        jcmbDocSaidaPos.setBounds(340, 20, 100, 20);
 
         jLabel3.setText("Documento Saida Positiva");
         add(jLabel3);
-        jLabel3.setBounds(470, 0, 150, 14);
+        jLabel3.setBounds(340, 0, 150, 14);
 
         buttonGroupPositivo.add(jrdbTodosPos);
         jrdbTodosPos.setSelected(true);
@@ -300,24 +289,24 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
 
         jLabel14.setText(" Validação Saida Positiva");
         add(jLabel14);
-        jLabel14.setBounds(470, 50, 170, 14);
+        jLabel14.setBounds(340, 50, 170, 14);
 
         jLabel15.setText("Validação Saida Negativa");
         add(jLabel15);
-        jLabel15.setBounds(660, 50, 170, 14);
+        jLabel15.setBounds(530, 50, 170, 14);
 
         add(jcmbClassSaidaPos);
-        jcmbClassSaidaPos.setBounds(470, 70, 100, 20);
+        jcmbClassSaidaPos.setBounds(340, 70, 100, 20);
 
         add(jcmbClassSaidaNeg);
-        jcmbClassSaidaNeg.setBounds(660, 70, 100, 20);
+        jcmbClassSaidaNeg.setBounds(530, 70, 100, 20);
 
         add(jcmbDocEntrada);
-        jcmbDocEntrada.setBounds(320, 20, 100, 20);
+        jcmbDocEntrada.setBounds(190, 20, 100, 20);
 
         jlblDocEntrada.setText("Documento Entrada");
         add(jlblDocEntrada);
-        jlblDocEntrada.setBounds(320, 0, 130, 14);
+        jlblDocEntrada.setBounds(190, 0, 130, 14);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
@@ -344,6 +333,7 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         tstVal.setClasseValidacaoSaidaNegativa(jcmbClassSaidaNeg.getSelectedItem().toString());
         tstVal.setClasseValidacaoSaidaPositiva(jcmbClassSaidaPos.getSelectedItem().toString());
         tstVal.setDocumentoEntrada(DocumentoDAO.getDocumento(jcmbDocEntrada.getSelectedItem().toString()));
+
 
         if (jrdbNPos.isSelected()) {
             tstVal.setCasosPositivos(Integer.parseInt(jTextFieldNPos.getText()));
@@ -468,7 +458,6 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jTxtFieldName.setText("");
         jTxtFieldName.setEditable(true);
         jTxtFieldComentario.setText("");
-        jcmbWorkflow.setSelectedItem("");
         jcmbDocSaidaPos.setSelectedItem("");
         jcmbDocSaidaNeg.setSelectedItem("");
         jcmbDocEntrada.setSelectedItem("");
@@ -505,7 +494,6 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jcmbClassSaidaPos.addItem("");
         jcmbClassSaidaNeg.addItem("");
 
-        jcmbWorkflow.addItem("");
         jcmbDocSaidaPos.addItem("");
         jcmbDocSaidaNeg.addItem("");
         jcmbDocEntrada.addItem("");
@@ -522,31 +510,6 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
             jcmbClassSaidaPos.addItem(cv.getNome());
             jcmbClassSaidaNeg.addItem(cv.getNome());
         }
-
-        //lrb 11/01/2011 Montar um filtro para buscar nomes dos wml que se
-        //encontram no diretorio de workflows configurado no sistema
-
-        //Obtendo o diretorio de workflows
-        List<Config> lstConfig = ConfigDao.getAll();
-        Config config = lstConfig.get(0);
-
-
-        File inputFolder = new File(config.getWorkflowdir());
-
-        // Filtramos primeiro somente os arquivos de workflow (WML)
-        File[] listOfWorkflows = inputFolder.listFiles(new FileFilter() {
-
-            @Override
-            public boolean accept(File arg0) {
-                return !arg0.isDirectory() && arg0.getName().toLowerCase().endsWith(".wml");
-            }
-        });
-
-        for (File workflowName : listOfWorkflows) {
-            jcmbWorkflow.addItem(workflowName.getName());
-        }
-
-
     }
 
     private void salvarGrids() {
@@ -646,10 +609,8 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
     private javax.swing.JComboBox jcmbDocEntrada;
     private javax.swing.JComboBox jcmbDocSaidaNeg;
     private javax.swing.JComboBox jcmbDocSaidaPos;
-    private javax.swing.JComboBox jcmbWorkflow;
     private javax.swing.JLabel jlblDocEntrada;
     private javax.swing.JLabel jlblPositivo;
-    private javax.swing.JLabel jlblWorkflow;
     private javax.swing.JRadioButton jrdbNNeg;
     private javax.swing.JRadioButton jrdbNPos;
     private javax.swing.JRadioButton jrdbTodosNeg;
@@ -661,12 +622,10 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
     @Override
     public void atualizarTela() {
 
-        jcmbWorkflow.removeAllItems();
         jcmbDocSaidaPos.removeAllItems();
         jcmbDocSaidaNeg.removeAllItems();
         jcmbDocEntrada.removeAllItems();
 
-        jcmbWorkflow.addItem("");
         jcmbDocSaidaPos.addItem("");
         jcmbDocSaidaNeg.addItem("");
         jcmbDocEntrada.addItem("");
@@ -687,5 +646,7 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         gridOpcionais.configureTableColumns();
         gridRepeticoes.getOGridTableModel().getColumnConfiguration(1).setcBoxDataSource(cba);
         gridRepeticoes.configureTableColumns();
+
     }
+
 }
