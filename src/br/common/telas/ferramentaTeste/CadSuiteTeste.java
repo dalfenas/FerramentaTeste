@@ -30,13 +30,13 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
     /** Creates new form CadSuiteTesteValidacao */
     public CadSuiteTeste(JFramePrincipal framePrincipal) {
         this.jFramePrincipal = framePrincipal;        
-
        
         setBounds(200,0,jFramePrincipal.PANEL_WIDTH,jFramePrincipal.PANEL_HEIGHT);
         // OGrid test
         g = new OGrid();
 
-        g.setBounds(0, 80, 800, 400);
+        //g.setBounds(0, 80, 800, 400);
+        g.setBounds(0, 80, 1100, 400);
         // SEQ
         ColumnConfiguration c = new ColumnConfiguration();
         c.setTitle("id");
@@ -50,13 +50,32 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
         c.setTitle("Caso de Teste");
         c.setFieldType(ColumnConfiguration.FieldType.ID_TEXT_COMBO);      
         c.setcBoxDataSource(new ComboBoxCasoTeste());
-        c.setWidth(200);
+        //c.setWidth(200);
+        c.setWidth(100);
         g.addColumn(c);
 
-        c= new ColumnConfiguration();
+        /*c= new ColumnConfiguration();
         c.setTitle("Comentário");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(400);
+        g.addColumn(c);*/
+
+        c= new ColumnConfiguration();
+        c.setTitle("Workflow");
+        c.setFieldType(ColumnConfiguration.FieldType.TEXT);
+        c.setWidth(300);
+        g.addColumn(c);
+
+        c= new ColumnConfiguration();
+        c.setTitle("TestCase");
+        c.setFieldType(ColumnConfiguration.FieldType.TEXT);
+        c.setWidth(300);
+        g.addColumn(c);
+
+        c= new ColumnConfiguration();
+        c.setTitle("Results");
+        c.setFieldType(ColumnConfiguration.FieldType.TEXT);
+        c.setWidth(300);
         g.addColumn(c);
 
         // render table
@@ -246,8 +265,11 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
           for (SuiteValidacaoTesteValidacao svctv : listSVCTV) {
                vectorCasoTeste = new Vector();
                vectorCasoTeste.add(svctv.getOrderId());
-               vectorCasoTeste.add(svctv.getCaracterizacaoTesteValidacao().getId());
-               vectorCasoTeste.add(svctv.getCaracterizacaoTesteValidacao().getComentario());
+               vectorCasoTeste.add(svctv.getCaracterizacaoTesteValidacao().getId());               
+               vectorCasoTeste.add(svctv.getWorkflow());
+               vectorCasoTeste.add(svctv.getTestCase());
+               vectorCasoTeste.add(svctv.getResult());
+
                vector.addElement(vectorCasoTeste);
           }
           g.fillGrid(vector);
@@ -269,7 +291,7 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
                    vectorCasoTeste = new Vector();
                    vectorCasoTeste.add(sscts.getOrderId());
                    vectorCasoTeste.add(sscts.getCaracterizacaoTesteSequencia().getId());
-                   vectorCasoTeste.add(sscts.getCaracterizacaoTesteSequencia().getComentario());
+                   vectorCasoTeste.add(sscts.getCaracterizacaoTesteSequencia().getComentario());                   
                    vector.addElement(vectorCasoTeste);
                }
                g.fillGrid(vector);
@@ -321,14 +343,14 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
 
        Vector<SuiteValidacaoTesteValidacao> vectorSuiteValTstVal = new Vector();
        Vector<Vector> dataGrid = g.getGridData();
-       Vector <Object> vector = new Vector(3);
+       Vector <Object> vector = new Vector(5);
 
         for (int index = 0; index < dataGrid.size(); index++) {
 
             SuiteValidacaoTesteValidacao svct = new SuiteValidacaoTesteValidacao();
             vector.clear();
 
-            for(int i = 0; i < 3; i++) {
+            for(int i = 0; i < 5; i++) {
                 vector.add(i, null);
             }
 
@@ -340,6 +362,12 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
                 svct.setOrderId(Long.parseLong(vector.get(0).toString()));
             if (vector.get(1) != null)
                 svct.setCaracterizacaoTesteValidacao(CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(((Long)vector.get(1)).intValue()));
+            if (vector.get(2) != null)
+                svct.setWorkflow(vector.get(2).toString());
+            if (vector.get(3) != null)
+                svct.setTestCase(vector.get(3).toString());
+            if (vector.get(4) != null)
+                svct.setResult(vector.get(4).toString());
 
             svct.setSuiteTesteValidacao(SuiteTesteValidacaoDAO.getSuiteTesteValidacao(suite.getId().intValue()));
 

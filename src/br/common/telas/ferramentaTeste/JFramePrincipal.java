@@ -916,6 +916,9 @@ public class JFramePrincipal extends javax.swing.JFrame
             svctstVal.setOrderId(svctstValLido.getOrderId());
             svctstVal.setSuiteTesteValidacao(suiteValCopia);
             svctstVal.setCaracterizacaoTesteValidacao(svctstValLido.getCaracterizacaoTesteValidacao());
+            svctstVal.setWorkflow(svctstValLido.getWorkflow());
+            svctstVal.setTestCase(svctstValLido.getTestCase());
+            svctstVal.setResult(svctstValLido.getResult());
             SuiteValCarTstValDAO.save(svctstVal);
         }
         return retorno;
