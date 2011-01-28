@@ -40,6 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 enum Entidade {
+
     CLASSE_EQUIVALENCIA, DOCUMENTO, TESTE_VALIDACAO, SUITE_VALIDACAO, EXECUCAO
 }
 
@@ -53,14 +54,13 @@ public class JFramePrincipal extends javax.swing.JFrame
     private static CadSuiteTeste currentSuiteTeste = null;
     private static CadExecucao currentExec = null;
     private final MyRenderer renderCellNodes = new MyRenderer();
-
     public final int PANEL_WIDTH = 900;
     public final int PANEL_HEIGHT = 660;
 
     public JFramePrincipal() {
 
-        initComponents();       
-        
+        initComponents();
+
         jTree1.setCellRenderer(renderCellNodes);
         popularArvore();
 
@@ -71,27 +71,27 @@ public class JFramePrincipal extends javax.swing.JFrame
         if (currentCCE == null) {
             currentCCE = new CadClassEquivalencia(this);
             add(currentCCE);
-            currentCCE.setVisible(false);   
+            currentCCE.setVisible(false);
         }
         if (currentDoc == null) {
             currentDoc = new CadDocumento(this);
             add(currentDoc);
-            currentDoc.setVisible(false);          
+            currentDoc.setVisible(false);
         }
         if (currentTesteCase == null) {
             currentTesteCase = new CadTesteCaseValidacao(this);
             add(currentTesteCase);
-            currentTesteCase.setVisible(false);     
+            currentTesteCase.setVisible(false);
         }
         if (currentSuiteTeste == null) {
             currentSuiteTeste = new CadSuiteTeste(this);
             add(currentSuiteTeste);
-            currentSuiteTeste.setVisible(false);   
+            currentSuiteTeste.setVisible(false);
         }
         if (currentExec == null) {
             currentExec = new CadExecucao(this);
             add(currentExec);
-            currentExec.setVisible(false);       
+            currentExec.setVisible(false);
         }
     }
 
@@ -108,19 +108,19 @@ public class JFramePrincipal extends javax.swing.JFrame
             switch (Entidade.values()[nPai]) {
                 case CLASSE_EQUIVALENCIA:
                     currentCCE.setVisible(true);
-                    jSplitPane1.setRightComponent(currentCCE);                    
+                    jSplitPane1.setRightComponent(currentCCE);
                     break;
-                case DOCUMENTO:                    
+                case DOCUMENTO:
                     currentDoc.setVisible(true);
-                    jSplitPane1.setRightComponent(currentDoc);                    
+                    jSplitPane1.setRightComponent(currentDoc);
                     break;
-                case TESTE_VALIDACAO:                    
+                case TESTE_VALIDACAO:
                     currentTesteCase.setVisible(true);
-                    jSplitPane1.setRightComponent(currentTesteCase);                    
+                    jSplitPane1.setRightComponent(currentTesteCase);
                     break;
-                case SUITE_VALIDACAO:                    
+                case SUITE_VALIDACAO:
                     currentSuiteTeste.setVisible(true);
-                    jSplitPane1.setRightComponent(currentSuiteTeste);                    
+                    jSplitPane1.setRightComponent(currentSuiteTeste);
                     break;
             }
         }
@@ -133,7 +133,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         if (e.getActionCommand().equals("CopiarComo")) {
             copiarNo();
         }
-        if (e.getActionCommand().equals("Executar")) {          
+        if (e.getActionCommand().equals("Executar")) {
             currentExec.setRegistro(SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.toString()));
             currentExec.setVisible(true);
             jSplitPane1.setRightComponent(currentExec);
@@ -148,9 +148,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         if (e.getActionCommand().equals("VisualizarAtivacoes")) {
             currentExec.visualizarAtivacoes(
                     ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(
-                        Integer.parseInt(selNode.toString().substring(20))
-                        )
-             );
+                    Integer.parseInt(selNode.toString().substring(20))));
         }
     }
 
@@ -167,7 +165,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
 
         if (entidade.equalsIgnoreCase(AtualizacaoTela.entidadeTesteValidacao)) {
-            currentSuiteTeste.atualizarTela();         
+            currentSuiteTeste.atualizarTela();
         }
 
         if (entidade.equalsIgnoreCase(AtualizacaoTela.entidadeSuiteValidacao)) {
@@ -188,7 +186,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         //Se o indice obtido for zero ou positivo, selNode eh um no da arvore principal (FerramentaTeste)
         if (nPai >= 0) {
             nodeFather = (DefaultMutableTreeNode) jTree1.getModel().getChild(jTree1.getModel().getRoot(), nPai);
-        //Caso contrario, selNode eh um no de suite
+            //Caso contrario, selNode eh um no de suite
         } else {
             //obtem-se em nPai o indice do noh da Suite dentro da subarvore de SuiteTeste
             nPai = selNode.getParent().getIndex(selNode);
@@ -199,13 +197,13 @@ public class JFramePrincipal extends javax.swing.JFrame
             nodeFather = null;
             for (int i = 0; i < selNode.getChildCount(); i++) {
                 if (selNode.getChildAt(i).toString().equals(grupoId)) {
-                    nodeFather = (DefaultMutableTreeNode)selNode.getChildAt(i);
+                    nodeFather = (DefaultMutableTreeNode) selNode.getChildAt(i);
                     break;
                 }
             }
             if (nodeFather == null) {
                 //nodeFather = new DefaultMutableTreeNode(grupoId);
-                nodeFather = new ExecutionTreeNode(grupoId,exec.getModoAtivacao().equals("G"));
+                nodeFather = new ExecutionTreeNode(grupoId, exec.getModoAtivacao().equals("G"));
                 model.insertNodeInto(nodeFather, selNode, selNode.getChildCount());
                 selNode.add(nodeFather);
             }
@@ -226,16 +224,16 @@ public class JFramePrincipal extends javax.swing.JFrame
 
         DefaultMutableTreeNode novoNo;
         if (nodeFather instanceof ExecutionTreeNode) {
-            novoNo = new ExecutionTreeNode(nodeName,((ExecutionTreeNode)nodeFather).isGolden());
-        }
-        else {
+            novoNo = new ExecutionTreeNode(nodeName, ((ExecutionTreeNode) nodeFather).isGolden());
+        } else {
             novoNo = new DefaultMutableTreeNode(nodeName);
         }
-        
-        nodeFather.add(novoNo);          
+
+        nodeFather.add(novoNo);
         model.insertNodeInto(novoNo, nodeFather, index);
-        if (!nodeFather.toString().contains("Grupo"))
-                tratarNo(novoNo);
+        if (!nodeFather.toString().contains("Grupo")) {
+            tratarNo(novoNo);
+        }
     }
 
     public static void main(String args[]) {
@@ -309,7 +307,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         for (int i = 0; i < nNodes; i++) {
 
             DefaultMutableTreeNode nodeFather = (DefaultMutableTreeNode) treeModel.getChild(treeModel.getRoot(), i);
-        
+
             //Verifica-se de que tipo eh o no
             switch (Entidade.values()[i]) {
                 //No de Classe_equivalencia
@@ -354,12 +352,12 @@ public class JFramePrincipal extends javax.swing.JFrame
                         for (ExecucaoTesteValidacao exec : execs) {
                             if (idGrupoExec != exec.getIdGrupoExec()) {
                                 //Cada grupo passa a ser um no de execucao da arvore suite
-                               nodeGrupo = new ExecutionTreeNode("Grupo Exec" + exec.getIdGrupoExec(),exec.getModoAtivacao().equals("G"));
-                               nodeSuite.add(nodeGrupo);
-                            }                            
+                                nodeGrupo = new ExecutionTreeNode("Grupo Exec" + exec.getIdGrupoExec(), exec.getModoAtivacao().equals("G"));
+                                nodeSuite.add(nodeGrupo);
+                            }
                             SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                             //cada execucao encontrada é uma folha da arvore de grupo
-                            nodeGrupo.add(new ExecutionTreeNode(formatador.format(exec.getInicio()) + " " + exec.getId(),exec.getModoAtivacao().equals("G")));
+                            nodeGrupo.add(new ExecutionTreeNode(formatador.format(exec.getInicio()) + " " + exec.getId(), exec.getModoAtivacao().equals("G")));
                             idGrupoExec = exec.getIdGrupoExec();
                         }
                     }
@@ -380,8 +378,8 @@ public class JFramePrincipal extends javax.swing.JFrame
         } else {
             return;
         }
-        
-        if (evt.getClickCount() == 2) {            
+
+        if (evt.getClickCount() == 2) {
             tratarNo(selNode);
         }
 
@@ -418,8 +416,7 @@ public class JFramePrincipal extends javax.swing.JFrame
                         m.setActionCommand("RemoverGrupoExecs");
                         pm.add(m);
                         pm.show(this, location.x, location.y);
-                    }
-                    else {
+                    } else {
                         m = new javax.swing.JMenuItem("Visualizar ativações");
                         m.addActionListener(this);
                         m.setActionCommand("VisualizarAtivacoes");
@@ -462,9 +459,9 @@ public class JFramePrincipal extends javax.swing.JFrame
 
     public void disablePanels() {
         jPanel1 = new JPanel();
-        jPanel1.setBounds(200, 0, PANEL_WIDTH,PANEL_HEIGHT);       
-        jPanel1.setVisible(true);        
-        jSplitPane1.setRightComponent(jPanel1);        
+        jPanel1.setBounds(200, 0, PANEL_WIDTH, PANEL_HEIGHT);
+        jPanel1.setVisible(true);
+        jSplitPane1.setRightComponent(jPanel1);
     }
 
     public void addPanel(JPanel panel) {
@@ -475,48 +472,55 @@ public class JFramePrincipal extends javax.swing.JFrame
         TreeNode parent = selNode.getParent();
         TreeNode root = ((DefaultMutableTreeNode) parent).getRoot();
 
+
+        while (parent != root && (parent.getIndex(root) == -1)) {
+            parent = parent.getParent();
+
+            if (root.getIndex(parent) == Entidade.SUITE_VALIDACAO.ordinal()) {
+                if (selNode.toString().contains("Grupo")) {
+                    //selecionado um grupo de execucoes
+                    SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getParent().toString());
+                    currentExec.setRegistro(suite, selNode.toString());
+                    currentExec.setVisible(true);
+                    jSplitPane1.setRightComponent(currentExec);
+
+                } else {
+                    currentExec.setRegistro(selNode.toString());
+                    currentExec.setVisible(true);
+                    jSplitPane1.setRightComponent(currentExec);
+                }
+            }
+        }
+
+        parent = selNode.getParent();
         int nPai = root.getIndex(parent);
 
-        //nPai é -1 para casos onde selNode não é filho da arvore FerramentaTeste
-        //e sim da arvores de suite
+        //nPai é -1 para filhos da subarvore de suites
         if (nPai == -1) {
-            if (selNode.toString().contains("Grupo")) {
-                //selecionado um grupo de execucoes
-                SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(parent.toString());
-                currentExec.setRegistro(suite, selNode.toString());
-                currentExec.setVisible(true);
-                jSplitPane1.setRightComponent(currentExec);
-
-            }
-           else {
-              currentExec.setRegistro(selNode.toString());
-              currentExec.setVisible(true);
-              jSplitPane1.setRightComponent(currentExec);
-            }
             return;
         }
 
         switch (Entidade.values()[nPai]) {
-            case CLASSE_EQUIVALENCIA:             
+            case CLASSE_EQUIVALENCIA:
                 currentCCE.setVisible(true);
                 jSplitPane1.setRightComponent(currentCCE);
-                currentCCE.setRegistro((String) selNode.getUserObject());               
-            break;
+                currentCCE.setRegistro((String) selNode.getUserObject());
+                break;
             case DOCUMENTO:
                 currentDoc.setVisible(true);
                 jSplitPane1.setRightComponent(currentDoc);
-                currentDoc.setRegistro((String) selNode.getUserObject());                
-            break;
+                currentDoc.setRegistro((String) selNode.getUserObject());
+                break;
             case TESTE_VALIDACAO:
                 currentTesteCase.setVisible(true);
                 jSplitPane1.setRightComponent(currentTesteCase);
-                currentTesteCase.setRegistro((String) selNode.getUserObject());                
-            break;
+                currentTesteCase.setRegistro((String) selNode.getUserObject());
+                break;
             case SUITE_VALIDACAO:
                 currentSuiteTeste.setVisible(true);
                 jSplitPane1.setRightComponent(currentSuiteTeste);
-                currentSuiteTeste.setRegistro((String) selNode.getUserObject());                
-            break;
+                currentSuiteTeste.setRegistro((String) selNode.getUserObject());
+                break;
         }
     }
 
@@ -564,20 +568,19 @@ public class JFramePrincipal extends javax.swing.JFrame
     }
 
     /*public void removeGoldenNodesFromSuite() {
-         DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
-         TreeNode aChild;
-        //selNode representa a suite sendo executada
-        //remove todos os nos representando referentes a execucoes golden
-        for (int i=0; i<selNode.getChildCount(); i++) {
-            aChild = selNode.getChildAt(i);
-            if (aChild instanceof ExecutionTreeNode) {
-                ExecutionTreeNode aChildExecution = (ExecutionTreeNode)aChild;
-                if (aChildExecution.isGolden())
-                    model.removeNodeFromParent((DefaultMutableTreeNode)aChild);
-            }
-        }       
+    DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+    TreeNode aChild;
+    //selNode representa a suite sendo executada
+    //remove todos os nos representando referentes a execucoes golden
+    for (int i=0; i<selNode.getChildCount(); i++) {
+    aChild = selNode.getChildAt(i);
+    if (aChild instanceof ExecutionTreeNode) {
+    ExecutionTreeNode aChildExecution = (ExecutionTreeNode)aChild;
+    if (aChildExecution.isGolden())
+    model.removeNodeFromParent((DefaultMutableTreeNode)aChild);
+    }
+    }
     }*/
-
     public void removeExecs(String golden) {
         DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
         TreeNode aChild;
@@ -596,7 +599,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
 
         //Remover do bd somente a execução golden dessa suite pois, existe somente um golden por suite
-        for (ExecucaoTesteValidacao exec : execs) {                        
+        for (ExecucaoTesteValidacao exec : execs) {
             if (exec.getModoAtivacao().equalsIgnoreCase(golden)) {
                 ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
             }
@@ -605,9 +608,10 @@ public class JFramePrincipal extends javax.swing.JFrame
 
     private void removeExecs() {
 
-        if (JOptionPane.YES_OPTION !=
-              JOptionPane.showConfirmDialog(this,"Deseja remover todas as execuções da suite " + selNode.getUserObject().toString() ,"Remover Execuções",2))
-                        return;
+        if (JOptionPane.YES_OPTION
+                != JOptionPane.showConfirmDialog(this, "Deseja remover todas as execuções da suite " + selNode.getUserObject().toString(), "Remover Execuções", 2)) {
+            return;
+        }
 
         DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
         TreeNode aChild;
@@ -631,13 +635,14 @@ public class JFramePrincipal extends javax.swing.JFrame
         ExecucaoTesteValidacao execucao = ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(Integer.parseInt(execId));
 
         if (execucao.getModoAtivacao().equals("G")) {
-            JOptionPane.showMessageDialog(this, "Este grupo é um grupo golden e não pode ser removido","Remover Grupo de Execuções",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Este grupo é um grupo golden e não pode ser removido", "Remover Grupo de Execuções", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        if (JOptionPane.YES_OPTION !=
-              JOptionPane.showConfirmDialog(this,"Deseja remover este grupo de execuções da suite " + selNode.getUserObject().toString() ,"Remover Grupo de Execuções",2))
-                        return;
+        if (JOptionPane.YES_OPTION
+                != JOptionPane.showConfirmDialog(this, "Deseja remover este grupo de execuções da suite " + selNode.getUserObject().toString(), "Remover Grupo de Execuções", 2)) {
+            return;
+        }
 
         DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
         TreeNode aChild;
@@ -649,7 +654,7 @@ public class JFramePrincipal extends javax.swing.JFrame
             model.removeNodeFromParent((DefaultMutableTreeNode) aChild);
         }
 
-        for(String idExe : execucoes) {
+        for (String idExe : execucoes) {
             ExecucaoTesteValidacaoDAO.delete(Integer.parseInt(idExe));
         }
 
@@ -691,11 +696,11 @@ public class JFramePrincipal extends javax.swing.JFrame
                 System.out.println("FALTA IMPLEMENTAR CopiarNo");
                 break;
         }
-        if (retorno >= 0) {           
-            selNode = (DefaultMutableTreeNode)parent;
-            addNode(nomeNovo);            
-            atualizarCampos(entidadeAtualizada);           
-        }        
+        if (retorno >= 0) {
+            selNode = (DefaultMutableTreeNode) parent;
+            addNode(nomeNovo);
+            atualizarCampos(entidadeAtualizada);
+        }
     }
 
     private void renomearNo() {
@@ -802,8 +807,8 @@ public class JFramePrincipal extends javax.swing.JFrame
     private int copiarTemplateDocumento(String nomeNo, String novoNome) {
 
         if (null != DocumentoDAO.getDocumento(novoNome)) {
-            if (JOptionPane.YES_OPTION !=
-                    JOptionPane.showConfirmDialog(this, "Documento " + novoNome + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
+            if (JOptionPane.YES_OPTION
+                    != JOptionPane.showConfirmDialog(this, "Documento " + novoNome + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
                 return -1;
             }
         }
@@ -855,8 +860,8 @@ public class JFramePrincipal extends javax.swing.JFrame
     private int copiarValidacaoTeste(String nomeNo, String novoNome) {
 
         if (null != CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(novoNome)) {
-            if (JOptionPane.YES_OPTION !=
-                    JOptionPane.showConfirmDialog(this, "Teste de Validação " + novoNome + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
+            if (JOptionPane.YES_OPTION
+                    != JOptionPane.showConfirmDialog(this, "Teste de Validação " + novoNome + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
                 return -1;
             }
         }
@@ -896,8 +901,8 @@ public class JFramePrincipal extends javax.swing.JFrame
     private int copiarSuiteValidacao(String nomeNo, String novoNome) {
 
         if (null != SuiteTesteValidacaoDAO.getSuiteTesteValidacao(novoNome)) {
-            if (JOptionPane.YES_OPTION !=
-                    JOptionPane.showConfirmDialog(this, "Suite de Teste de Validação " + novoNome + " já existe. Deseja sobrescrevê-la?", "Sobrescrever entidade", 2)) {
+            if (JOptionPane.YES_OPTION
+                    != JOptionPane.showConfirmDialog(this, "Suite de Teste de Validação " + novoNome + " já existe. Deseja sobrescrevê-la?", "Sobrescrever entidade", 2)) {
                 return -1;
             }
         }
