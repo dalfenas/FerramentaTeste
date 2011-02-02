@@ -321,6 +321,11 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
         add(jLabel1);
         jLabel1.setBounds(10, 10, 60, 14);
 
+        jComboBoxSuite.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxSuiteActionPerformed(evt);
+            }
+        });
         add(jComboBoxSuite);
         jComboBoxSuite.setBounds(10, 30, 190, 20);
 
@@ -482,6 +487,10 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
             System.out.println(except.getMessage());
         }        
     }//GEN-LAST:event_jButtonExecActionPerformed
+
+    private void jComboBoxSuiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxSuiteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxSuiteActionPerformed
 
     private void limparAreaGrid() {       
         line = 0;

@@ -11,27 +11,28 @@ import java.util.Vector;
 // persistence test
 import br.org.fdte.persistence.*;
 
-import br.org.fdte.dao.ClasseEquivalenciaDAO;
+//import br.org.fdte.dao.ClasseEquivalenciaDAO;
 import br.org.fdte.dao.ValorDAO;
 
 import br.org.fdte.OGridTableModel;
 import br.org.fdte.dao.TipoClasseEquivalenciaDAO;
+import br.org.servicos.ClasseEquivalenciaServico;
 import javax.swing.JOptionPane;
 
 public class CadClassEquivalencia extends javax.swing.JPanel implements AtualizacaoTela {
 
     private OGrid g;
-    private JFramePrincipal jFramePrincipal;           
-    
+    private JFramePrincipal jFramePrincipal;
+
     public CadClassEquivalencia(JFramePrincipal jFramePrincipal) {
         this.jFramePrincipal = jFramePrincipal;
 
         initComponents();
-        initCombos();     
-     
-        setBounds(200,0,jFramePrincipal.PANEL_WIDTH,jFramePrincipal.PANEL_HEIGHT);
+        initCombos();
+
+        setBounds(200, 0, jFramePrincipal.PANEL_WIDTH, jFramePrincipal.PANEL_HEIGHT);
         // OGrid test
-        g = new OGrid();        
+        g = new OGrid();
         //g.setBounds(0, 80, 1000, 400);
         g.setBounds(0, 80, 800, 400);
         // SEQ
@@ -49,7 +50,7 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
         c.setFont(new Font("Verdana", Font.BOLD, 12));
         c.setColor(Color.ORANGE);
         g.addColumn(c);
-      
+
         // CHECKBOX
         c = new ColumnConfiguration();
         c.setTitle("Positivo");
@@ -57,7 +58,7 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
         c.setWidth(100);
         g.addColumn(c);
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("Comentário");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(400);
@@ -67,34 +68,36 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
         g.render();
         g.setVisible(true);
 
-        add(g);        
+        add(g);
     }
 
-    public void setRegistro(String nome){
+    public void setRegistro(String nome) {
 
         //Limpar registros que estejam no grid de Valores
-        OGridTableModel tableModel = (OGridTableModel)g.getOGridTableModel();
-        int nRow =  tableModel.getRowCount();
-        for (int i = 0; i < nRow; i++)
+        OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
+        int nRow = tableModel.getRowCount();
+        for (int i = 0; i < nRow; i++) {
             tableModel.deleteLine(i);
+        }
 
         if (nome.equalsIgnoreCase("") == true) {
             limparRegistro();
-        }
-        else {
+        } else {
             popularRegistro(nome);
         }
-  }
+    }
 
     @Override
     public void atualizarTela() {
-       jcmbHeranca.removeAllItems();
-       jcmbHeranca.addItem("");
-       List<ClasseEquivalencia> lstCE = ClasseEquivalenciaDAO.getAll();
-       for (ClasseEquivalencia ce : lstCE) {
-           jcmbHeranca.addItem(ce.getNome());
-       }
+       /* jcmbHeranca.removeAllItems();
+        jcmbHeranca.addItem("");
+        //List<ClasseEquivalencia> lstCE = ClasseEquivalenciaDAO.getAll();
+        List<ClasseEquivalencia> lstCE = new ClasseEquivalenciaServico().getAll();
+        for (ClasseEquivalencia ce : lstCE) {
+            jcmbHeranca.addItem(ce.getNome());
+        }*/
     }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -145,6 +148,11 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
         add(jComboBoxTipo);
         jComboBoxTipo.setBounds(130, 30, 100, 20);
 
+        jcmbHeranca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcmbHerancaActionPerformed(evt);
+            }
+        });
         add(jcmbHeranca);
         jcmbHeranca.setBounds(260, 30, 100, 20);
 
@@ -165,177 +173,207 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
 
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
 
-        if (validarCampos() < 0)
+        if (validarCampos() < 0) {
             return;
+        }
 
-        ClasseEquivalencia heranca =
-                ClasseEquivalenciaDAO.getClasseEquivalencia((String)jcmbHeranca.getSelectedItem());
+       /* ClasseEquivalencia heranca =
+                ClasseEquivalenciaDAO.getClasseEquivalencia((String) jcmbHeranca.getSelectedItem());*/
 
         TipoClasseEquivalencia tipoCe =
-                TipoClasseEquivalenciaDAO.getTipoClasseEquivalencia((String)jComboBoxTipo.getSelectedItem());
+                TipoClasseEquivalenciaDAO.getTipoClasseEquivalencia((String) jComboBoxTipo.getSelectedItem());
 
 
-        ClasseEquivalencia ce = ClasseEquivalenciaDAO.getClasseEquivalencia(jTextFieldNome.getText());
+        // ClasseEquivalencia ce = ClasseEquivalenciaDAO.getClasseEquivalencia(jTextFieldNome.getText());
+        ClasseEquivalenciaServico servicoClasseEq = new ClasseEquivalenciaServico();
+        ClasseEquivalencia ce = servicoClasseEq.getByName(jTextFieldNome.getText());
 
         //A classe de equivalencia não existe, é preciso criar
-        if(ce == null) {
-         ce = new ClasseEquivalencia();
-         ce.setNome(jTextFieldNome.getText());
-        }
-        else {
-            int iSelected = JOptionPane.showConfirmDialog(this,"Classe de Equivalencia " + jTextFieldNome.getText() + " já existe. Deseja sobrescrevê-la?","Sobrescrever entidade",2);
-            if (iSelected != JOptionPane.YES_OPTION ) {
-               return;
+        if (ce == null) {
+
+            ce = new ClasseEquivalencia();
+            ce.setNome(jTextFieldNome.getText());
+            ce.setTipo(tipoCe);
+            //ce.setHeranca(heranca);
+
+            servicoClasseEq.save(ce);
+            popularGridValores(ce);
+            //servicoClasseEq.update(ce);
+
+            jFramePrincipal.addNode(jTextFieldNome.getText());
+            jFramePrincipal.atualizarCampos(AtualizacaoTela.entidadeClasseEquivalencia);
+            return;
+        } else {
+            int iSelected = JOptionPane.showConfirmDialog(this, "Classe de Equivalencia " + jTextFieldNome.getText() + " já existe. Deseja sobrescrevê-la?", "Sobrescrever entidade", 2);
+            if (iSelected != JOptionPane.YES_OPTION) {
+                return;
             }
         }
+
         ce.setTipo(tipoCe);
-        ce.setHeranca(heranca);
-        
-        int retorno = ClasseEquivalenciaDAO.save(ce);       
+        //ce.setHeranca(heranca);
+        //primeiro remove os dados do grid de valores relacionados a esta classe de equivalencia
+        ValorDAO.delete(ce);
+        //adiciona os dados do grid de valores
+        popularGridValores(ce);
+        servicoClasseEq.update(ce);
+
+        /*int retorno = servicoClasseEq.save(ce);
 
         //em relação ao grid de valores
         switch (retorno) {
-            //insercao de classe de equivalencia
-            case 0:
-                //adicionar os dados do grid de valores
-                popularGridValores(ce);
-            break;
-            //update de classe de equivalencia
-            case 1:
-                //primeiro remove os dados do grid de valores relacionados a esta classe de equivalencia
-                ValorDAO.delete(ce);
-                //adiciona os dados do grid de valores
-                popularGridValores(ce);
-            break;
+        //insercao de classe de equivalencia
+        case 0:
+        //adicionar os dados do grid de valores
+        popularGridValores(ce);
+        break;
+        //update de classe de equivalencia
+        case 1:
+        //primeiro remove os dados do grid de valores relacionados a esta classe de equivalencia
+        ValorDAO.delete(ce);
+        //adiciona os dados do grid de valores
+        popularGridValores(ce);
+        break;
         }
 
-         //se foi insercao de classe de equivalencia o retorno é 0;
+        //se foi insercao de classe de equivalencia o retorno é 0;
         if (retorno == 0) {
-            jFramePrincipal.addNode(jTextFieldNome.getText());
-            jFramePrincipal.atualizarCampos(AtualizacaoTela.entidadeClasseEquivalencia);
+        jFramePrincipal.addNode(jTextFieldNome.getText());
+        jFramePrincipal.atualizarCampos(AtualizacaoTela.entidadeClasseEquivalencia);
         }
-        else {
-           JOptionPane.showMessageDialog(this,"Classe de Equivalencia " + jTextFieldNome.getText() + " atualizada");
-        }
+        else {*/
+        JOptionPane.showMessageDialog(this, "Classe de Equivalencia " + jTextFieldNome.getText() + " atualizada");
+        //}
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         jFramePrincipal.disablePanels();
-                //setVisible(false);
+        //setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jcmbHerancaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcmbHerancaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jcmbHerancaActionPerformed
 
     private int validarCampos() {
 
-     int retorno = 0;
+        int retorno = 0;
 
-     if (jTextFieldNome.getText().equals("")) {
-        JOptionPane.showMessageDialog(this,"Escolha um nome");
-        retorno = -1;
-     }
+        if (jTextFieldNome.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Escolha um nome");
+            retorno = -1;
+        }
 
-     if(jComboBoxTipo.getSelectedItem() == null || jComboBoxTipo.getSelectedItem().equals("")) {
-        JOptionPane.showMessageDialog(this,"Escolha um tipo");
-        retorno = -1;
-     }
-     return retorno;
- }
+        if (jComboBoxTipo.getSelectedItem() == null || jComboBoxTipo.getSelectedItem().equals("")) {
+            JOptionPane.showMessageDialog(this, "Escolha um tipo");
+            retorno = -1;
+        }
+        return retorno;
+    }
 
     private void popularGridValores(ClasseEquivalencia ce) {
 
-       Vector<Valor> valores = new Vector();
-       Vector<Vector> dataGrid = g.getGridData();
-       Vector <Object> vector = new Vector(4);         
+        Vector<Valor> valores = new Vector();
+        Vector<Vector> dataGrid = g.getGridData();
+        Vector<Object> vector = new Vector(4);
 
-       for (int index = 0; index < dataGrid.size(); index++) {
+        for (int index = 0; index < dataGrid.size(); index++) {
             vector.clear();
-            for(int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 vector.add(i, null);
             }
             Valor valor = new Valor();
 
-            for (int indexC = 0; indexC < dataGrid.get(index).size(); indexC++){
-                vector.set(indexC,dataGrid.get(index).get(indexC));
+            for (int indexC = 0; indexC < dataGrid.get(index).size(); indexC++) {
+                vector.set(indexC, dataGrid.get(index).get(indexC));
             }
 
-            if (vector.get(0) != null)
+            if (vector.get(0) != null) {
                 valor.setOrderId(Long.parseLong(vector.get(0).toString()));
+            }
 
-            if (vector.get(1) != null)
-                 valor.setValor((String)vector.get(1));
+            if (vector.get(1) != null) {
+                valor.setValor((String) vector.get(1));
+            }
 
             if (vector.get(2) == null) {
-                 valor.setPositivoNegativo("N");
-            }
-            else {
-               Boolean positivo = (Boolean)vector.get(2);
-               valor.setPositivoNegativo(positivo == true ? "P" : "N" );
+                valor.setPositivoNegativo("N");
+            } else {
+                Boolean positivo = (Boolean) vector.get(2);
+                valor.setPositivoNegativo(positivo == true ? "P" : "N");
             }
 
-            valor.setComentario((String)vector.get(3));
+            valor.setComentario((String) vector.get(3));
             valor.setIdClasseEquivalencia(ce);
 
-         valores.add(valor);
+            valores.add(valor);
         }
-        for (int i = 0; i<valores.size(); i++) {
+        for (int i = 0; i < valores.size(); i++) {
             ValorDAO.save(valores.get(i));
+            
         }
-   }  
+        ce.setValorCollection(valores);
+    }
 
-  private void popularRegistro(String nome) {       
-       ClasseEquivalencia ce = ClasseEquivalenciaDAO.getClasseEquivalencia(nome);
+    private void popularRegistro(String nome) {
+        //ClasseEquivalencia ce = ClasseEquivalenciaDAO.getClasseEquivalencia(nome);
+        ClasseEquivalencia ce = new ClasseEquivalenciaServico().getByName(nome);
 
-       if (ce != null) {           
-           jTextFieldNome.setText(ce.getNome());
-           jTextFieldNome.setEditable(false);
-           jComboBoxTipo.setSelectedItem(ce.getTipo().getTipoClasseEquivalencia());
+        if (ce != null) {
+            jTextFieldNome.setText(ce.getNome());
+            jTextFieldNome.setEditable(false);
+            jComboBoxTipo.setSelectedItem(ce.getTipo().getTipoClasseEquivalencia());
 
-           if (ce.getHeranca() != null)
-            jcmbHeranca.setSelectedItem(ce.getHeranca().getNome());
-        
-          Vector <Object> vectorValor = null;         
-          Vector <Vector> vector = new Vector();
+            if (ce.getHeranca() != null) {
+                jcmbHeranca.setSelectedItem(ce.getHeranca().getNome());
+            }
 
-           for (Valor val : ce.getValorCollection()) {
-               Boolean positivo = false;
-               if ((val.getPositivoNegativo() != null) && (val.getPositivoNegativo().equals("P")) )
-                   positivo = true;
+            Vector<Object> vectorValor = null;
+            Vector<Vector> vector = new Vector();
 
-               vectorValor = new Vector();               
-               vectorValor.add(val.getOrderId().toString());
+            for (Valor val : ce.getValorCollection()) {
+                Boolean positivo = false;
+                if ((val.getPositivoNegativo() != null) && (val.getPositivoNegativo().equals("P"))) {
+                    positivo = true;
+                }
 
-               if (val.getValor() == null)
-                   vectorValor.add("");
-               else
+                vectorValor = new Vector();
+                vectorValor.add(val.getOrderId().toString());
+
+                if (val.getValor() == null) {
+                    vectorValor.add("");
+                } else {
                     vectorValor.add(val.getValor());
-               
-               vectorValor.add(positivo);
-               
-               if (val.getComentario() == null)
-                   vectorValor.add("");
-               else
-                   vectorValor.add(val.getComentario());
+                }
 
-               vector.addElement(vectorValor);
-           }
-           g.fillGrid(vector);
-       }   
- }
+                vectorValor.add(positivo);
 
- private void limparRegistro() {
-    jTextFieldNome.setText("");
-    jTextFieldNome.setEditable(true);   
-    jComboBoxTipo.setSelectedIndex(0);
-    jcmbHeranca.setSelectedIndex(0);
- }
+                if (val.getComentario() == null) {
+                    vectorValor.add("");
+                } else {
+                    vectorValor.add(val.getComentario());
+                }
 
- private void initCombos(){
-       jcmbHeranca.addItem("");
-       List<TipoClasseEquivalencia> lst = TipoClasseEquivalenciaDAO.getAll();       
-       for (TipoClasseEquivalencia s : lst) {
-           jComboBoxTipo.addItem(s.getTipoClasseEquivalencia());
-       }             
- }
+                vector.addElement(vectorValor);
+            }
+            g.fillGrid(vector);
+        }
+    }
 
+    private void limparRegistro() {
+        jTextFieldNome.setText("");
+        jTextFieldNome.setEditable(true);
+        jComboBoxTipo.setSelectedIndex(0);
+        jcmbHeranca.setSelectedIndex(0);
+    }
+
+    private void initCombos() {
+        jcmbHeranca.addItem("");
+        List<TipoClasseEquivalencia> lst = TipoClasseEquivalenciaDAO.getAll();
+        for (TipoClasseEquivalencia s : lst) {
+            jComboBoxTipo.addItem(s.getTipoClasseEquivalencia());
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonSalvar;

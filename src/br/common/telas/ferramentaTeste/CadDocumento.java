@@ -6,15 +6,18 @@ import br.org.fdte.ColumnConfiguration;
 import br.org.fdte.ComboBoxClasseEquivalencia;
 import br.org.fdte.OGridTableModel;
 import br.org.fdte.dao.AtributoDAO;
-import br.org.fdte.dao.ClasseEquivalenciaDAO;
-import br.org.fdte.dao.DocumentoDAO;
+//import br.org.fdte.dao.ClasseEquivalenciaDAO;
+//import br.org.fdte.dao.DocumentoDAO;
 import java.awt.Font;
 import java.awt.Color;
 import java.util.Vector;
 
 // persistence test
 import br.org.fdte.persistence.Atributo;
+import br.org.fdte.persistence.ClasseEquivalencia;
 import br.org.fdte.persistence.TemplateDocumento;
+import br.org.servicos.ClasseEquivalenciaServico;
+import br.org.servicos.DocumentoServico;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -212,9 +215,13 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
        if (validarCampos() < 0)
             return;
 
-      TemplateDocumento doc = DocumentoDAO.getDocumento(jTextFieldNome.getText());
+     // TemplateDocumento doc = DocumentoDAO.getDocumento(jTextFieldNome.getText());
+       TemplateDocumento doc = new DocumentoServico().getByName(jTextFieldNome.getText());
+       int retorno = 1;
       if (doc == null) {
             doc = new TemplateDocumento();
+            retorno = 0;
+
       }
       else {
            if (JOptionPane.YES_OPTION != 
@@ -227,24 +234,31 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
        doc.setArquivoXsd(jTextFieldClasseValidacao.getText());
        doc.setTipoFisico((String)jComboBoxTipoFisico.getSelectedItem());
 
-       int retorno = DocumentoDAO.save(doc);
+       //int retorno = DocumentoDAO.save(doc);
+
 
      
        //em relação ao grid de atributo
        switch (retorno) {
             //insercao de documento
             case 0:
+                new DocumentoServico().save(doc);
                 //adicionar os dados do grid de atributo
-                popularGridAtributo(DocumentoDAO.getDocumento(doc.getNome()));
+                //popularGridAtributo(DocumentoDAO.getDocumento(doc.getNome()));
+                popularGridAtributo(doc);
             break;
             //update de documento
             case 1:
                 //primeiro remove os dados do grid de atributo relacionados a este documento
                 AtributoDAO.delete(doc);
                 //adiciona os dados do grid de atributo
-                popularGridAtributo(DocumentoDAO.getDocumento(doc.getNome()));
+                //popularGridAtributo(DocumentoDAO.getDocumento(doc.getNome()));
+                popularGridAtributo(doc);
+                
             break;
        }
+
+       new DocumentoServico().update(doc);
 
          //se foi insercao de documento o retorno é 0;
        if (retorno == 0) {
@@ -263,14 +277,16 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
              currentRegras = new CadRegras(this);
             // jFramePrincipal.addPanel(currentRegras);
          }
-         currentRegras.setDocumento(DocumentoDAO.getDocumento(jTextFieldNome.getText()));
+        // currentRegras.setDocumento(DocumentoDAO.getDocumento(jTextFieldNome.getText()));
+         currentRegras.setDocumento(new DocumentoServico().getByName(jTextFieldNome.getText()));
          setVisible(false);
          currentRegras.setVisible(true);
          jFramePrincipal.addPanel(currentRegras);
     }//GEN-LAST:event_jButtonRegrasActionPerformed
 
     private void popularRegistro(String nome) {
-      TemplateDocumento doc = DocumentoDAO.getDocumento(nome);
+     // TemplateDocumento doc = DocumentoDAO.getDocumento(nome);
+         TemplateDocumento doc = new DocumentoServico().getByName(nome);
        if (doc != null) {
            jTextFieldNome.setText(doc.getNome());
            jTextFieldNome.setEditable(false);
@@ -333,8 +349,12 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
             if (linha.get(1) != null)
                 atributo.setTag((String)linha.get(1));
 
-            if (linha.get(2) != null)
-                atributo.setIdClasseEquivalencia(ClasseEquivalenciaDAO.getClasseEquivalencia(((Long)linha.get(2)).intValue()));
+            if (linha.get(2) != null) {
+                ClasseEquivalencia ce = new ClasseEquivalenciaServico().getById(((Long)linha.get(2)).intValue());
+               // atributo.setIdClasseEquivalencia(ClasseEquivalenciaDAO.getClasseEquivalencia(((Long)linha.get(2)).intValue()));
+                 atributo.setIdClasseEquivalencia(ce);
+           }
+
 
             if (linha.get(3) == null)
                 atributo.setOpcional("false");
@@ -361,6 +381,7 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
                 JOptionPane.showMessageDialog(this,"Erro ao Salvar Atributo");
             }
         }
+       doc.setAtributoCollection(atributos);
  } 
  
     private void initCombos() {
