@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 public class DocumentoServico {
 
@@ -15,26 +16,23 @@ public class DocumentoServico {
 
     public void save(TemplateDocumento doc) {
 
-
+    	this.manager = DBManager.openManager();
         DocumentoDAO docDao = new DocumentoDAO(manager);
         AtributoDAO attDao = new AtributoDAO(manager);
         Collection<Atributo> listAtributos = doc.getAtributoCollection();
+        
+        EntityTransaction et = this.manager.getTransaction();
 
 
         try {
-            this.manager = DBManager.openManager();
-            this.manager.getTransaction().begin();
-
-            //salvar documento
+            et.begin();
             docDao.save(doc);
 
-            //salvar os atributos do documento apos a criacao deste            
             for (Atributo att : listAtributos) {
                     attDao.save(att);
             }
 
-            //this.manager.flush();
-            this.manager.getTransaction().commit();
+            et.commit();
         }
         //o documento já existe
         catch(EntityExistsException ex) {
@@ -51,13 +49,12 @@ public class DocumentoServico {
             for (Atributo att : listAtributos) {
                     attDao.save(att);
             }
-
-            this.manager.getTransaction().commit();
+            et.commit();
 
         }
         catch(Exception ex) {
             System.out.println(ex.getMessage());
-            this.manager.getTransaction().rollback();
+            et.rollback();
         }
 
 
