@@ -1,5 +1,6 @@
 package br.org.dao;
 
+import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.TemplateDocumento;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -15,15 +16,10 @@ public class DocumentoDAO {
 
     public void save(TemplateDocumento doc) {
         try {
-        this.manager.persist(doc);
-        }
-        catch(Exception ex) {
+            this.manager.persist(doc);
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-    }
-
-    public void update(TemplateDocumento doc) {
-        this.manager.merge(doc);
     }
 
     public void delete(TemplateDocumento doc) {
@@ -35,8 +31,9 @@ public class DocumentoDAO {
         Query q = this.manager.createNamedQuery("TemplateDocumento.findByNome");
         q.setParameter("nome", nomeDoc);
 
-        if (q.getResultList().size() == 0)
+        if (q.getResultList().size() == 0) {
             return null;
+        }
 
         return (TemplateDocumento) q.getResultList().get(0);
     }

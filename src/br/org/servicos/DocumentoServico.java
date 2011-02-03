@@ -14,98 +14,109 @@ public class DocumentoServico {
 
     EntityManager manager;
 
-    public void save(TemplateDocumento doc) {
-
-    	this.manager = DBManager.openManager();
-        DocumentoDAO docDao = new DocumentoDAO(manager);
-        AtributoDAO attDao = new AtributoDAO(manager);
-        Collection<Atributo> listAtributos = doc.getAtributoCollection();
-        
-        EntityTransaction et = this.manager.getTransaction();
-
-
-        try {
-            et.begin();
-            docDao.save(doc);
-
-            for (Atributo att : listAtributos) {
-                    attDao.save(att);
-            }
-
-            et.commit();
-        }
-        //o documento já existe
-        catch(EntityExistsException ex) {
-
-            //remover todos os atributos vinculados a doc
-            for (Atributo att : listAtributos) {
-                    attDao.delete(att);
-            }
-
-            //salvar documento
-            docDao.update(doc);
-
-            //salvar os atributos do documento apos a criacao deste
-            for (Atributo att : listAtributos) {
-                    attDao.save(att);
-            }
-            et.commit();
-
-        }
-        catch(Exception ex) {
-            System.out.println(ex.getMessage());
-            et.rollback();
-        }
-
-
-
-    }
-
-
     /*public void save(TemplateDocumento doc) {
 
-        DocumentoDAO docDao = new DocumentoDAO(manager);
+    this.manager = DBManager.openManager();
+
+    DocumentoDAO docDao = new DocumentoDAO(manager);
+    AtributoDAO attDao = new AtributoDAO(manager);
+    Collection<Atributo> listAtributos = doc.getAtributoCollection();
+
+    EntityTransaction et = this.manager.getTransaction();
 
 
-        try {
-            this.manager = DBManager.openManager();
-            this.manager.getTransaction().begin();
+    try {
+    et.begin();
+    docDao.save(doc);
+    et.commit();
 
-            
-            docDao.save(doc);
+    for (Atributo att : listAtributos) {
+    attDao.save(att);
+    }
+    }
+    //o documento já existe
+    catch(EntityExistsException ex) {
 
-            this.manager.getTransaction().commit();
-
-        } catch (EntityExistsException excEntityExists) {
-            this.manager.getTransaction().rollback();
-            try {
-                docDao.update(doc);
-                this.manager.getTransaction().commit();
-            } catch (Exception excpt) {
-                this.manager.getTransaction().rollback();
-            }
-        }
-    }*/
-
-    public void update(TemplateDocumento doc) {
-
-        try {
-
-            this.manager = DBManager.openManager();
-            this.manager.getTransaction().begin();
-
-
-            DocumentoDAO docDao = new DocumentoDAO(manager);
-            docDao.update(doc);
-
-            this.manager.getTransaction().commit();
-        } catch (Exception excpt) {
-            this.manager.getTransaction().rollback();
-        }
-
-
+    //remover todos os atributos vinculados a doc
+    for (Atributo att : listAtributos) {
+    attDao.delete(att);
     }
 
+    //salvar documento
+    docDao.update(doc);
+
+    //salvar os atributos do documento apos a criacao deste
+    for (Atributo att : listAtributos) {
+    attDao.save(att);
+    }
+    et.commit();
+
+    }
+    catch(Exception ex) {
+    System.out.println(ex.getMessage());
+    et.rollback();
+    }
+
+
+
+    } */
+    public void save(TemplateDocumento doc) {
+
+        this.manager = DBManager.openManager();
+
+        DocumentoDAO docDao = new DocumentoDAO(manager);
+        AtributoDAO attDao = new AtributoDAO(manager);
+
+        EntityTransaction et = this.manager.getTransaction();
+        try {
+            et.begin();
+
+            TemplateDocumento docObtido = docDao.getByName(doc.getNome());
+
+            if (docObtido == null) {
+                docDao.save(doc);
+            } else {
+
+                docObtido.setArquivoXsd(doc.getArquivoXsd());
+                docObtido.setDirecao(doc.getDirecao());
+                docObtido.setRegraCollection(doc.getRegraCollection());
+                docObtido.setTipoFisico(doc.getTipoFisico());
+
+                for (Atributo att : docObtido.getAtributoCollection()) {
+                    attDao.delete(att);
+                }
+                for (Atributo att : doc.getAtributoCollection()) {
+                    attDao.save(att);
+                }
+
+                docObtido.setAtributoCollection(doc.getAtributoCollection());
+            }
+
+            et.commit();
+        } catch (Exception ex) {
+            et.rollback();
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    /*public void update(TemplateDocumento doc) {
+
+    try {
+
+    this.manager = DBManager.openManager();
+    this.manager.getTransaction().begin();
+
+
+    DocumentoDAO docDao = new DocumentoDAO(manager);
+    docDao.update(doc);
+
+    this.manager.getTransaction().commit();
+    } catch (Exception excpt) {
+    this.manager.getTransaction().rollback();
+    }
+
+
+    }*/
     public void delete(String docName) {
 
         try {
