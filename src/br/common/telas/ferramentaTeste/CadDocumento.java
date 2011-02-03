@@ -209,7 +209,7 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
          jFramePrincipal.disablePanels();
         //jFramePrincipal.setVisible(false);
     }//GEN-LAST:event_jButtonSairActionPerformed
-  
+  /*
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
        
        if (validarCampos() < 0)
@@ -271,6 +271,47 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
 
        jFramePrincipal.atualizarCampos(entidadeDocumento);       
     }//GEN-LAST:event_jButtonSalvarActionPerformed
+*/
+    private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {
+
+       if (validarCampos() < 0)
+            return;
+
+       boolean isNewDocument = true;
+       DocumentoServico docServico = new DocumentoServico();
+       TemplateDocumento doc = docServico.getByName(jTextFieldNome.getText());
+       
+       //caso já exista um documento um documento
+       if (doc != null) {
+           isNewDocument = false;
+           if (JOptionPane.YES_OPTION !=
+                   JOptionPane.showConfirmDialog(this,"Documento " + jTextFieldNome.getText() + " já existe. Deseja sobrescrevê-lo?","Sobrescrever entidade",2))
+               return;
+       }
+
+
+       doc = new TemplateDocumento();
+       doc.setNome(jTextFieldNome.getText());
+       doc.setDirecao((String)jComboBoxTipo.getSelectedItem());
+       doc.setArquivoXsd(jTextFieldClasseValidacao.getText());
+       doc.setTipoFisico((String)jComboBoxTipoFisico.getSelectedItem());
+       popularGridAtributo(doc);
+
+
+       docServico.save(doc);
+
+       //se foi insercao de documento;
+       if (isNewDocument) {
+           jFramePrincipal.addNode(jTextFieldNome.getText());
+           JOptionPane.showMessageDialog(this,"Documento " + jTextFieldNome.getText() + " criado");
+       }
+       else {
+           JOptionPane.showMessageDialog(this,"Documento " + jTextFieldNome.getText() + " atualizado");
+       }
+
+
+       jFramePrincipal.atualizarCampos(entidadeDocumento);
+    }
 
     private void jButtonRegrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegrasActionPerformed
          if (currentRegras == null) {
