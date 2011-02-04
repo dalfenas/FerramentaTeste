@@ -96,9 +96,8 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
             } else {
 
                 ceObtida.setComentario(ce.getComentario());
-                ceObtida.setHeranca(ce.getHeranca());
-
-                //ceObtida.setTipo(ce.getTipo());
+                //ceObtida.setHeranca(ce.getHeranca());
+                ceObtida.setTipo(ce.getTipo());
 
                 ValorDAO valorDAO = new ValorDAO(manager);
                 for(Valor valor : ceObtida.getValorCollection()) {
