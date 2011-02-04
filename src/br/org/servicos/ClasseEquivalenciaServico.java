@@ -2,7 +2,9 @@ package br.org.servicos;
 
 import br.org.dao.ClasseEquivalenciaDAO;
 import br.org.dao.ValorDAO;
+import br.org.fdte.dao.TipoClasseEquivalenciaDAO;
 import br.org.fdte.persistence.ClasseEquivalencia;
+import br.org.fdte.persistence.TipoClasseEquivalencia;
 import br.org.fdte.persistence.Valor;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -53,7 +55,7 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
 
     }
 
-    public ClasseEquivalencia getById (int id) {
+    public ClasseEquivalencia getById(int id) {
 
         ClasseEquivalencia ce = null;
 
@@ -76,8 +78,9 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
 
     }
 
+    public boolean save(ClasseEquivalencia ce) {
 
-    public void save(ClasseEquivalencia ce) {
+        boolean isNewCE = false;
 
         try {
 
@@ -85,35 +88,58 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
             this.manager.getTransaction().begin();
 
             ClasseEquivalenciaDAO ceDao = new ClasseEquivalenciaDAO(manager);
-            ceDao.save(ce);
+            ClasseEquivalencia ceObtida = ceDao.getByName(ce.getNome());
 
+            if (ceObtida == null) {
+                ceDao.save(ce);
+                isNewCE = true;
+            } else {
+
+                ceObtida.setComentario(ce.getComentario());
+                ceObtida.setHeranca(ce.getHeranca());
+
+                //ceObtida.setTipo(ce.getTipo());
+
+                ValorDAO valorDAO = new ValorDAO(manager);
+                for(Valor valor : ceObtida.getValorCollection()) {
+                    valorDAO.delete(valor);
+                }
+
+                for(Valor valor : ce.getValorCollection()) {
+                    valor.setIdClasseEquivalencia(ceObtida);
+                    valorDAO.save(valor);
+                }
+               
+            }
             this.manager.getTransaction().commit();
         } catch (Exception excpt) {
-            this.manager.getTransaction().rollback();
-        }
-    }
-
-    public void update(ClasseEquivalencia ce) {
-
-        try {
-
-            this.manager = DBManager.openManager();
-            this.manager.getTransaction().begin();
-
-
-            ClasseEquivalenciaDAO ceDao = new ClasseEquivalenciaDAO(manager);
-            ceDao.update(ce);
-
-            this.manager.getTransaction().commit();
-        } catch (Exception excpt) {
+            System.out.println(excpt.getMessage());
             this.manager.getTransaction().rollback();
         }
 
-
+        return isNewCE;
     }
 
+    /* public void update(ClasseEquivalencia ce) {
+
+    try {
+
+    this.manager = DBManager.openManager();
+    this.manager.getTransaction().begin();
+
+
+    ClasseEquivalenciaDAO ceDao = new ClasseEquivalenciaDAO(manager);
+    ceDao.update(ce);
+
+    this.manager.getTransaction().commit();
+    } catch (Exception excpt) {
+    this.manager.getTransaction().rollback();
+    }
+
+
+    }*/
     public void delete(String nomeCE) {
-       try {
+        try {
 
             this.manager = DBManager.openManager();
             this.manager.getTransaction().begin();

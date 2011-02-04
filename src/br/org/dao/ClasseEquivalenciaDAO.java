@@ -30,24 +30,28 @@ public class ClasseEquivalenciaDAO {
         this.manager.persist(ce);
     }
 
+    public void update(ClasseEquivalencia ce) {
+        this.manager.merge(ce);
+    }
+
     public ClasseEquivalencia getByName(String nomeCE) {
 
         Query q = this.manager.createNamedQuery("ClasseEquivalencia.findByNome");
         q.setParameter("nome", nomeCE);
 
+        if (q.getResultList().isEmpty()) {
+            return null;
+        }
+
         return (ClasseEquivalencia) q.getResultList().get(0);
     }
 
-    public ClasseEquivalencia getById (int id) {
+    public ClasseEquivalencia getById(int id) {
         Query q = this.manager.createNamedQuery("ClasseEquivalencia.findById");
         q.setParameter("id", id);
 
-       return (ClasseEquivalencia) q.getResultList().get(0);
+        return (ClasseEquivalencia) q.getResultList().get(0);
 
-    }
-
-    public void update(ClasseEquivalencia ce) {
-        this.manager.merge(ce);
     }
 
     public void delete(ClasseEquivalencia ce) {

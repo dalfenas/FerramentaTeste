@@ -14,53 +14,10 @@ public class DocumentoServico {
 
     EntityManager manager;
 
-    /*public void save(TemplateDocumento doc) {
 
-    this.manager = DBManager.openManager();
+    public boolean save(TemplateDocumento doc) {
 
-    DocumentoDAO docDao = new DocumentoDAO(manager);
-    AtributoDAO attDao = new AtributoDAO(manager);
-    Collection<Atributo> listAtributos = doc.getAtributoCollection();
-
-    EntityTransaction et = this.manager.getTransaction();
-
-
-    try {
-    et.begin();
-    docDao.save(doc);
-    et.commit();
-
-    for (Atributo att : listAtributos) {
-    attDao.save(att);
-    }
-    }
-    //o documento já existe
-    catch(EntityExistsException ex) {
-
-    //remover todos os atributos vinculados a doc
-    for (Atributo att : listAtributos) {
-    attDao.delete(att);
-    }
-
-    //salvar documento
-    docDao.update(doc);
-
-    //salvar os atributos do documento apos a criacao deste
-    for (Atributo att : listAtributos) {
-    attDao.save(att);
-    }
-    et.commit();
-
-    }
-    catch(Exception ex) {
-    System.out.println(ex.getMessage());
-    et.rollback();
-    }
-
-
-
-    } */
-    public void save(TemplateDocumento doc) {
+        boolean isNewDocument = false;
 
         this.manager = DBManager.openManager();
 
@@ -75,6 +32,7 @@ public class DocumentoServico {
 
             if (docObtido == null) {
                 docDao.save(doc);
+                isNewDocument = true;
             } else {
 
                 docObtido.setArquivoXsd(doc.getArquivoXsd());
@@ -85,11 +43,53 @@ public class DocumentoServico {
                 for (Atributo att : docObtido.getAtributoCollection()) {
                     attDao.delete(att);
                 }
+
                 for (Atributo att : doc.getAtributoCollection()) {
+                    att.setIdTemplateDocumento(docObtido);
                     attDao.save(att);
                 }
 
                 docObtido.setAtributoCollection(doc.getAtributoCollection());
+               
+            }
+
+            et.commit();
+        } catch (Exception ex) {
+            et.rollback();
+            System.out.println(ex.getMessage());
+        }
+        return isNewDocument;
+    }
+
+    /*public void save(TemplateDocumento doc) {
+
+        this.manager = DBManager.openManager();
+
+        DocumentoDAO docDao = new DocumentoDAO(manager);
+        AtributoDAO attDao = new AtributoDAO(manager);
+
+        EntityTransaction et = this.manager.getTransaction();
+        try {
+            et.begin();
+
+            //se o documento nao existe
+            if (doc.getId() == null)
+                docDao.save(doc);
+            else {
+
+                //for (Atributo att : doc.getAtributoCollection()) {
+                   // attDao.delete(att);
+                //}
+                attDao.deleteAll(doc);
+
+                for (Atributo att : doc.getAtributoCollection()) {
+                    att.setIdTemplateDocumento(doc);
+                    attDao.save(att);
+                }
+
+                doc.setAtributoCollection(doc.getAtributoCollection());
+                docDao.update(doc);
+
             }
 
             et.commit();
@@ -98,6 +98,7 @@ public class DocumentoServico {
             System.out.println(ex.getMessage());
         }
     }
+*/
 
     /*public void update(TemplateDocumento doc) {
 
