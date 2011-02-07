@@ -96,20 +96,24 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
             } else {
 
                 ceObtida.setComentario(ce.getComentario());
-                //ceObtida.setHeranca(ce.getHeranca());
+                ceObtida.setHeranca(ce.getHeranca());
                 ceObtida.setTipo(ce.getTipo());
 
                 ValorDAO valorDAO = new ValorDAO(manager);
-                for(Valor valor : ceObtida.getValorCollection()) {
+                for (Valor valor : ceObtida.getValorCollection()) {
                     valorDAO.delete(valor);
                 }
 
-                for(Valor valor : ce.getValorCollection()) {
+                for (Valor valor : ce.getValorCollection()) {
                     valor.setIdClasseEquivalencia(ceObtida);
                     valorDAO.save(valor);
                 }
-               
+
+                ceObtida.setValorCollection(ce.getValorCollection());
+                ceDao.update(ceObtida);
             }
+
+
             this.manager.getTransaction().commit();
         } catch (Exception excpt) {
             System.out.println(excpt.getMessage());
