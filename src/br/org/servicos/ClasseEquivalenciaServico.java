@@ -90,9 +90,10 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
             ClasseEquivalenciaDAO ceDao = new ClasseEquivalenciaDAO(manager);
             ClasseEquivalencia ceObtida = ceDao.getByName(ce.getNome());
 
-            if (ceObtida == null) {
+            if (ceObtida == null) {                
                 ceDao.save(ce);
                 isNewCE = true;
+
             } else {
 
                 ceObtida.setComentario(ce.getComentario());
@@ -105,6 +106,14 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
                 }
 
                 for (Valor valor : ce.getValorCollection()) {
+                   /* Valor valorNovo = new Valor();
+                    valorNovo.setIdClasseEquivalencia(ceObtida);
+                    valorNovo.setComentario(valor.getComentario());
+                    valorNovo.setValor(valor.getValor());
+                    valorNovo.setOrderId(valor.getOrderId());
+                    valorNovo.setPositivoNegativo(valor.getPositivoNegativo());
+                    valorNovo.setIdClasseEquivalencia(ceObtida);
+                    valorDAO.save(valorNovo);*/
                     valor.setIdClasseEquivalencia(ceObtida);
                     valorDAO.save(valor);
                 }
