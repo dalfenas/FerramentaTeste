@@ -4,7 +4,6 @@ import br.org.fdte.AtualizacaoTela;
 import br.org.fdte.ExecutionTreeNode;
 import br.org.fdte.MyRenderer;
 
-import br.org.fdte.dao.AtributoDAO;
 import java.awt.event.ActionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -17,14 +16,11 @@ import br.org.fdte.persistence.ClasseEquivalencia;
 import br.org.fdte.persistence.CaracterizacaoTesteValidacao;
 import br.org.fdte.persistence.SuiteTesteValidacao;
 import br.org.fdte.dao.CaracterizacaoTstValidacaoDAO;
-//import br.org.fdte.dao.ClasseEquivalenciaDAO;
-//import br.org.fdte.dao.DocumentoDAO;
 import br.org.fdte.dao.EspecificoDAO;
 import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
 import br.org.fdte.dao.RegraDAO;
 import br.org.fdte.dao.SuiteTesteValidacaoDAO;
 import br.org.fdte.dao.SuiteValCarTstValDAO;
-import br.org.fdte.dao.ValorDAO;
 import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.Especificos;
 import br.org.fdte.persistence.ExecucaoTesteValidacao;
@@ -545,8 +541,8 @@ public class JFramePrincipal extends javax.swing.JFrame
                     new ClasseEquivalenciaServico().delete(selNode.getUserObject().toString());
                     break;
                 case DOCUMENTO:
-                   // retorno = DocumentoDAO.delete(selNode.getUserObject().toString());
-                     new DocumentoServico().delete(selNode.getUserObject().toString());
+                    // retorno = DocumentoDAO.delete(selNode.getUserObject().toString());
+                    new DocumentoServico().delete(selNode.getUserObject().toString());
                     break;
                 case TESTE_VALIDACAO:
                     retorno = CaracterizacaoTstValidacaoDAO.delete(selNode.getUserObject().toString());
@@ -689,7 +685,7 @@ public class JFramePrincipal extends javax.swing.JFrame
                 entidadeAtualizada = AtualizacaoTela.entidadeClasseEquivalencia;
                 break;
             case DOCUMENTO:
-               // retorno = copiarTemplateDocumento(selNode.getUserObject().toString(), nomeNovo);
+                // retorno = copiarTemplateDocumento(selNode.getUserObject().toString(), nomeNovo);
                 copiarTemplateDocumento(selNode.getUserObject().toString(), nomeNovo);
                 entidadeAtualizada = AtualizacaoTela.entidadeDocumento;
                 break;
@@ -729,7 +725,7 @@ public class JFramePrincipal extends javax.swing.JFrame
 
         switch (Entidade.values()[nPai]) {
             case CLASSE_EQUIVALENCIA:
-                ClasseEquivalenciaServico ceServico = new ClasseEquivalenciaServico();               
+                ClasseEquivalenciaServico ceServico = new ClasseEquivalenciaServico();
                 if (null != ceServico.getByName(nomeNovo)) {
                     JOptionPane.showMessageDialog(this, "Classe de Equivalencia " + nomeNovo + " já existe.");
                     return;
@@ -745,10 +741,10 @@ public class JFramePrincipal extends javax.swing.JFrame
                     JOptionPane.showMessageDialog(this, "Documento " + nomeNovo + " já existe.");
                     return;
                 }
-                
+
                 TemplateDocumento doc = new DocumentoServico().getByName(selNode.getUserObject().toString());
                 doc.setNome(nomeNovo);
-                
+
                 new DocumentoServico().save(doc);
                 entidadeAtualizada = AtualizacaoTela.entidadeDocumento;
                 break;
@@ -798,7 +794,6 @@ public class JFramePrincipal extends javax.swing.JFrame
             }
         }
 
-        //ClasseEquivalencia ce = ClasseEquivalenciaDAO.getClasseEquivalencia(nomeNo);
         ClasseEquivalencia ce = ceServico.getByName(nomeNo);
         ClasseEquivalencia ceCopia = new ClasseEquivalencia();
         ceCopia.setAtributoCollection(ce.getAtributoCollection());
@@ -807,9 +802,6 @@ public class JFramePrincipal extends javax.swing.JFrame
         ceCopia.setHeranca(ce.getHeranca());
         ceCopia.setNome(novoNome);
         ceCopia.setTipo(ce.getTipo());
-        //ceCopia.setValorCollection(ce.getValorCollection());
-        ceServico.save(ceCopia);
-
 
         Collection<Valor> novosValores = new LinkedList<Valor>();
         Iterator it = ce.getValorCollection().iterator();
@@ -821,15 +813,12 @@ public class JFramePrincipal extends javax.swing.JFrame
             valor.setPositivoNegativo(valorSalvo.getPositivoNegativo());
             valor.setValor(valorSalvo.getValor());
             valor.setOrderId(valorSalvo.getOrderId());
-           // ValorDAO.save(valor);
             novosValores.add(valor);
         }
 
 
         ceCopia.setValorCollection(novosValores);
         ceServico.save(ceCopia);
-
-        
     }
 
     //private int copiarTemplateDocumento(String nomeNo, String novoNome) {
@@ -839,24 +828,24 @@ public class JFramePrincipal extends javax.swing.JFrame
         if (null != new DocumentoServico().getByName(novoNome)) {
             if (JOptionPane.YES_OPTION
                     != JOptionPane.showConfirmDialog(this, "Documento " + novoNome + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
-               // return -1;
+                // return -1;
             }
         }
 
-       // TemplateDocumento doc = DocumentoDAO.getDocumento(nomeNo);
-         TemplateDocumento doc = new DocumentoServico().getByName(nomeNo);
+
+        TemplateDocumento doc = new DocumentoServico().getByName(nomeNo);
 
         TemplateDocumento docCopia = new TemplateDocumento();
         docCopia.setArquivoXsd(doc.getArquivoXsd());
         docCopia.setDirecao(doc.getDirecao());
         docCopia.setNome(novoNome);
         docCopia.setTipoFisico(doc.getTipoFisico());
-       
 
-        //int retorno = DocumentoDAO.save(docCopia);
+
         DocumentoServico docServico = new DocumentoServico();
-        docServico.save(docCopia);
 
+
+        Collection<Atributo> novosAtributos = new LinkedList<Atributo>();
         Iterator itAtributo = doc.getAtributoCollection().iterator();
         while (itAtributo.hasNext()) {
             Atributo atributoLido = (Atributo) itAtributo.next();
@@ -867,11 +856,11 @@ public class JFramePrincipal extends javax.swing.JFrame
             atributo.setOpcional(atributoLido.getOpcional());
             atributo.setTag(atributoLido.getTag());
             atributo.setOrderId(atributoLido.getOrderId());
-
-            AtributoDAO.save(atributo);
+            novosAtributos.add(atributo);
+            //AtributoDAO.save(atributo);
         }
-        docCopia.setAtributoCollection(doc.getAtributoCollection());
-        
+        docCopia.setAtributoCollection(novosAtributos);
+
 
         Iterator itRegras = doc.getRegraCollection().iterator();
         while (itRegras.hasNext()) {
@@ -891,6 +880,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
 
         docCopia.setRegraCollection(doc.getRegraCollection());
+        docServico.save(docCopia);
 
     }
 

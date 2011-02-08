@@ -177,14 +177,10 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
         TipoClasseEquivalencia tipoCe =
                 TipoClasseEquivalenciaDAO.getTipoClasseEquivalencia((String) jComboBoxTipo.getSelectedItem());
 
-        /*TipoClasseEquivalencia tipoCeNovo = new TipoClasseEquivalencia();
-        tipoCeNovo.setTipoClasseEquivalencia((String)jComboBoxTipo.getSelectedItem());*/
-        
         ClasseEquivalenciaServico servicoClasseEq = new ClasseEquivalenciaServico();
         ClasseEquivalencia ce = new ClasseEquivalencia();
         ce.setNome(jTextFieldNome.getText());
-        ce.setTipo(tipoCe);
-        //ce.setTipo(tipoCeNovo);
+        ce.setTipo(tipoCe);        
         popularGridValores(ce);
 
         boolean isNewDocument  = servicoClasseEq.save(ce);

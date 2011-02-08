@@ -4,9 +4,7 @@ import br.org.dao.AtributoDAO;
 import br.org.dao.DocumentoDAO;
 import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.TemplateDocumento;
-import java.util.Collection;
 import java.util.List;
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
