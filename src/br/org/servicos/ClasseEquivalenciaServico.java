@@ -104,7 +104,11 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
                     valorDAO.delete(valor);
                 }
 
+<<<<<<< HEAD
                 for(Valor valor : ce.getValorCollection()) {
+=======
+                for (Valor valor : ce.getValorCollection()) {
+>>>>>>> parent of deaf86f... correcao da copia de uma classe de equivalencia
                     valor.setIdClasseEquivalencia(ceObtida);
                     valorDAO.save(valor);
                 }
