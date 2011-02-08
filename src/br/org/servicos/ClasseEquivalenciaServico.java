@@ -90,30 +90,47 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
             ClasseEquivalenciaDAO ceDao = new ClasseEquivalenciaDAO(manager);
             ClasseEquivalencia ceObtida = ceDao.getByName(ce.getNome());
 
-            if (ceObtida == null) {
+            if (ceObtida == null) {                
                 ceDao.save(ce);
                 isNewCE = true;
+
             } else {
 
                 ceObtida.setComentario(ce.getComentario());
-                //ceObtida.setHeranca(ce.getHeranca());
+                ceObtida.setHeranca(ce.getHeranca());
                 ceObtida.setTipo(ce.getTipo());
 
                 ValorDAO valorDAO = new ValorDAO(manager);
-                for(Valor valor : ceObtida.getValorCollection()) {
+                for (Valor valor : ceObtida.getValorCollection()) {
                     valorDAO.delete(valor);
                 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                 for(Valor valor : ce.getValorCollection()) {
 =======
                 for (Valor valor : ce.getValorCollection()) {
 >>>>>>> parent of deaf86f... correcao da copia de uma classe de equivalencia
+=======
+                for (Valor valor : ce.getValorCollection()) {
+                   /* Valor valorNovo = new Valor();
+                    valorNovo.setIdClasseEquivalencia(ceObtida);
+                    valorNovo.setComentario(valor.getComentario());
+                    valorNovo.setValor(valor.getValor());
+                    valorNovo.setOrderId(valor.getOrderId());
+                    valorNovo.setPositivoNegativo(valor.getPositivoNegativo());
+                    valorNovo.setIdClasseEquivalencia(ceObtida);
+                    valorDAO.save(valorNovo);*/
+>>>>>>> deaf86f9268149ee3d12661d1008799f592b63e9
                     valor.setIdClasseEquivalencia(ceObtida);
                     valorDAO.save(valor);
                 }
-               
+
+                ceObtida.setValorCollection(ce.getValorCollection());
+                ceDao.update(ceObtida);
             }
+
+
             this.manager.getTransaction().commit();
         } catch (Exception excpt) {
             System.out.println(excpt.getMessage());

@@ -35,7 +35,9 @@ import br.org.servicos.ClasseEquivalenciaServico;
 import br.org.servicos.DocumentoServico;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import javax.persistence.RollbackException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -806,9 +808,10 @@ public class JFramePrincipal extends javax.swing.JFrame
         ceCopia.setNome(novoNome);
         ceCopia.setTipo(ce.getTipo());
         //ceCopia.setValorCollection(ce.getValorCollection());
-
-        //int retorno = ClasseEquivalenciaDAO.save(ceCopia);
         ceServico.save(ceCopia);
+
+
+        Collection<Valor> novosValores = new LinkedList<Valor>();
         Iterator it = ce.getValorCollection().iterator();
         while (it.hasNext()) {
             Valor valorSalvo = (Valor) it.next();
@@ -818,12 +821,15 @@ public class JFramePrincipal extends javax.swing.JFrame
             valor.setPositivoNegativo(valorSalvo.getPositivoNegativo());
             valor.setValor(valorSalvo.getValor());
             valor.setOrderId(valorSalvo.getOrderId());
-            ValorDAO.save(valor);
+           // ValorDAO.save(valor);
+            novosValores.add(valor);
         }
-        ceCopia.setValorCollection(ce.getValorCollection());
+
+
+        ceCopia.setValorCollection(novosValores);
         ceServico.save(ceCopia);
 
-        //return retorno;
+        
     }
 
     //private int copiarTemplateDocumento(String nomeNo, String novoNome) {
