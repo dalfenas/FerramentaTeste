@@ -185,7 +185,6 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
 
         boolean isNewDocument  = servicoClasseEq.save(ce);
 
-
         //se foi insercao;
        if (isNewDocument) {
            jFramePrincipal.addNode(jTextFieldNome.getText());

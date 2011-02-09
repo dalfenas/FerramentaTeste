@@ -5,21 +5,22 @@ import br.org.fdte.OGrid;
 import br.org.fdte.ColumnConfiguration;
 import br.org.fdte.ComboBoxClasseEquivalencia;
 import br.org.fdte.OGridTableModel;
-//import br.org.fdte.dao.AtributoDAO;
-//import br.org.fdte.dao.ClasseEquivalenciaDAO;
-//import br.org.fdte.dao.DocumentoDAO;
+
 import java.awt.Font;
 import java.awt.Color;
-import java.util.Vector;
 
 // persistence test
 import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.ClasseEquivalencia;
 import br.org.fdte.persistence.TemplateDocumento;
+
 import br.org.servicos.ClasseEquivalenciaServico;
 import br.org.servicos.DocumentoServico;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
+
 import javax.swing.JOptionPane;
 
 public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela  {

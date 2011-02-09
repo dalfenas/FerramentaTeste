@@ -29,6 +29,7 @@ import br.org.fdte.persistence.SuiteValidacaoTesteValidacao;
 import br.org.fdte.persistence.Valor;
 import br.org.servicos.ClasseEquivalenciaServico;
 import br.org.servicos.DocumentoServico;
+import br.org.servicos.SuiteServico;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -343,7 +344,7 @@ public class JFramePrincipal extends javax.swing.JFrame
                 case SUITE_VALIDACAO:
                     //A cada suite de validacao existente no bd, é adicionado um
                     //no na arvore de suite
-                    List<SuiteTesteValidacao> lstSTV = SuiteTesteValidacaoDAO.getAll();
+                    List<SuiteTesteValidacao> lstSTV = new SuiteServico().getAll();
                     for (SuiteTesteValidacao suiteVal : lstSTV) {
                         DefaultMutableTreeNode nodeSuite = new DefaultMutableTreeNode(suiteVal.getNome());
                         nodeFather.add(nodeSuite);
@@ -480,7 +481,8 @@ public class JFramePrincipal extends javax.swing.JFrame
             if (root.getIndex(parent) == Entidade.SUITE_VALIDACAO.ordinal()) {
                 if (selNode.toString().contains("Grupo")) {
                     //selecionado um grupo de execucoes
-                    SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getParent().toString());
+                    //SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getParent().toString());
+                    SuiteTesteValidacao suite = new SuiteServico().getByName(selNode.getParent().toString());
                     currentExec.setRegistro(suite, selNode.toString());
                     currentExec.setVisible(true);
                     jSplitPane1.setRightComponent(currentExec);
@@ -741,11 +743,11 @@ public class JFramePrincipal extends javax.swing.JFrame
                     JOptionPane.showMessageDialog(this, "Documento " + nomeNovo + " já existe.");
                     return;
                 }
-
-                TemplateDocumento doc = new DocumentoServico().getByName(selNode.getUserObject().toString());
+                DocumentoServico docServico = new DocumentoServico();
+                TemplateDocumento doc = docServico.getByName(selNode.getUserObject().toString());
                 doc.setNome(nomeNovo);
 
-                new DocumentoServico().save(doc);
+                docServico.save(doc);
                 entidadeAtualizada = AtualizacaoTela.entidadeDocumento;
                 break;
             case TESTE_VALIDACAO:
@@ -759,13 +761,14 @@ public class JFramePrincipal extends javax.swing.JFrame
                 entidadeAtualizada = AtualizacaoTela.entidadeTesteValidacao;
                 break;
             case SUITE_VALIDACAO:
-                if (null != SuiteTesteValidacaoDAO.getSuiteTesteValidacao(nomeNovo)) {
+                SuiteServico suiteServico = new SuiteServico();
+                if (null != suiteServico.getByName(nomeNovo)) {
                     JOptionPane.showMessageDialog(this, "Suite de Teste de Validação " + nomeNovo + " já existe.");
                     return;
                 }
-                SuiteTesteValidacao suiteVal = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getUserObject().toString());
+                SuiteTesteValidacao suiteVal = suiteServico.getByName(selNode.getUserObject().toString());
                 suiteVal.setNome(nomeNovo);
-                retorno = SuiteTesteValidacaoDAO.saveById(suiteVal);
+                suiteServico.save(suiteVal,null);
                 entidadeAtualizada = AtualizacaoTela.entidadeSuiteValidacao;
                 break;
             default:

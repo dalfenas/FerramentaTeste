@@ -12,10 +12,12 @@ import br.org.fdte.dao.SuiteSeqCarTstSeqDAO;
 import br.org.fdte.dao.SuiteTesteSequenciaDAO;
 import br.org.fdte.dao.SuiteTesteValidacaoDAO;
 import br.org.fdte.dao.SuiteValCarTstValDAO;
+import br.org.fdte.persistence.CaracterizacaoTesteValidacao;
 import br.org.fdte.persistence.SuiteSequenciaPorCaracterizacaoTesteSequencia;
 import br.org.fdte.persistence.SuiteTesteSequencia;
 import br.org.fdte.persistence.SuiteTesteValidacao;
 import br.org.fdte.persistence.SuiteValidacaoTesteValidacao;
+import br.org.servicos.SuiteServico;
 import java.awt.event.ItemEvent;
 import java.util.List;
 import java.util.Vector;
@@ -24,14 +26,13 @@ import javax.swing.JOptionPane;
 public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela {
 
     private OGrid g;
-
-    private JFramePrincipal jFramePrincipal;   
+    private JFramePrincipal jFramePrincipal;
 
     /** Creates new form CadSuiteTesteValidacao */
     public CadSuiteTeste(JFramePrincipal framePrincipal) {
-        this.jFramePrincipal = framePrincipal;        
-       
-        setBounds(200,0,jFramePrincipal.PANEL_WIDTH,jFramePrincipal.PANEL_HEIGHT);
+        this.jFramePrincipal = framePrincipal;
+
+        setBounds(200, 0, jFramePrincipal.PANEL_WIDTH, jFramePrincipal.PANEL_HEIGHT);
         // OGrid test
         g = new OGrid();
 
@@ -45,10 +46,10 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
         c.setWidth(20);
         g.addColumn(c);
 
-       // ID_TEXT_COMBO
+        // ID_TEXT_COMBO
         c = new ColumnConfiguration();
         c.setTitle("Caso de Teste");
-        c.setFieldType(ColumnConfiguration.FieldType.ID_TEXT_COMBO);      
+        c.setFieldType(ColumnConfiguration.FieldType.ID_TEXT_COMBO);
         c.setcBoxDataSource(new ComboBoxCasoTeste());
         //c.setWidth(200);
         c.setWidth(100);
@@ -60,19 +61,19 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
         c.setWidth(400);
         g.addColumn(c);*/
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("Workflow");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(300);
         g.addColumn(c);
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("TestCase");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(300);
         g.addColumn(c);
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("Results");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(300);
@@ -91,16 +92,16 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
     public void setRegistro(String nome) {
 
         //Limpar registros que estejam no grid de Valores
-        OGridTableModel tableModel = (OGridTableModel)g.getOGridTableModel();
-        int nRow =  tableModel.getRowCount();
-        for (int i = 0; i < nRow; i++)
+        OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
+        int nRow = tableModel.getRowCount();
+        for (int i = 0; i < nRow; i++) {
             tableModel.deleteLine(i);
+        }
 
         if (nome.equalsIgnoreCase("") == true) {
             jComboBoxTipo.setEnabled(true);
             limparRegistro();
-        }
-        else {
+        } else {
             jComboBoxTipo.setEnabled(false);
             popularRegistro(nome);
         }
@@ -111,7 +112,7 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
         ComboBoxCasoTeste cbt = new ComboBoxCasoTeste();
         g.getOGridTableModel().getColumnConfiguration(1).setcBoxDataSource(cbt);
         g.configureTableColumns();
-        
+
     }
 
     /** This method is called from within the constructor to
@@ -175,241 +176,271 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
     }//GEN-LAST:event_jButtonSairActionPerformed
 
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
-         int retorno = 0;
+        /*         int retorno = 0;
 
-         if (jTextFieldName.getText().equals("")) {
-            JOptionPane.showMessageDialog(this,"Escolha um nome");
-            return;
-         }
+        if (jTextFieldName.getText().equals("")) {
+        JOptionPane.showMessageDialog(this,"Escolha um nome");
+        return;
+        }
 
-         if(jComboBoxTipo.getSelectedIndex() == 0) {
-             SuiteTesteValidacao suiteTstVal = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jTextFieldName.getText());
-             if (null == suiteTstVal) {
-                 suiteTstVal = new SuiteTesteValidacao();
-             }
-             else {
-                 if (JOptionPane.YES_OPTION !=
-                    JOptionPane.showConfirmDialog(this,"Suite de Teste de Validação " + jTextFieldName.getText() + " já existe. Deseja sobrescrevê-la?","Sobrescrever entidade",2))
-                 return;
-             }
-             suiteTstVal.setNome(jTextFieldName.getText());
-             retorno = SuiteTesteValidacaoDAO.save(suiteTstVal);
-         }
-         else {
-             SuiteTesteSequencia suiteTstSeq = SuiteTesteSequenciaDAO.getSuiteTesteSequencia(jTextFieldName.getText());
-             if (null == suiteTstSeq) {
-                 suiteTstSeq = new SuiteTesteSequencia();
-             }
-             else {
-                 if (JOptionPane.YES_OPTION !=
-                    JOptionPane.showConfirmDialog(this,"Suite de Teste de Sequência " + jTextFieldName.getText() + " já existe. Deseja sobrescrevê-la?","Sobrescrever entidade",2))
-                 return;
-             }
-             suiteTstSeq.setNome(jTextFieldName.getText());
-             retorno = SuiteTesteSequenciaDAO.save(suiteTstSeq);
-         }
+        if(jComboBoxTipo.getSelectedIndex() == 0) {
+        SuiteTesteValidacao suiteTstVal = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jTextFieldName.getText());
+        if (null == suiteTstVal) {
+        suiteTstVal = new SuiteTesteValidacao();
+        }
+        else {
+        if (JOptionPane.YES_OPTION !=
+        JOptionPane.showConfirmDialog(this,"Suite de Teste de Validação " + jTextFieldName.getText() + " já existe. Deseja sobrescrevê-la?","Sobrescrever entidade",2))
+        return;
+        }
+        suiteTstVal.setNome(jTextFieldName.getText());
+        retorno = SuiteTesteValidacaoDAO.save(suiteTstVal);
+        }
+        else {
+        SuiteTesteSequencia suiteTstSeq = SuiteTesteSequenciaDAO.getSuiteTesteSequencia(jTextFieldName.getText());
+        if (null == suiteTstSeq) {
+        suiteTstSeq = new SuiteTesteSequencia();
+        }
+        else {
+        if (JOptionPane.YES_OPTION !=
+        JOptionPane.showConfirmDialog(this,"Suite de Teste de Sequência " + jTextFieldName.getText() + " já existe. Deseja sobrescrevê-la?","Sobrescrever entidade",2))
+        return;
+        }
+        suiteTstSeq.setNome(jTextFieldName.getText());
+        retorno = SuiteTesteSequenciaDAO.save(suiteTstSeq);
+        }
         
 
         popularGridCasoTeste(jComboBoxTipo.getSelectedIndex(), retorno);
         jFramePrincipal.atualizarCampos(entidadeSuiteValidacao);
 
-         //se foi insercao de suite o retorno é 0;
-         if (retorno == 0)
-             jFramePrincipal.addNode(jTextFieldName.getText());
-         else {
-           JOptionPane.showMessageDialog(this,"Suite de Validação " + jTextFieldName.getText() + " atualizada");
-         }
+        //se foi insercao de suite o retorno é 0;
+        if (retorno == 0)
+        jFramePrincipal.addNode(jTextFieldName.getText());
+        else {
+        JOptionPane.showMessageDialog(this,"Suite de Validação " + jTextFieldName.getText() + " atualizada");
+        }*/
+
+        if (jTextFieldName.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Escolha um nome");
+            return;
+        }
+
+        SuiteServico servicoSuite = new SuiteServico();
+        SuiteTesteValidacao suite = new SuiteTesteValidacao();
+        suite.setNome(jTextFieldName.getText());
+
+        List<SuiteValidacaoTesteValidacao> list = popularGridCasoTeste(suite);
+
+        boolean isNewDocument = servicoSuite.save(suite, list);
+
+        //se foi insercao;
+        if (isNewDocument) {
+            jFramePrincipal.addNode(jTextFieldName.getText());
+            JOptionPane.showMessageDialog(this, "Suite Validacao" + jTextFieldName.getText() + " criada");
+        } else {
+            JOptionPane.showMessageDialog(this, "Suite Validacao " + jTextFieldName.getText() + " atualizada");
+        }
+
+
     }//GEN-LAST:event_jButtonSalvarActionPerformed
- 
+
     private void jComboBoxTipoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTipoItemStateChanged
         // TODO add your handling code here:
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             System.out.println("Item selecionado." + jComboBoxTipo.getSelectedItem());
             int index = jComboBoxTipo.getSelectedIndex();
             if (index == 0 || index == 1) {
-               OGridTableModel tableModel = (OGridTableModel)g.getOGridTableModel();
+                OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
                 ColumnConfiguration c = tableModel.getColumnConfiguration(1);
                 //c.setcBoxDataSource(null);
                 switch (index) {
                     case 0:
-                       c.setcBoxDataSource(new ComboBoxCasoTeste());
-                    break;
+                        c.setcBoxDataSource(new ComboBoxCasoTeste());
+                        break;
                     case 1:
-                       c.setcBoxDataSource(new ComboBoxCasoTesteSeq());
-                    break;
+                        c.setcBoxDataSource(new ComboBoxCasoTesteSeq());
+                        break;
                 }
-               g.configureTableColumns();
+                g.configureTableColumns();
             }
-        } 
+        }
     }//GEN-LAST:event_jComboBoxTipoItemStateChanged
- 
+
     private void popularRegistro(String nome) {
 
-      SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(nome);
-      SuiteTesteSequencia suiteSeq = null;
+        SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(nome);
+        SuiteTesteSequencia suiteSeq = null;
 
-      //eh uma suite de sequencia
-      if (suite == null)
-          suiteSeq = SuiteTesteSequenciaDAO.getSuiteTesteSequencia(nome);
-      //eh uma suite de validacao
-      if (suite != null) {          
-          List<SuiteValidacaoTesteValidacao> listSVCTV = SuiteValCarTstValDAO.getSuiteVal(suite.getId());
-         
-          jTextFieldName.setText(suite.getNome());
-          jTextFieldName.setEditable(false);
-          jComboBoxTipo.setSelectedItem("validação");
+        //eh uma suite de sequencia
+        if (suite == null) {
+            suiteSeq = SuiteTesteSequenciaDAO.getSuiteTesteSequencia(nome);
+        }
+        //eh uma suite de validacao
+        if (suite != null) {
+            List<SuiteValidacaoTesteValidacao> listSVCTV = SuiteValCarTstValDAO.getSuiteVal(suite.getId());
 
-          Vector <Object> vectorCasoTeste = null;
-          Vector <Vector> vector = new Vector();
+            jTextFieldName.setText(suite.getNome());
+            jTextFieldName.setEditable(false);
+            jComboBoxTipo.setSelectedItem("validação");
 
-          for (SuiteValidacaoTesteValidacao svctv : listSVCTV) {
-               vectorCasoTeste = new Vector();
-               vectorCasoTeste.add(svctv.getOrderId());
-               vectorCasoTeste.add(svctv.getCaracterizacaoTesteValidacao().getId());               
-               vectorCasoTeste.add(svctv.getWorkflow());
-               vectorCasoTeste.add(svctv.getTestCase());
-               vectorCasoTeste.add(svctv.getResult());
+            Vector<Object> vectorCasoTeste = null;
+            Vector<Vector> vector = new Vector();
 
-               vector.addElement(vectorCasoTeste);
-          }
-          g.fillGrid(vector);
-          //g.render();
-           
-      }
-      else {
-          if (suiteSeq != null) {
-              List<SuiteSequenciaPorCaracterizacaoTesteSequencia> listSSCTS = SuiteSeqCarTstSeqDAO.getSuiteSeq(suiteSeq.getId());
+            for (SuiteValidacaoTesteValidacao svctv : listSVCTV) {
+                vectorCasoTeste = new Vector();
+                vectorCasoTeste.add(svctv.getOrderId());
+                vectorCasoTeste.add(svctv.getCaracterizacaoTesteValidacao().getId());
+                vectorCasoTeste.add(svctv.getWorkflow());
+                vectorCasoTeste.add(svctv.getTestCase());
+                vectorCasoTeste.add(svctv.getResult());
 
-              jTextFieldName.setText(suiteSeq.getNome());
-              jTextFieldName.setEditable(false);
-              jComboBoxTipo.setSelectedItem("sequencia");
+                vector.addElement(vectorCasoTeste);
+            }
+            g.fillGrid(vector);
+            //g.render();
 
-              Vector <Object> vectorCasoTeste = null;
-              Vector <Vector> vector = new Vector();
+        } else {
+            if (suiteSeq != null) {
+                List<SuiteSequenciaPorCaracterizacaoTesteSequencia> listSSCTS = SuiteSeqCarTstSeqDAO.getSuiteSeq(suiteSeq.getId());
 
-              for (SuiteSequenciaPorCaracterizacaoTesteSequencia sscts : listSSCTS) {
-                   vectorCasoTeste = new Vector();
-                   vectorCasoTeste.add(sscts.getOrderId());
-                   vectorCasoTeste.add(sscts.getCaracterizacaoTesteSequencia().getId());
-                   vectorCasoTeste.add(sscts.getCaracterizacaoTesteSequencia().getComentario());                   
-                   vector.addElement(vectorCasoTeste);
-               }
-               g.fillGrid(vector);
-              // g.render();
-           }          
-      }
+                jTextFieldName.setText(suiteSeq.getNome());
+                jTextFieldName.setEditable(false);
+                jComboBoxTipo.setSelectedItem("sequencia");
+
+                Vector<Object> vectorCasoTeste = null;
+                Vector<Vector> vector = new Vector();
+
+                for (SuiteSequenciaPorCaracterizacaoTesteSequencia sscts : listSSCTS) {
+                    vectorCasoTeste = new Vector();
+                    vectorCasoTeste.add(sscts.getOrderId());
+                    vectorCasoTeste.add(sscts.getCaracterizacaoTesteSequencia().getId());
+                    vectorCasoTeste.add(sscts.getCaracterizacaoTesteSequencia().getComentario());
+                    vector.addElement(vectorCasoTeste);
+                }
+                g.fillGrid(vector);
+                // g.render();
+            }
+        }
     }
 
     private void popularGridCasoTeste(int index, int retorno) {
 
-        if (index == 0)  {
-        //em relação ao grid de caso de teste
-         switch (retorno) {
-          //insercao de suite
-            case 0:
-                //adicionar os dados do grid de casos de teste
-                popularGridCasoTeste(SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jTextFieldName.getText()));
-            break;
-            //update de suite de teste
-            case 1:
-                //primeiro remove os dados do grid de casos de teste relacionados a esta suite
-                SuiteValCarTstValDAO.delete(SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jTextFieldName.getText()));
-                //adiciona os dados do grid de valores
-                popularGridCasoTeste(SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jTextFieldName.getText()));
-            break;
-         }
+        if (index == 0) {
+            //em relação ao grid de caso de teste
+            switch (retorno) {
+                //insercao de suite
+                case 0:
+                    //adicionar os dados do grid de casos de teste
+                    popularGridCasoTeste(SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jTextFieldName.getText()));
+                    break;
+                //update de suite de teste
+                case 1:
+                    //primeiro remove os dados do grid de casos de teste relacionados a esta suite
+                    SuiteValCarTstValDAO.delete(SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jTextFieldName.getText()));
+                    //adiciona os dados do grid de valores
+                    popularGridCasoTeste(SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jTextFieldName.getText()));
+                    break;
+            }
         }
-        if (index == 1)  {
-        //em relação ao grid de caso de teste
-         switch (retorno) {
-          //insercao de suite
-            case 0:
-                //adicionar os dados do grid de casos de teste
-                popularGridCasoTeste(SuiteTesteSequenciaDAO.getSuiteTesteSequencia(jTextFieldName.getText()));
-            break;
-            //update de suite de teste
-            case 1:
-                //primeiro remove os dados do grid de casos de teste relacionados a esta suite
-                SuiteSeqCarTstSeqDAO.delete(SuiteTesteSequenciaDAO.getSuiteTesteSequencia(jTextFieldName.getText()));
-                //adiciona os dados do grid de valores
-                popularGridCasoTeste(SuiteTesteSequenciaDAO.getSuiteTesteSequencia(jTextFieldName.getText()));
-            break;
-         }
+        if (index == 1) {
+            //em relação ao grid de caso de teste
+            switch (retorno) {
+                //insercao de suite
+                case 0:
+                    //adicionar os dados do grid de casos de teste
+                    popularGridCasoTeste(SuiteTesteSequenciaDAO.getSuiteTesteSequencia(jTextFieldName.getText()));
+                    break;
+                //update de suite de teste
+                case 1:
+                    //primeiro remove os dados do grid de casos de teste relacionados a esta suite
+                    SuiteSeqCarTstSeqDAO.delete(SuiteTesteSequenciaDAO.getSuiteTesteSequencia(jTextFieldName.getText()));
+                    //adiciona os dados do grid de valores
+                    popularGridCasoTeste(SuiteTesteSequenciaDAO.getSuiteTesteSequencia(jTextFieldName.getText()));
+                    break;
+            }
         }
 
     }
 
-    private void popularGridCasoTeste(SuiteTesteValidacao suite) {
+    private List<SuiteValidacaoTesteValidacao> popularGridCasoTeste(SuiteTesteValidacao suite) {
 
-       Vector<SuiteValidacaoTesteValidacao> vectorSuiteValTstVal = new Vector();
-       Vector<Vector> dataGrid = g.getGridData();
-       Vector <Object> vector = new Vector(5);
+
+        Vector<SuiteValidacaoTesteValidacao> vectorSuiteValTstVal = new Vector();
+        Vector<Vector> dataGrid = g.getGridData();
+        Vector<Object> vector = new Vector(5);
 
         for (int index = 0; index < dataGrid.size(); index++) {
 
             SuiteValidacaoTesteValidacao svct = new SuiteValidacaoTesteValidacao();
             vector.clear();
 
-            for(int i = 0; i < 5; i++) {
+            for (int i = 0; i < 5; i++) {
                 vector.add(i, null);
             }
 
-            for (int indexC = 0; indexC < dataGrid.get(index).size(); indexC++){
-                vector.set(indexC,dataGrid.get(index).get(indexC));
+            for (int indexC = 0; indexC < dataGrid.get(index).size(); indexC++) {
+                vector.set(indexC, dataGrid.get(index).get(indexC));
             }
 
-            if (vector.get(0) != null)
+            if (vector.get(0) != null) {
                 svct.setOrderId(Long.parseLong(vector.get(0).toString()));
-            if (vector.get(1) != null)
-                svct.setCaracterizacaoTesteValidacao(CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(((Long)vector.get(1)).intValue()));
-            if (vector.get(2) != null)
+            }
+            if (vector.get(1) != null) {
+                CaracterizacaoTesteValidacao caractVal = new CaracterizacaoTesteValidacao((Long) vector.get(1));
+                svct.setCaracterizacaoTesteValidacao(caractVal);
+                // svct.setCaracterizacaoTesteValidacao(CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(((Long)vector.get(1)).intValue()));
+            }
+            if (vector.get(2) != null) {
                 svct.setWorkflow(vector.get(2).toString());
-            if (vector.get(3) != null)
+            }
+            if (vector.get(3) != null) {
                 svct.setTestCase(vector.get(3).toString());
-            if (vector.get(4) != null)
+            }
+            if (vector.get(4) != null) {
                 svct.setResult(vector.get(4).toString());
-
-            svct.setSuiteTesteValidacao(SuiteTesteValidacaoDAO.getSuiteTesteValidacao(suite.getId().intValue()));
+            }
 
             vectorSuiteValTstVal.add(svct);
         }
 
-        for (int i = 0; i<vectorSuiteValTstVal.size(); i++) {
-            SuiteValCarTstValDAO.save(vectorSuiteValTstVal.get(i));
-        }
+        return vectorSuiteValTstVal;
+
     }
 
     private void popularGridCasoTeste(SuiteTesteSequencia suite) {
 
-       Vector<SuiteSequenciaPorCaracterizacaoTesteSequencia> vectorSuiteTstSeq = new Vector();
-       Vector<Vector> dataGrid = g.getGridData();
-       Vector <Object> vector = new Vector(3);
+        Vector<SuiteSequenciaPorCaracterizacaoTesteSequencia> vectorSuiteTstSeq = new Vector();
+        Vector<Vector> dataGrid = g.getGridData();
+        Vector<Object> vector = new Vector(3);
 
 
         for (int index = 0; index < dataGrid.size(); index++) {
 
             SuiteSequenciaPorCaracterizacaoTesteSequencia svct = new SuiteSequenciaPorCaracterizacaoTesteSequencia();
             vector.clear();
-            for(int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++) {
                 vector.add(i, null);
             }
 
-            for (int indexC = 0; indexC < dataGrid.get(index).size(); indexC++){
-                vector.set(indexC,dataGrid.get(index).get(indexC));
+            for (int indexC = 0; indexC < dataGrid.get(index).size(); indexC++) {
+                vector.set(indexC, dataGrid.get(index).get(indexC));
             }
 
-            if (vector.get(0) != null)
+            if (vector.get(0) != null) {
                 svct.setOrderId(Long.parseLong(vector.get(0).toString()));
+            }
 
-            if (vector.get(1) != null)
-                svct.setCaracterizacaoTesteSequencia(CaracterizacaoTstSequenciaDAO.getCaracterizacaoTesteSequencia(((Long)vector.get(1)).intValue()));
+            if (vector.get(1) != null) {
+                svct.setCaracterizacaoTesteSequencia(CaracterizacaoTstSequenciaDAO.getCaracterizacaoTesteSequencia(((Long) vector.get(1)).intValue()));
+            }
 
             svct.setSuiteTesteSequencia(SuiteTesteSequenciaDAO.getSuiteTesteSequencia(suite.getId().intValue()));
 
             vectorSuiteTstSeq.add(svct);
         }
 
-        for (int i = 0; i<vectorSuiteTstSeq.size(); i++) {
+        for (int i = 0; i < vectorSuiteTstSeq.size(); i++) {
             SuiteSeqCarTstSeqDAO.save(vectorSuiteTstSeq.get(i));
         }
     }
@@ -420,12 +451,11 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
         jComboBoxTipo.setSelectedIndex(0);
     }
 
-    private void initCombos() {       
+    private void initCombos() {
         jComboBoxTipo.removeAllItems();
-        jComboBoxTipo.addItem("validação");              
+        jComboBoxTipo.addItem("validação");
         jComboBoxTipo.addItem("sequencia");
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonSair;
     private javax.swing.JButton jButtonSalvar;
@@ -434,5 +464,4 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
     private javax.swing.JLabel jlblTipo;
     private javax.swing.JLabel lblNome;
     // End of variables declaration//GEN-END:variables
-
 }

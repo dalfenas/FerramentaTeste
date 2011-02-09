@@ -105,15 +105,7 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
                     valorDAO.delete(valor);
                 }
 
-               for (Valor valor : ce.getValorCollection()) {
-                   /* Valor valorNovo = new Valor();
-                    valorNovo.setIdClasseEquivalencia(ceObtida);
-                    valorNovo.setComentario(valor.getComentario());
-                    valorNovo.setValor(valor.getValor());
-                    valorNovo.setOrderId(valor.getOrderId());
-                    valorNovo.setPositivoNegativo(valor.getPositivoNegativo());
-                    valorNovo.setIdClasseEquivalencia(ceObtida);
-                    valorDAO.save(valorNovo);*/
+               for (Valor valor : ce.getValorCollection()) {                
                     valor.setIdClasseEquivalencia(ceObtida);
                     valorDAO.save(valor);
                 }

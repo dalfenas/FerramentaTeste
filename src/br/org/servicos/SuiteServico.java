@@ -1,6 +1,7 @@
 package br.org.servicos;
 
 import br.org.dao.SuiteDAO;
+
 import br.org.dao.SuiteValidacaoTesteValidacaoDAO;
 import br.org.fdte.persistence.SuiteTesteValidacao;
 import br.org.fdte.persistence.SuiteValidacaoTesteValidacao;
@@ -32,44 +33,70 @@ public class SuiteServico {
 
     }
 
-    public void save(SuiteTesteValidacao suite, List<SuiteValidacaoTesteValidacao> list) {
+    public boolean save(SuiteTesteValidacao suite, List<SuiteValidacaoTesteValidacao> list) {
+
+        boolean isNewSuite = false;
 
         try {
             this.manager = DBManager.openManager();
             this.manager.getTransaction().begin();
 
             SuiteDAO suiteDao = new SuiteDAO(manager);
-            suiteDao.save(suite);
+            SuiteValidacaoTesteValidacaoDAO suiteValTesteValDao = new SuiteValidacaoTesteValidacaoDAO(manager);
 
-            SuiteValidacaoTesteValidacaoDAO suiteValTstVal = new SuiteValidacaoTesteValidacaoDAO(manager);
-            for (SuiteValidacaoTesteValidacao itemList : list) {
-                suiteValTstVal.save(itemList);
+            SuiteTesteValidacao suiteObtida = suiteDao.getByName(suite.getNome());
+
+            if (suiteObtida == null) {
+                isNewSuite = true;
+                suiteDao.save(suite);
+
+                suiteObtida = suiteDao.getByName(suite.getNome());
+                //criar os relacionamentos existente na lista recebida como parametro
+                for (SuiteValidacaoTesteValidacao svtv : list) {
+                    svtv.setSuiteTesteValidacao(suiteObtida);
+                    suiteValTesteValDao.save(svtv);
+                }
+            } else {
+
+                //remover os relacionamentos existentes da suite obtida com as caracterizacoes teste de validacao
+                for (SuiteValidacaoTesteValidacao svtv : suiteValTesteValDao.getBySuite(suiteObtida)) {
+                    suiteValTesteValDao.delete(svtv);
+                }
+                this.manager.flush();
+
+                //criar os relacionamentos existente na lista recebida como parametro
+                for (SuiteValidacaoTesteValidacao svtv : list) {
+                    svtv.setSuiteTesteValidacao(suiteObtida);
+                    suiteValTesteValDao.save(svtv);
+                }
+
             }
-
             this.manager.getTransaction().commit();
         } catch (Exception excpt) {
-            this.manager.getTransaction().rollback();
-        }
-    }
-
-    public void update(SuiteTesteValidacao suite) {
-
-        try {
-
-            this.manager = DBManager.openManager();
-            this.manager.getTransaction().begin();
-
-            SuiteDAO suiteDao = new SuiteDAO(manager);
-            suiteDao.update(suite);
-
-            this.manager.getTransaction().commit();
-        } catch (Exception excpt) {
+            System.out.println(excpt.getMessage());
             this.manager.getTransaction().rollback();
         }
 
-
+        return isNewSuite;
     }
 
+    /* public void update(SuiteTesteValidacao suite) {
+
+    try {
+
+    this.manager = DBManager.openManager();
+    this.manager.getTransaction().begin();
+
+    SuiteDAO suiteDao = new SuiteDAO(manager);
+    suiteDao.update(suite);
+
+    this.manager.getTransaction().commit();
+    } catch (Exception excpt) {
+    this.manager.getTransaction().rollback();
+    }
+
+
+    }*/
     public void delete(SuiteTesteValidacao suite) {
 
         try {
@@ -81,7 +108,6 @@ public class SuiteServico {
             for (SuiteValidacaoTesteValidacao sv : list) {
                 svtvDAO.delete(sv);
             }
-
             SuiteDAO suiteDao = new SuiteDAO(manager);
             suiteDao.delete(suite);
 

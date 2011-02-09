@@ -3,6 +3,8 @@ package br.org.dao;
 import br.org.fdte.persistence.SuiteTesteValidacao;
 import br.org.fdte.persistence.SuiteValidacaoTesteValidacao;
 import br.org.fdte.persistence.SuiteValidacaoTesteValidacaoPK;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -16,21 +18,29 @@ public class SuiteValidacaoTesteValidacaoDAO {
     }
 
     public void save(SuiteValidacaoTesteValidacao suiteValTstVal) {
-        
+
+
        SuiteValidacaoTesteValidacaoPK suitePK = new SuiteValidacaoTesteValidacaoPK(
-               suiteValTstVal.getSuiteTesteValidacao().getId(),
-               suiteValTstVal.getCaracterizacaoTesteValidacao().getId());
+        suiteValTstVal.getSuiteTesteValidacao().getId(),
+        suiteValTstVal.getCaracterizacaoTesteValidacao().getId());
+        suiteValTstVal.setSuiteValidacaoTesteValidacaoPK(suitePK);
 
-       suiteValTstVal.setSuiteValidacaoTesteValidacaoPK(suitePK);
 
-       this.manager.persist(suiteValTstVal);
+
+        this.manager.persist(suiteValTstVal);
 
 
     }
+
+    /*public void update(SuiteValidacaoTesteValidacao suiteValTstVal) {
+        this.manager.merge(suiteValTstVal);
+    }*/
 
     public void delete(SuiteValidacaoTesteValidacao svtv) {
         this.manager.remove(svtv);
     }
+    
+    
 
     public List<SuiteValidacaoTesteValidacao> getBySuite(SuiteTesteValidacao stv) {
 
@@ -40,5 +50,6 @@ public class SuiteValidacaoTesteValidacaoDAO {
         return q.getResultList();
 
     }
+
 
 }

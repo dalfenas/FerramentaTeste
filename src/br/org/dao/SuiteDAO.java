@@ -19,6 +19,10 @@ public class SuiteDAO {
         Query q = this.manager.createNamedQuery("SuiteTesteValidacao.findByNome");
         q.setParameter("nome", nomeSuite);
 
+        if (q.getResultList().isEmpty()) {
+            return null;
+        }
+
         return (SuiteTesteValidacao) q.getResultList().get(0);
     }
 
