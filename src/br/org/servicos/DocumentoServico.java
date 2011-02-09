@@ -138,31 +138,7 @@ public class DocumentoServico {
         }
     }
 
-    public void delete(TemplateDocumento doc) {
-
-        try {
-
-            this.manager = DBManager.openManager();
-            this.manager.getTransaction().begin();
-
-            DocumentoDAO docDao = new DocumentoDAO(manager);
-            AtributoDAO atributoDao = new AtributoDAO(manager);
-
-            //TemplateDocumento doc = docDao.getByName(doc.getNome());
-
-            for (Atributo att : doc.getAtributoCollection()) {
-                atributoDao.delete(att);
-            }
-
-            docDao.delete(doc);
-
-            this.manager.getTransaction().commit();
-        } catch (Exception excpt) {
-            this.manager.getTransaction().rollback();
-        }
-    }
-
-    public TemplateDocumento getByName(String nome) {
+   public TemplateDocumento getByName(String nome) {
 
         TemplateDocumento doc = null;
 

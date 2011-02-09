@@ -1,8 +1,10 @@
 package br.org.servicos;
 
+import br.org.dao.ExecucaoTesteValidacaoDAO;
 import br.org.dao.SuiteDAO;
 
 import br.org.dao.SuiteValidacaoTesteValidacaoDAO;
+import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import br.org.fdte.persistence.SuiteTesteValidacao;
 import br.org.fdte.persistence.SuiteValidacaoTesteValidacao;
 import java.util.List;
@@ -97,18 +99,28 @@ public class SuiteServico {
 
 
     }*/
-    public void delete(SuiteTesteValidacao suite) {
+    public void delete(String suiteName) {
 
         try {
             this.manager = DBManager.openManager();
             this.manager.getTransaction().begin();
 
             SuiteValidacaoTesteValidacaoDAO svtvDAO = new SuiteValidacaoTesteValidacaoDAO(manager);
-            List<SuiteValidacaoTesteValidacao> list = svtvDAO.getBySuite(suite);
-            for (SuiteValidacaoTesteValidacao sv : list) {
+            SuiteDAO suiteDao = new SuiteDAO(manager);
+            ExecucaoTesteValidacaoDAO execucaoDao = new ExecucaoTesteValidacaoDAO(manager);
+
+            SuiteTesteValidacao suite = suiteDao.getByName(suiteName);
+
+            //remover os relacionamentos existentes com a CaracterizacaoTeste
+            for (SuiteValidacaoTesteValidacao sv : svtvDAO.getBySuite(suite)) {
                 svtvDAO.delete(sv);
             }
-            SuiteDAO suiteDao = new SuiteDAO(manager);
+
+            //remover as execucoes da suite
+            for (ExecucaoTesteValidacao exec : execucaoDao.getExecucoesTesteValidacaoBySuite(suite)) {
+                execucaoDao.delete(exec);
+            }
+
             suiteDao.delete(suite);
 
             this.manager.getTransaction().commit();
@@ -133,6 +145,27 @@ public class SuiteServico {
             this.manager.getTransaction().rollback();
         } finally {
             return lst;
+        }
+    }
+
+    public List<SuiteValidacaoTesteValidacao> getAllSuiteValTesteVal(String suiteName) {
+        List<SuiteValidacaoTesteValidacao> list = null;
+
+        try {
+            this.manager = DBManager.openManager();
+            this.manager.getTransaction().begin();
+
+            SuiteDAO suiteDAO = new SuiteDAO(manager);
+            SuiteValidacaoTesteValidacaoDAO svtvDao = new SuiteValidacaoTesteValidacaoDAO(manager);
+
+            SuiteTesteValidacao suite = suiteDAO.getByName(suiteName);
+            list = svtvDao.getBySuite(suite);
+
+            this.manager.getTransaction().commit();
+        } catch (Exception excpt) {
+            this.manager.getTransaction().rollback();
+        } finally {
+            return list;
         }
     }
 }

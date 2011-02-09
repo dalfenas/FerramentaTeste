@@ -271,7 +271,6 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
     }
 
     private void popularRegistro(String nome) {
-        //ClasseEquivalencia ce = ClasseEquivalenciaDAO.getClasseEquivalencia(nome);
         ClasseEquivalencia ce = new ClasseEquivalenciaServico().getByName(nome);
 
         if (ce != null) {

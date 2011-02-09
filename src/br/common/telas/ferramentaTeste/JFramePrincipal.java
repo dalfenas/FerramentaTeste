@@ -20,7 +20,7 @@ import br.org.fdte.dao.EspecificoDAO;
 import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
 import br.org.fdte.dao.RegraDAO;
 import br.org.fdte.dao.SuiteTesteValidacaoDAO;
-import br.org.fdte.dao.SuiteValCarTstValDAO;
+//import br.org.fdte.dao.SuiteValCarTstValDAO;
 import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.Especificos;
 import br.org.fdte.persistence.ExecucaoTesteValidacao;
@@ -550,12 +550,13 @@ public class JFramePrincipal extends javax.swing.JFrame
                     retorno = CaracterizacaoTstValidacaoDAO.delete(selNode.getUserObject().toString());
                     break;
                 case SUITE_VALIDACAO:
-                    SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getUserObject().toString());
+                    new SuiteServico().delete(selNode.getUserObject().toString());
+                   /* SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getUserObject().toString());
                     List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
                     for (ExecucaoTesteValidacao exec : execs) {
                         ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
                     }
-                    retorno = SuiteTesteValidacaoDAO.delete(selNode.getUserObject().toString());
+                    retorno = SuiteTesteValidacaoDAO.delete(selNode.getUserObject().toString());*/
                     break;
                 default:
                     System.out.println("FALTA IMPLEMENTAR RemoveNode");
@@ -783,16 +784,13 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
     }
 
-    //private int copiarClasseEquivalencia(String nomeNo, String novoNome) {
     private void copiarClasseEquivalencia(String nomeNo, String novoNome) {
 
         ClasseEquivalenciaServico ceServico = new ClasseEquivalenciaServico();
 
-        //if (null != ClasseEquivalenciaDAO.getClasseEquivalencia(novoNome)) {
         if (null != ceServico.getByName(novoNome)) {
             int iSelected = JOptionPane.showConfirmDialog(this, "Classe de Equivalencia " + novoNome + " já existe. Deseja sobrescrevê-la?", "Sobrescrever entidade", 2);
             if (iSelected != JOptionPane.YES_OPTION) {
-                //return -1;
                 return;
             }
         }
@@ -930,21 +928,34 @@ public class JFramePrincipal extends javax.swing.JFrame
 
     private int copiarSuiteValidacao(String nomeNo, String novoNome) {
 
-        if (null != SuiteTesteValidacaoDAO.getSuiteTesteValidacao(novoNome)) {
+        SuiteServico suiteServico = new SuiteServico();
+        if (null != suiteServico.getByName(novoNome)) {
             if (JOptionPane.YES_OPTION
                     != JOptionPane.showConfirmDialog(this, "Suite de Teste de Validação " + novoNome + " já existe. Deseja sobrescrevê-la?", "Sobrescrever entidade", 2)) {
                 return -1;
             }
         }
 
-        SuiteTesteValidacao suiteVal = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(nomeNo);
+
+        List<SuiteValidacaoTesteValidacao> listSVTV = suiteServico.getAllSuiteValTesteVal(nomeNo);
+        for (SuiteValidacaoTesteValidacao svtvLido : listSVTV) {
+            SuiteValidacaoTesteValidacao svctstVal = new SuiteValidacaoTesteValidacao();
+          //  svctstVal.setSuiteTesteValidacao(null);
+            svctstVal.setCaracterizacaoTesteValidacao(svtvLido.getCaracterizacaoTesteValidacao());
+            svctstVal.setOrderId(svtvLido.getOrderId());
+            svctstVal.setResult(svtvLido.getResult());
+            svctstVal.setTestCase(svtvLido.getTestCase());
+            svctstVal.setWorkflow(svtvLido.getWorkflow());
+        }
+
+        //SuiteTesteValidacao suiteVal = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(nomeNo);
 
         SuiteTesteValidacao suiteValCopia = new SuiteTesteValidacao();
         suiteValCopia.setNome(novoNome);
 
-        int retorno = SuiteTesteValidacaoDAO.save(suiteValCopia);
+        boolean isNewObject = suiteServico.save(suiteValCopia,listSVTV);
 
-        Iterator lst = SuiteValCarTstValDAO.getSuiteVal(suiteVal.getId()).iterator();
+        /*Iterator lst = SuiteValCarTstValDAO.getSuiteVal(suiteVal.getId()).iterator();
         while (lst.hasNext()) {
             SuiteValidacaoTesteValidacao svctstValLido = (SuiteValidacaoTesteValidacao) lst.next();
             SuiteValidacaoTesteValidacao svctstVal = new SuiteValidacaoTesteValidacao();
@@ -955,8 +966,8 @@ public class JFramePrincipal extends javax.swing.JFrame
             svctstVal.setTestCase(svctstValLido.getTestCase());
             svctstVal.setResult(svctstValLido.getResult());
             SuiteValCarTstValDAO.save(svctstVal);
-        }
-        return retorno;
+        }*/
+        return 1;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;

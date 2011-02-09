@@ -21,11 +21,7 @@ public class ExecucaoTesteValidacaoDAO {
         return q.getResultList();
     }
 
-    public ExecucaoTesteValidacao getExecucaoTesteValidacao(int id) {
-
-        Query q = this.manager.createNamedQuery("ExecucaoTesteValidacao.findById");
-        q.setParameter("id", id);
-
-        return (ExecucaoTesteValidacao)q.getResultList().get(0);
+   public void delete(ExecucaoTesteValidacao exec) {
+        this.manager.remove(exec);
     }
 }

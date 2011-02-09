@@ -14,6 +14,7 @@ import br.org.fdte.persistence.CaracterizacaoTesteValidacao;
 import br.org.fdte.persistence.ClasseValidacao;
 import br.org.fdte.persistence.Especificos;
 import br.org.fdte.persistence.TemplateDocumento;
+import br.org.servicos.CaracterizacaoTesteValidacaoServico;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
@@ -315,7 +316,9 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
             return;
         }
 
-        CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
+        
+
+        /*CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
         if (tstVal == null) {
             tstVal = new CaracterizacaoTesteValidacao();
         } else {
@@ -323,16 +326,25 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
                     != JOptionPane.showConfirmDialog(this, "Teste de Validação " + jTxtFieldName.getText() + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
                 return;
             }
-        }
+        }*/
 
-        tstVal = new CaracterizacaoTesteValidacao();
+        CaracterizacaoTesteValidacao tstVal = new CaracterizacaoTesteValidacao();
         tstVal.setNome(jTxtFieldName.getText());
         tstVal.setComentario(jTxtFieldComentario.getText());
-        tstVal.setDocumentoSaidaNegativa(DocumentoDAO.getDocumento(jcmbDocSaidaNeg.getSelectedItem().toString()));
-        tstVal.setDocumentoSaidaPositiva(DocumentoDAO.getDocumento(jcmbDocSaidaPos.getSelectedItem().toString()));
+        TemplateDocumento docSaidaPos = new TemplateDocumento();
+        TemplateDocumento docSaidaNeg = new TemplateDocumento();
+        docSaidaNeg.setNome(jcmbDocSaidaNeg.getSelectedItem().toString());
+        docSaidaPos.setNome(jcmbDocSaidaPos.getSelectedItem().toString());
+        tstVal.setDocumentoSaidaNegativa(docSaidaNeg);
+        tstVal.setDocumentoSaidaPositiva(docSaidaPos);
+        //tstVal.setDocumentoSaidaNegativa(DocumentoDAO.getDocumento(jcmbDocSaidaNeg.getSelectedItem().toString()));
+        //tstVal.setDocumentoSaidaPositiva(DocumentoDAO.getDocumento(jcmbDocSaidaPos.getSelectedItem().toString()));
         tstVal.setClasseValidacaoSaidaNegativa(jcmbClassSaidaNeg.getSelectedItem().toString());
         tstVal.setClasseValidacaoSaidaPositiva(jcmbClassSaidaPos.getSelectedItem().toString());
-        tstVal.setDocumentoEntrada(DocumentoDAO.getDocumento(jcmbDocEntrada.getSelectedItem().toString()));
+        //tstVal.setDocumentoEntrada(DocumentoDAO.getDocumento(jcmbDocEntrada.getSelectedItem().toString()));
+        TemplateDocumento docEntrada = new TemplateDocumento();
+        docEntrada.setNome(jcmbDocEntrada.getSelectedItem().toString());
+        tstVal.setDocumentoEntrada(docEntrada);
 
 
         if (jrdbNPos.isSelected()) {
@@ -347,16 +359,15 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
             tstVal.setCasosNegativos(0);
         }
 
-        int retorno = CaracterizacaoTstValidacaoDAO.save(tstVal);
-
-
+        //int retorno = CaracterizacaoTstValidacaoDAO.save(tstVal);
+        boolean isNewCaracterizacao = new CaracterizacaoTesteValidacaoServico().save(tstVal);
 
         //salvar os grids específicos
         removerGrids();
         salvarGrids();
 
         //se foi insercao de cadastro de validação o retorno é 0;
-        if (retorno == 0) {
+        if (isNewCaracterizacao) {
             jFramePrincipal.addNode(jTxtFieldName.getText());
             jFramePrincipal.atualizarCampos(AtualizacaoTela.entidadeTesteValidacao);
         } else {
