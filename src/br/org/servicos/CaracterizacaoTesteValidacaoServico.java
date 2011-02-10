@@ -2,7 +2,9 @@ package br.org.servicos;
 
 import br.org.dao.CaracterizacaoTesteValidacaoDAO;
 import br.org.dao.DocumentoDAO;
+import br.org.dao.EspecificoDAO;
 import br.org.fdte.persistence.CaracterizacaoTesteValidacao;
+import br.org.fdte.persistence.Especificos;
 import br.org.fdte.persistence.TemplateDocumento;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -22,6 +24,7 @@ public class CaracterizacaoTesteValidacaoServico {
 
             CaracterizacaoTesteValidacaoDAO caractDao = new CaracterizacaoTesteValidacaoDAO(manager);
             DocumentoDAO documentoDao = new DocumentoDAO(manager);
+            EspecificoDAO especificoDao = new EspecificoDAO(manager);
 
             caracterizacao.setDocumentoEntrada(documentoDao.getByName(caracterizacao.getDocumentoEntrada().getNome()));
             caracterizacao.setDocumentoSaidaNegativa(documentoDao.getByName(caracterizacao.getDocumentoSaidaNegativa().getNome()));
@@ -33,12 +36,32 @@ public class CaracterizacaoTesteValidacaoServico {
                 isNewCaracterizacao = true;
                 caractDao.save(caracterizacao);
             } else {
+                caractObtida.setCasosNegativos(caracterizacao.getCasosNegativos());
+                caractObtida.setCasosPositivos(caracterizacao.getCasosPositivos());
+                caractObtida.setClasseValidacaoSaidaNegativa(caracterizacao.getClasseValidacaoSaidaNegativa());
+                caractObtida.setClasseValidacaoSaidaPositiva(caracterizacao.getClasseValidacaoSaidaPositiva());
+                caractObtida.setClasseValidacaoSaidaNegativa(caracterizacao.getClasseValidacaoSaidaNegativa());
+                caractObtida.setComentario(caracterizacao.getComentario());
+                caractObtida.setNome(caracterizacao.getNome());
+
+                //remover especificos                
+                for (Especificos especifico : caractObtida.getEspecificosCollection()) {
+                    especificoDao.delete(especifico);
+                }
+
+                for (Especificos especifico : caracterizacao.getEspecificosCollection()) {
+                    especifico.setIdCaracterizacaoTesteValidacao(caractObtida);
+                    especificoDao.save(especifico);
+                }
+
+                caractObtida.setEspecificosCollection(caracterizacao.getEspecificosCollection());
+                caractDao.update(caractObtida);
+
             }
-
-
 
             this.manager.getTransaction().commit();
         } catch (Exception excpt) {
+            System.out.println(excpt.getMessage());
             this.manager.getTransaction().rollback();
         }
 
@@ -61,20 +84,27 @@ public class CaracterizacaoTesteValidacaoServico {
         }
     }
 
-    public void delete(CaracterizacaoTesteValidacao caracterizacao) {
+    public void delete(String nomeCaracterizacao) {
 
-        try {
+       try {
 
             this.manager = DBManager.openManager();
             this.manager.getTransaction().begin();
 
+            CaracterizacaoTesteValidacaoDAO ctDao = new CaracterizacaoTesteValidacaoDAO(manager);
+            CaracterizacaoTesteValidacao caract = ctDao.getByName(nomeCaracterizacao);
 
-            CaracterizacaoTesteValidacaoDAO dao = new CaracterizacaoTesteValidacaoDAO(manager);
-            dao.delete(caracterizacao);
+            EspecificoDAO especificoDao = new EspecificoDAO(manager);
+            for (Especificos espec : caract.getEspecificosCollection()) {
+                especificoDao.delete(espec);
+            }
+
+            ctDao.delete(caract);
+
 
             this.manager.getTransaction().commit();
-
         } catch (Exception excpt) {
+            System.out.println(excpt.getMessage());
             this.manager.getTransaction().rollback();
         }
 

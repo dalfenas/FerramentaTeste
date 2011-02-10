@@ -156,7 +156,7 @@ public class ClasseEquivalenciaServico {// implements ServiceInterface {
                 valorDao.delete(valor);
             }
 
-            ceDao.delete(ceDao.getByName(nomeCE));
+            ceDao.delete(ce);
 
 
             this.manager.getTransaction().commit();

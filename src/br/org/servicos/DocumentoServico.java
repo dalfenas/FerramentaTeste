@@ -122,15 +122,16 @@ public class DocumentoServico {
 
             this.manager = DBManager.openManager();
             this.manager.getTransaction().begin();
+            
             DocumentoDAO docDao = new DocumentoDAO(manager);
-
             AtributoDAO atributoDao = new AtributoDAO(manager);
+            TemplateDocumento doc = docDao.getByName(docName);
 
-            for (Atributo att : docDao.getByName(docName).getAtributoCollection()) {
+            for (Atributo att : doc.getAtributoCollection()) {
                 atributoDao.delete(att);
             }
 
-            docDao.delete(docDao.getByName(docName));
+            docDao.delete(doc);
 
             this.manager.getTransaction().commit();
         } catch (Exception excpt) {

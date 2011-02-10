@@ -5,18 +5,18 @@ import br.org.fdte.ColumnConfiguration;
 import br.org.fdte.ComboBoxAtributo;
 import br.org.fdte.OGrid;
 import br.org.fdte.OGridTableModel;
-import br.org.fdte.dao.AtributoDAO;
-import br.org.fdte.dao.CaracterizacaoTstValidacaoDAO;
+//import br.org.fdte.dao.AtributoDAO;
+//import br.org.fdte.dao.CaracterizacaoTstValidacaoDAO;
 import br.org.fdte.dao.ClasseValidacaoDAO;
-import br.org.fdte.dao.DocumentoDAO;
-import br.org.fdte.dao.EspecificoDAO;
+//import br.org.fdte.dao.DocumentoDAO;
+//import br.org.fdte.dao.EspecificoDAO;
+import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.CaracterizacaoTesteValidacao;
 import br.org.fdte.persistence.ClasseValidacao;
 import br.org.fdte.persistence.Especificos;
 import br.org.fdte.persistence.TemplateDocumento;
 import br.org.servicos.CaracterizacaoTesteValidacaoServico;
-import java.io.File;
-import java.io.FileFilter;
+import br.org.servicos.DocumentoServico;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JOptionPane;
@@ -316,16 +316,16 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
             return;
         }
 
-        
+
 
         /*CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
         if (tstVal == null) {
-            tstVal = new CaracterizacaoTesteValidacao();
+        tstVal = new CaracterizacaoTesteValidacao();
         } else {
-            if (JOptionPane.YES_OPTION
-                    != JOptionPane.showConfirmDialog(this, "Teste de Validação " + jTxtFieldName.getText() + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
-                return;
-            }
+        if (JOptionPane.YES_OPTION
+        != JOptionPane.showConfirmDialog(this, "Teste de Validação " + jTxtFieldName.getText() + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
+        return;
+        }
         }*/
 
         CaracterizacaoTesteValidacao tstVal = new CaracterizacaoTesteValidacao();
@@ -359,12 +359,14 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
             tstVal.setCasosNegativos(0);
         }
 
+        tstVal.setEspecificosCollection(salvarGrids(tstVal));
+
         //int retorno = CaracterizacaoTstValidacaoDAO.save(tstVal);
         boolean isNewCaracterizacao = new CaracterizacaoTesteValidacaoServico().save(tstVal);
 
         //salvar os grids específicos
-        removerGrids();
-        salvarGrids();
+        /* lrb 10/02/2011 removerGrids();
+        salvarGrids(); */
 
         //se foi insercao de cadastro de validação o retorno é 0;
         if (isNewCaracterizacao) {
@@ -383,7 +385,7 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
 
     private void popularRegistro(String nome) {
 
-        CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(nome);
+        CaracterizacaoTesteValidacao tstVal = new CaracterizacaoTesteValidacaoServico().getByName(nome);
 
         if (tstVal != null) {
 
@@ -509,7 +511,7 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jcmbDocSaidaNeg.addItem("");
         jcmbDocEntrada.addItem("");
 
-        List<TemplateDocumento> lstDocumento = DocumentoDAO.getAll();
+        List<TemplateDocumento> lstDocumento = new DocumentoServico().getAll();
         for (TemplateDocumento doc : lstDocumento) {
             jcmbDocEntrada.addItem(doc.getNome());
             jcmbDocSaidaPos.addItem(doc.getNome());
@@ -523,27 +525,25 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         }
     }
 
-    private void salvarGrids() {
-        salvarGrid("P", gridPositivos);
-        salvarGrid("N", gridNegativos);
-        salvarGrid("O", gridOpcionais);
-        salvarGrid("R", gridRepeticoes);
+    private Vector<Especificos> salvarGrids(CaracterizacaoTesteValidacao caracterizacao) {
+        Vector<Especificos> especificos = new Vector();
+        salvarGrid("P", gridPositivos, especificos, caracterizacao);
+        salvarGrid("N", gridNegativos, especificos, caracterizacao);
+        salvarGrid("O", gridOpcionais, especificos, caracterizacao);
+        salvarGrid("R", gridRepeticoes, especificos, caracterizacao);
+        return especificos;
     }
 
-    private void removerGrids() {
-        CaracterizacaoTesteValidacao tstVal =
-                CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
-        CaracterizacaoTstValidacaoDAO.removeEspecificos(tstVal.getId());
-    }
-
-    private void salvarGrid(String tipo, OGrid grid) {
+    private void salvarGrid(String tipo, OGrid grid, Vector<Especificos> especificos, CaracterizacaoTesteValidacao caracTesteVal) {
+        /* lrb 10/02/2011
         CaracterizacaoTesteValidacao caracTesteVal;
 
-        caracTesteVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
+        caracTesteVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText()); */
 
-        Vector<Especificos> especificos = new Vector();
+        //lrb 10/02/2011 Vector<Especificos> especificos = new Vector();
         Vector<Vector> dataGrid = grid.getGridData();
         Vector<Object> vector = new Vector(4);
+
 
         for (int index = 0; index < dataGrid.size(); index++) {
 
@@ -563,7 +563,9 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
             }
 
             if (vector.get(1) != null) {
-                especifico.setAtributo(AtributoDAO.get(Long.parseLong(vector.get(1).toString())));
+                //lrb 10/02/2011 especifico.setAtributo(AtributoDAO.get(Long.parseLong(vector.get(1).toString())));
+                Atributo atributoAux = new Atributo(Long.parseLong(vector.get(1).toString()));
+                especifico.setAtributo(atributoAux);
             }
 
             if (vector.get(2) == null || (Boolean) vector.get(2) == false) {
@@ -573,14 +575,16 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
             }
 
             especifico.setTipo(tipo);
+            //lrb 10/02/2011 especifico.setIdCaracterizacaoTesteValidacao(caracTesteVal);
             especifico.setIdCaracterizacaoTesteValidacao(caracTesteVal);
 
             especificos.add(especifico);
         }
 
+        /*lrb 10/02/2011
         for (int i = 0; i < especificos.size(); i++) {
-            EspecificoDAO.save(especificos.get(i));
-        }
+        EspecificoDAO.save(especificos.get(i));
+        }*/
     }
 
     private int validarCampos() {
@@ -641,7 +645,7 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jcmbDocSaidaNeg.addItem("");
         jcmbDocEntrada.addItem("");
 
-        List<TemplateDocumento> lstDocumento = DocumentoDAO.getAll();
+        List<TemplateDocumento> lstDocumento = new DocumentoServico().getAll();
         for (TemplateDocumento doc : lstDocumento) {
             jcmbDocEntrada.addItem(doc.getNome());
             jcmbDocSaidaPos.addItem(doc.getNome());
@@ -659,5 +663,4 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         gridRepeticoes.configureTableColumns();
 
     }
-
 }

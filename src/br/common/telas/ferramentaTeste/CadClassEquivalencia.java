@@ -197,8 +197,6 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
 
         jFramePrincipal.atualizarCampos(AtualizacaoTela.entidadeClasseEquivalencia);
         
-
-        
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

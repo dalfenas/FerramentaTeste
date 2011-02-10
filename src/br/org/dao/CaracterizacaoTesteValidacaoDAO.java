@@ -29,6 +29,9 @@ public class CaracterizacaoTesteValidacaoDAO {
        Query q = this.manager.createNamedQuery("CaracterizacaoTesteValidacao.findByNome");
        q.setParameter("nome", nome);
 
+       if (q.getResultList().isEmpty())
+           return null;
+
        return (CaracterizacaoTesteValidacao)q.getResultList().get(0);
     }
 

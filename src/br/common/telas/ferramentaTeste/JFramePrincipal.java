@@ -27,6 +27,7 @@ import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import br.org.fdte.persistence.Regra;
 import br.org.fdte.persistence.SuiteValidacaoTesteValidacao;
 import br.org.fdte.persistence.Valor;
+import br.org.servicos.CaracterizacaoTesteValidacaoServico;
 import br.org.servicos.ClasseEquivalenciaServico;
 import br.org.servicos.DocumentoServico;
 import br.org.servicos.SuiteServico;
@@ -547,7 +548,7 @@ public class JFramePrincipal extends javax.swing.JFrame
                     new DocumentoServico().delete(selNode.getUserObject().toString());
                     break;
                 case TESTE_VALIDACAO:
-                    retorno = CaracterizacaoTstValidacaoDAO.delete(selNode.getUserObject().toString());
+                    new CaracterizacaoTesteValidacaoServico().delete(selNode.getUserObject().toString());
                     break;
                 case SUITE_VALIDACAO:
                     new SuiteServico().delete(selNode.getUserObject().toString());

@@ -30,7 +30,7 @@ public class DocumentoDAO {
         Query q = this.manager.createNamedQuery("TemplateDocumento.findByNome");
         q.setParameter("nome", nomeDoc);
 
-        if (q.getResultList().size() == 0) {
+        if (q.getResultList().isEmpty()) {
             return null;
         }
 
