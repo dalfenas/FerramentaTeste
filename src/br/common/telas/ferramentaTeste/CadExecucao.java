@@ -10,14 +10,12 @@ import br.org.fdte.dao.SuiteTesteValidacaoDAO;
 import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import br.org.fdte.persistence.SuiteTesteSequencia;
 import br.org.fdte.persistence.SuiteTesteValidacao;
-import executortestevalidacao.ExecuteValidationTestException;
 import executortestevalidacao.ExecutionCallback;
 import java.util.List;
 import java.awt.Font;
 import java.awt.Color;
 import executortestevalidacao.ExecutorTesteValidacao;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 

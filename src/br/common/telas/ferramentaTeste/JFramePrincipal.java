@@ -336,7 +336,8 @@ public class JFramePrincipal extends javax.swing.JFrame
                 case TESTE_VALIDACAO:
                     //A cada caracterizacao de teste de validacao existente no bd, eh adicionado uma
                     //folha na arvore de Caso de teste
-                    List<CaracterizacaoTesteValidacao> lstTV = CaracterizacaoTstValidacaoDAO.getAll();
+                    //List<CaracterizacaoTesteValidacao> lstTV = CaracterizacaoTstValidacaoDAO.getAll();
+                    List<CaracterizacaoTesteValidacao> lstTV = new CaracterizacaoTesteValidacaoServico().getAll();
                     for (CaracterizacaoTesteValidacao tstVal : lstTV) {
                         nodeFather.add(new DefaultMutableTreeNode(tstVal.getNome()));
                     }
