@@ -749,7 +749,6 @@ public class JFramePrincipal extends javax.swing.JFrame
                 DocumentoServico docServico = new DocumentoServico();
                 TemplateDocumento doc = docServico.getByName(selNode.getUserObject().toString());
                 doc.setNome(nomeNovo);
-
                 docServico.save(doc);
                 entidadeAtualizada = AtualizacaoTela.entidadeDocumento;
                 break;

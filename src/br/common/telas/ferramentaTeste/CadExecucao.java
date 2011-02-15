@@ -442,8 +442,11 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
 
             suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jComboBoxSuite.getSelectedItem().toString());
 
+            
+
             ex = new ExecutorTesteValidacao();
             ex.setExecutionCallback(this);
+        
 
             if (jrdbGolden.isSelected()) {
                 //lrb 11/02/2011
