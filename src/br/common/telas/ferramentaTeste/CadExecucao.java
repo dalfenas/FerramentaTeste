@@ -440,13 +440,10 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
             limparTextLog();
             limparAreaGrid();
 
-            suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jComboBoxSuite.getSelectedItem().toString());
-
-            
+            suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jComboBoxSuite.getSelectedItem().toString());            
 
             ex = new ExecutorTesteValidacao();
-            ex.setExecutionCallback(this);
-        
+            ex.setExecutionCallback(this);        
 
             if (jrdbGolden.isSelected()) {
                 //lrb 11/02/2011
