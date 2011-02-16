@@ -3,6 +3,7 @@ package br.common.telas.ferramentaTeste;
 import br.org.fdte.AtualizacaoTela;
 import br.org.fdte.ExecutionTreeNode;
 import br.org.fdte.MyRenderer;
+import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
 
 import java.awt.event.ActionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -609,6 +610,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         //Remover do bd somente a execução golden dessa suite pois, existe somente um golden por suite
         for (ExecucaoTesteValidacao exec : execs) {
             if (exec.getModoAtivacao().equalsIgnoreCase(golden)) {
+                AtivacaoTesteValidacaoDAO.deleteByExecution(exec);
                 ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
             }
         }
