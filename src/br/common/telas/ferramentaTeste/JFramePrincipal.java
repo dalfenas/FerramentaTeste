@@ -557,10 +557,10 @@ public class JFramePrincipal extends javax.swing.JFrame
                     break;
                 case SUITE_VALIDACAO:
                     new SuiteServico().delete(selNode.getUserObject().toString());
-                   /* SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getUserObject().toString());
+                    /* SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getUserObject().toString());
                     List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
                     for (ExecucaoTesteValidacao exec : execs) {
-                        ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
+                    ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
                     }
                     retorno = SuiteTesteValidacaoDAO.delete(selNode.getUserObject().toString());*/
                     break;
@@ -739,7 +739,7 @@ public class JFramePrincipal extends javax.swing.JFrame
                 if (null != ceServico.getByName(nomeNovo)) {
                     JOptionPane.showMessageDialog(this, "Classe de Equivalencia " + nomeNovo + " já existe.");
                     return;
-                }                
+                }
                 ClasseEquivalencia ce = ceServico.getByName(selNode.getUserObject().toString());
                 ce.setNome(nomeNovo);
                 ceServico.save(ce);
@@ -750,7 +750,7 @@ public class JFramePrincipal extends javax.swing.JFrame
                 if (null != docServico.getByName(nomeNovo)) {
                     JOptionPane.showMessageDialog(this, "Documento " + nomeNovo + " já existe.");
                     return;
-                }                
+                }
                 TemplateDocumento doc = docServico.getByName(selNode.getUserObject().toString());
                 doc.setNome(nomeNovo);
                 docServico.save(doc);
@@ -775,7 +775,7 @@ public class JFramePrincipal extends javax.swing.JFrame
                 }
                 SuiteTesteValidacao suiteVal = suiteServico.getByName(selNode.getUserObject().toString());
                 suiteVal.setNome(nomeNovo);
-                suiteServico.save(suiteVal,null);
+                suiteServico.save(suiteVal, null);
                 entidadeAtualizada = AtualizacaoTela.entidadeSuiteValidacao;
                 break;
             default:
@@ -834,7 +834,7 @@ public class JFramePrincipal extends javax.swing.JFrame
 
         if (null != docServico.getByName(novoNome)) {
             if (JOptionPane.YES_OPTION
-                    != JOptionPane.showConfirmDialog(this, "Documento " + novoNome + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {                
+                    != JOptionPane.showConfirmDialog(this, "Documento " + novoNome + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
             }
         }
 
@@ -844,7 +844,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         docCopia.setArquivoXsd(doc.getArquivoXsd());
         docCopia.setDirecao(doc.getDirecao());
         docCopia.setNome(novoNome);
-        docCopia.setTipoFisico(doc.getTipoFisico());      
+        docCopia.setTipoFisico(doc.getTipoFisico());
 
 
         Collection<Atributo> novosAtributos = new LinkedList<Atributo>();
@@ -858,7 +858,7 @@ public class JFramePrincipal extends javax.swing.JFrame
             atributo.setOpcional(atributoLido.getOpcional());
             atributo.setTag(atributoLido.getTag());
             atributo.setOrderId(atributoLido.getOrderId());
-            novosAtributos.add(atributo);            
+            novosAtributos.add(atributo);
         }
         docCopia.setAtributoCollection(novosAtributos);
 
@@ -908,9 +908,11 @@ public class JFramePrincipal extends javax.swing.JFrame
         tstValCopia.setClasseValidacaoSaidaNegativa(tstVal.getClasseValidacaoSaidaNegativa());
         tstValCopia.setClasseValidacaoSaidaPositiva(tstVal.getClasseValidacaoSaidaPositiva());
         tstValCopia.setDocumentoEntrada(tstVal.getDocumentoEntrada());
+        tstValCopia.setDocumentoSaidaPositiva(tstVal.getDocumentoSaidaPositiva());
+        tstValCopia.setDocumentoSaidaNegativa(tstVal.getDocumentoSaidaNegativa());
         tstValCopia.setXsdSaidaNegativa(tstVal.getXsdSaidaNegativa());
         tstValCopia.setXsdSaidaPositiva(tstVal.getXsdSaidaPositiva());
-        
+
         Collection<Especificos> novosEspecificos = new LinkedList<Especificos>();
         Iterator it = tstVal.getEspecificosCollection().iterator();
         while (it.hasNext()) {
@@ -922,8 +924,6 @@ public class JFramePrincipal extends javax.swing.JFrame
             especificoCopia.setQuantidade(especificoLido.getQuantidade());
             especificoCopia.setTipo(especificoLido.getTipo());
 
-    //        EspecificoDAO.save(especificoCopia);
-
             novosEspecificos.add(especificoCopia);
         }
 
@@ -931,7 +931,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         tstValCopia.setEspecificosCollection(novosEspecificos);
         caractServico.save(tstValCopia);
 
-        
+
     }
 
     private int copiarSuiteValidacao(String nomeNo, String novoNome) {
@@ -948,7 +948,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         List<SuiteValidacaoTesteValidacao> listSVTV = suiteServico.getAllSuiteValTesteVal(nomeNo);
         for (SuiteValidacaoTesteValidacao svtvLido : listSVTV) {
             SuiteValidacaoTesteValidacao svctstVal = new SuiteValidacaoTesteValidacao();
-          //  svctstVal.setSuiteTesteValidacao(null);
+            //  svctstVal.setSuiteTesteValidacao(null);
             svctstVal.setCaracterizacaoTesteValidacao(svtvLido.getCaracterizacaoTesteValidacao());
             svctstVal.setOrderId(svtvLido.getOrderId());
             svctstVal.setResult(svtvLido.getResult());
@@ -961,19 +961,19 @@ public class JFramePrincipal extends javax.swing.JFrame
         SuiteTesteValidacao suiteValCopia = new SuiteTesteValidacao();
         suiteValCopia.setNome(novoNome);
 
-        boolean isNewObject = suiteServico.save(suiteValCopia,listSVTV);
+        boolean isNewObject = suiteServico.save(suiteValCopia, listSVTV);
 
         /*Iterator lst = SuiteValCarTstValDAO.getSuiteVal(suiteVal.getId()).iterator();
         while (lst.hasNext()) {
-            SuiteValidacaoTesteValidacao svctstValLido = (SuiteValidacaoTesteValidacao) lst.next();
-            SuiteValidacaoTesteValidacao svctstVal = new SuiteValidacaoTesteValidacao();
-            svctstVal.setOrderId(svctstValLido.getOrderId());
-            svctstVal.setSuiteTesteValidacao(suiteValCopia);
-            svctstVal.setCaracterizacaoTesteValidacao(svctstValLido.getCaracterizacaoTesteValidacao());
-            svctstVal.setWorkflow(svctstValLido.getWorkflow());
-            svctstVal.setTestCase(svctstValLido.getTestCase());
-            svctstVal.setResult(svctstValLido.getResult());
-            SuiteValCarTstValDAO.save(svctstVal);
+        SuiteValidacaoTesteValidacao svctstValLido = (SuiteValidacaoTesteValidacao) lst.next();
+        SuiteValidacaoTesteValidacao svctstVal = new SuiteValidacaoTesteValidacao();
+        svctstVal.setOrderId(svctstValLido.getOrderId());
+        svctstVal.setSuiteTesteValidacao(suiteValCopia);
+        svctstVal.setCaracterizacaoTesteValidacao(svctstValLido.getCaracterizacaoTesteValidacao());
+        svctstVal.setWorkflow(svctstValLido.getWorkflow());
+        svctstVal.setTestCase(svctstValLido.getTestCase());
+        svctstVal.setResult(svctstValLido.getResult());
+        SuiteValCarTstValDAO.save(svctstVal);
         }*/
         return 1;
     }

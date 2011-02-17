@@ -315,37 +315,24 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         if (validarCampos() < 0) {
             return;
         }
-
-
-
-        /*CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(jTxtFieldName.getText());
-        if (tstVal == null) {
-        tstVal = new CaracterizacaoTesteValidacao();
-        } else {
-        if (JOptionPane.YES_OPTION
-        != JOptionPane.showConfirmDialog(this, "Teste de Validação " + jTxtFieldName.getText() + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
-        return;
-        }
-        }*/
-
+        
         CaracterizacaoTesteValidacao tstVal = new CaracterizacaoTesteValidacao();
         tstVal.setNome(jTxtFieldName.getText());
         tstVal.setComentario(jTxtFieldComentario.getText());
+
         TemplateDocumento docSaidaPos = new TemplateDocumento();
         TemplateDocumento docSaidaNeg = new TemplateDocumento();
+        TemplateDocumento docEntrada = new TemplateDocumento();
         docSaidaNeg.setNome(jcmbDocSaidaNeg.getSelectedItem().toString());
         docSaidaPos.setNome(jcmbDocSaidaPos.getSelectedItem().toString());
+        docEntrada.setNome(jcmbDocEntrada.getSelectedItem().toString());
+
+        tstVal.setDocumentoEntrada(docEntrada);
         tstVal.setDocumentoSaidaNegativa(docSaidaNeg);
         tstVal.setDocumentoSaidaPositiva(docSaidaPos);
-        //tstVal.setDocumentoSaidaNegativa(DocumentoDAO.getDocumento(jcmbDocSaidaNeg.getSelectedItem().toString()));
-        //tstVal.setDocumentoSaidaPositiva(DocumentoDAO.getDocumento(jcmbDocSaidaPos.getSelectedItem().toString()));
+
         tstVal.setClasseValidacaoSaidaNegativa(jcmbClassSaidaNeg.getSelectedItem().toString());
         tstVal.setClasseValidacaoSaidaPositiva(jcmbClassSaidaPos.getSelectedItem().toString());
-        //tstVal.setDocumentoEntrada(DocumentoDAO.getDocumento(jcmbDocEntrada.getSelectedItem().toString()));
-        TemplateDocumento docEntrada = new TemplateDocumento();
-        docEntrada.setNome(jcmbDocEntrada.getSelectedItem().toString());
-        tstVal.setDocumentoEntrada(docEntrada);
-
 
         if (jrdbNPos.isSelected()) {
             tstVal.setCasosPositivos(Integer.parseInt(jTextFieldNPos.getText()));
