@@ -16,27 +16,30 @@ import br.org.fdte.persistence.TemplateDocumento;
 import br.org.fdte.persistence.ClasseEquivalencia;
 import br.org.fdte.persistence.CaracterizacaoTesteValidacao;
 import br.org.fdte.persistence.SuiteTesteValidacao;
-import br.org.fdte.dao.CaracterizacaoTstValidacaoDAO;
-import br.org.fdte.dao.EspecificoDAO;
-import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
-import br.org.fdte.dao.RegraDAO;
-import br.org.fdte.dao.SuiteTesteValidacaoDAO;
-//import br.org.fdte.dao.SuiteValCarTstValDAO;
 import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.Especificos;
 import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import br.org.fdte.persistence.Regra;
 import br.org.fdte.persistence.SuiteValidacaoTesteValidacao;
 import br.org.fdte.persistence.Valor;
+
+//import br.org.fdte.dao.CaracterizacaoTstValidacaoDAO;
+import br.org.fdte.dao.EspecificoDAO;
+import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
+import br.org.fdte.dao.RegraDAO;
+
 import br.org.servicos.CaracterizacaoTesteValidacaoServico;
 import br.org.servicos.ClasseEquivalenciaServico;
 import br.org.servicos.DocumentoServico;
+
 import br.org.servicos.SuiteServico;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+
 import javax.persistence.RollbackException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -137,7 +140,7 @@ public class JFramePrincipal extends javax.swing.JFrame
             copiarNo();
         }
         if (e.getActionCommand().equals("Executar")) {
-            currentExec.setRegistro(SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.toString()));
+            currentExec.setRegistro(new SuiteServico().getByName(selNode.toString()));
             currentExec.setVisible(true);
             jSplitPane1.setRightComponent(currentExec);
 
@@ -604,7 +607,7 @@ public class JFramePrincipal extends javax.swing.JFrame
             return;
         }
 
-        SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getUserObject().toString());
+        SuiteTesteValidacao suite = new SuiteServico().getByName(selNode.getUserObject().toString());
         List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
 
         //Remover do bd somente a execução golden dessa suite pois, existe somente um golden por suite
@@ -630,7 +633,7 @@ public class JFramePrincipal extends javax.swing.JFrame
             model.removeNodeFromParent((DefaultMutableTreeNode) aChild);
         }
 
-        SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getUserObject().toString());
+        SuiteTesteValidacao suite = new SuiteServico().getByName(selNode.getUserObject().toString());
         List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
 
         for (ExecucaoTesteValidacao exec : execs) {
@@ -697,7 +700,7 @@ public class JFramePrincipal extends javax.swing.JFrame
                 entidadeAtualizada = AtualizacaoTela.entidadeDocumento;
                 break;
             case TESTE_VALIDACAO:
-                retorno = copiarValidacaoTeste(selNode.getUserObject().toString(), nomeNovo);
+                copiarValidacaoTeste(selNode.getUserObject().toString(), nomeNovo);
                 entidadeAtualizada = AtualizacaoTela.entidadeTesteValidacao;
                 break;
             case SUITE_VALIDACAO:
@@ -736,32 +739,32 @@ public class JFramePrincipal extends javax.swing.JFrame
                 if (null != ceServico.getByName(nomeNovo)) {
                     JOptionPane.showMessageDialog(this, "Classe de Equivalencia " + nomeNovo + " já existe.");
                     return;
-                }
-                //ClasseEquivalencia ce = ClasseEquivalenciaDAO.getClasseEquivalencia(selNode.getUserObject().toString());
+                }                
                 ClasseEquivalencia ce = ceServico.getByName(selNode.getUserObject().toString());
                 ce.setNome(nomeNovo);
                 ceServico.save(ce);
                 entidadeAtualizada = AtualizacaoTela.entidadeClasseEquivalencia;
                 break;
             case DOCUMENTO:
-                if (null != new DocumentoServico().getByName(nomeNovo)) {
+                DocumentoServico docServico = new DocumentoServico();
+                if (null != docServico.getByName(nomeNovo)) {
                     JOptionPane.showMessageDialog(this, "Documento " + nomeNovo + " já existe.");
                     return;
-                }
-                DocumentoServico docServico = new DocumentoServico();
+                }                
                 TemplateDocumento doc = docServico.getByName(selNode.getUserObject().toString());
                 doc.setNome(nomeNovo);
                 docServico.save(doc);
                 entidadeAtualizada = AtualizacaoTela.entidadeDocumento;
                 break;
             case TESTE_VALIDACAO:
-                if (null != CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(nomeNovo)) {
+                CaracterizacaoTesteValidacaoServico caractServico = new CaracterizacaoTesteValidacaoServico();
+                if (null != caractServico.getByName(nomeNovo)) {
                     JOptionPane.showMessageDialog(this, "Teste de Validação " + nomeNovo + " já existe.");
                     return;
                 }
-                CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(selNode.getUserObject().toString());
+                CaracterizacaoTesteValidacao tstVal = caractServico.getByName(selNode.getUserObject().toString());
                 tstVal.setNome(nomeNovo);
-                retorno = CaracterizacaoTstValidacaoDAO.saveById(tstVal);
+                caractServico.save(tstVal);
                 entidadeAtualizada = AtualizacaoTela.entidadeTesteValidacao;
                 break;
             case SUITE_VALIDACAO:
@@ -825,17 +828,15 @@ public class JFramePrincipal extends javax.swing.JFrame
         ceServico.save(ceCopia);
     }
 
-    //private int copiarTemplateDocumento(String nomeNo, String novoNome) {
     private void copiarTemplateDocumento(String nomeNo, String novoNome) {
 
-        //if (null != DocumentoDAO.getDocumento(novoNome)) {
-        if (null != new DocumentoServico().getByName(novoNome)) {
+        DocumentoServico docServico = new DocumentoServico();
+
+        if (null != docServico.getByName(novoNome)) {
             if (JOptionPane.YES_OPTION
-                    != JOptionPane.showConfirmDialog(this, "Documento " + novoNome + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
-                // return -1;
+                    != JOptionPane.showConfirmDialog(this, "Documento " + novoNome + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {                
             }
         }
-
 
         TemplateDocumento doc = new DocumentoServico().getByName(nomeNo);
 
@@ -843,10 +844,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         docCopia.setArquivoXsd(doc.getArquivoXsd());
         docCopia.setDirecao(doc.getDirecao());
         docCopia.setNome(novoNome);
-        docCopia.setTipoFisico(doc.getTipoFisico());
-
-
-        DocumentoServico docServico = new DocumentoServico();
+        docCopia.setTipoFisico(doc.getTipoFisico());      
 
 
         Collection<Atributo> novosAtributos = new LinkedList<Atributo>();
@@ -860,8 +858,7 @@ public class JFramePrincipal extends javax.swing.JFrame
             atributo.setOpcional(atributoLido.getOpcional());
             atributo.setTag(atributoLido.getTag());
             atributo.setOrderId(atributoLido.getOrderId());
-            novosAtributos.add(atributo);
-            //AtributoDAO.save(atributo);
+            novosAtributos.add(atributo);            
         }
         docCopia.setAtributoCollection(novosAtributos);
 
@@ -888,16 +885,18 @@ public class JFramePrincipal extends javax.swing.JFrame
 
     }
 
-    private int copiarValidacaoTeste(String nomeNo, String novoNome) {
+    private void copiarValidacaoTeste(String nomeNo, String novoNome) {
 
-        if (null != CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(novoNome)) {
+        CaracterizacaoTesteValidacaoServico caractServico = new CaracterizacaoTesteValidacaoServico();
+
+        if (null != caractServico.getByName(novoNome)) {
             if (JOptionPane.YES_OPTION
                     != JOptionPane.showConfirmDialog(this, "Teste de Validação " + novoNome + " já existe. Deseja sobrescrevê-lo?", "Sobrescrever entidade", 2)) {
-                return -1;
+                return;
             }
         }
 
-        CaracterizacaoTesteValidacao tstVal = CaracterizacaoTstValidacaoDAO.getCaracterizacaoTesteValidacao(nomeNo);
+        CaracterizacaoTesteValidacao tstVal = caractServico.getByName(nomeNo);
 
         CaracterizacaoTesteValidacao tstValCopia = new CaracterizacaoTesteValidacao();
         tstValCopia.setNome(novoNome);
@@ -911,9 +910,8 @@ public class JFramePrincipal extends javax.swing.JFrame
         tstValCopia.setDocumentoEntrada(tstVal.getDocumentoEntrada());
         tstValCopia.setXsdSaidaNegativa(tstVal.getXsdSaidaNegativa());
         tstValCopia.setXsdSaidaPositiva(tstVal.getXsdSaidaPositiva());
-
-        int retorno = CaracterizacaoTstValidacaoDAO.save(tstValCopia);
-
+        
+        Collection<Especificos> novosEspecificos = new LinkedList<Especificos>();
         Iterator it = tstVal.getEspecificosCollection().iterator();
         while (it.hasNext()) {
             Especificos especificoLido = (Especificos) it.next();
@@ -924,9 +922,16 @@ public class JFramePrincipal extends javax.swing.JFrame
             especificoCopia.setQuantidade(especificoLido.getQuantidade());
             especificoCopia.setTipo(especificoLido.getTipo());
 
-            EspecificoDAO.save(especificoCopia);
+    //        EspecificoDAO.save(especificoCopia);
+
+            novosEspecificos.add(especificoCopia);
         }
-        return retorno;
+
+
+        tstValCopia.setEspecificosCollection(novosEspecificos);
+        caractServico.save(tstValCopia);
+
+        
     }
 
     private int copiarSuiteValidacao(String nomeNo, String novoNome) {
