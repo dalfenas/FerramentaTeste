@@ -23,24 +23,22 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela  {
+public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela {
 
     private OGrid g;
-
     private JFramePrincipal jFramePrincipal;
-
     private static CadRegras currentRegras = null;
-  
+
     public CadDocumento(JFramePrincipal jFramePrincipal) {
         this.jFramePrincipal = jFramePrincipal;
 
         initComponents();
         initCombos();
-       
-        setBounds(200,0,jFramePrincipal.PANEL_WIDTH,jFramePrincipal.PANEL_HEIGHT);
+
+        setBounds(200, 0, jFramePrincipal.PANEL_WIDTH, jFramePrincipal.PANEL_HEIGHT);
 
         // OGrid test
-        g = new OGrid();       
+        g = new OGrid();
         g.setBounds(0, 80, 800, 400);
         // SEQ
         ColumnConfiguration c = new ColumnConfiguration();
@@ -74,14 +72,14 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
         c.setWidth(60);
         g.addColumn(c);
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("MaxOccur");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(60);
         c.setAlignment(ColumnConfiguration.Alignment.CENTERED);
         g.addColumn(c);
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("Comentário");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(400);
@@ -97,31 +95,26 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
 
     public void setRegistro(String nome) {
         //Limpar registros que estejam no grid de Atributos
-        OGridTableModel tableModel = (OGridTableModel)g.getOGridTableModel();
-        int nRow =  tableModel.getRowCount();
-        for (int i = 0; i < nRow; i++)
+        OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
+        int nRow = tableModel.getRowCount();
+        for (int i = 0; i < nRow; i++) {
             tableModel.deleteLine(i);
+        }
 
         //initCombos();
 
         if (nome.equalsIgnoreCase("") == true) {
             limparRegistro();
-        }
-        else {
+        } else {
             popularRegistro(nome);
         }
-    }    
+    }
 
     @Override
     public void atualizarTela() {
-         g.getOGridTableModel().getColumnConfiguration(2).setcBoxDataSource(new ComboBoxClasseEquivalencia());
-         g.configureTableColumns();
-     }
-
-    public void atualizarRegras() {
-         if (currentRegras != null)
-            currentRegras.atualizarTela();
-     }
+        g.getOGridTableModel().getColumnConfiguration(2).setcBoxDataSource(new ComboBoxClasseEquivalencia());
+        g.configureTableColumns();
+    }
 
     public void setEnabledPanelFilho(boolean isEnabled) {
         if (false == isEnabled) {
@@ -207,136 +200,134 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed
-         jFramePrincipal.disablePanels();
+        jFramePrincipal.disablePanels();
         //jFramePrincipal.setVisible(false);
     }//GEN-LAST:event_jButtonSairActionPerformed
 
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
-      if (validarCampos() < 0)
+        if (validarCampos() < 0) {
             return;
+        }
 
-       boolean isNewDocument = true;
-       DocumentoServico docServico = new DocumentoServico();
-       //TemplateDocumento doc = docServico.getByName(jTextFieldNome.getText());
+        boolean isNewDocument = true;
+        DocumentoServico docServico = new DocumentoServico();
+        //TemplateDocumento doc = docServico.getByName(jTextFieldNome.getText());
 
-       //caso ja exista um documento
+        //caso ja exista um documento
 /*       if (doc != null) {
-           isNewDocument = false;
-           if (JOptionPane.YES_OPTION !=
-                   JOptionPane.showConfirmDialog(this,"Documento " + jTextFieldNome.getText() + " já existe. Deseja sobrescrevê-lo?","Sobrescrever entidade",2))
-               return;
-       }*/
+        isNewDocument = false;
+        if (JOptionPane.YES_OPTION !=
+        JOptionPane.showConfirmDialog(this,"Documento " + jTextFieldNome.getText() + " já existe. Deseja sobrescrevê-lo?","Sobrescrever entidade",2))
+        return;
+        }*/
 
 
-       TemplateDocumento doc = new TemplateDocumento();
-       doc.setNome(jTextFieldNome.getText());
-       doc.setDirecao((String)jComboBoxTipo.getSelectedItem());
-       doc.setArquivoXsd(jTextFieldClasseValidacao.getText());
-       doc.setTipoFisico((String)jComboBoxTipoFisico.getSelectedItem());
-       popularGridAtributo(doc);
+        TemplateDocumento doc = new TemplateDocumento();
+        doc.setNome(jTextFieldNome.getText());
+        doc.setDirecao((String) jComboBoxTipo.getSelectedItem());
+        doc.setArquivoXsd(jTextFieldClasseValidacao.getText());
+        doc.setTipoFisico((String) jComboBoxTipoFisico.getSelectedItem());
+        popularGridAtributo(doc);
 
 
-       isNewDocument = docServico.save(doc);
+        isNewDocument = docServico.save(doc);
 
         //se foi insercao de documento;
-       if (isNewDocument) {
-           jFramePrincipal.addNode(jTextFieldNome.getText());
-           JOptionPane.showMessageDialog(this,"Documento " + jTextFieldNome.getText() + " criado");
-       }
-       else {
-           JOptionPane.showMessageDialog(this,"Documento " + jTextFieldNome.getText() + " atualizado");
-       }
+        if (isNewDocument) {
+            jFramePrincipal.addNode(jTextFieldNome.getText());
+            JOptionPane.showMessageDialog(this, "Documento " + jTextFieldNome.getText() + " criado");
+        } else {
+            JOptionPane.showMessageDialog(this, "Documento " + jTextFieldNome.getText() + " atualizado");
+        }
 
 
-       jFramePrincipal.atualizarCampos(entidadeDocumento);
+        jFramePrincipal.atualizarCampos(entidadeDocumento);
 
-      
+
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
 
     /*private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {
 
-       if (validarCampos() < 0)
-            return;
+    if (validarCampos() < 0)
+    return;
 
-       boolean isNewDocument = true;
-       DocumentoServico docServico = new DocumentoServico();
-       TemplateDocumento doc = docServico.getByName(jTextFieldNome.getText());
+    boolean isNewDocument = true;
+    DocumentoServico docServico = new DocumentoServico();
+    TemplateDocumento doc = docServico.getByName(jTextFieldNome.getText());
 
-       //caso ja exista um documento
-       if (doc != null) {
-           isNewDocument = false;
-           if (JOptionPane.YES_OPTION !=
-                   JOptionPane.showConfirmDialog(this,"Documento " + jTextFieldNome.getText() + " já existe. Deseja sobrescrevê-lo?","Sobrescrever entidade",2))
-               return;
-       }else {
-           doc = new TemplateDocumento();
-       }
-
-
-
-       doc.setNome(jTextFieldNome.getText());
-       doc.setDirecao((String)jComboBoxTipo.getSelectedItem());
-       doc.setArquivoXsd(jTextFieldClasseValidacao.getText());
-       doc.setTipoFisico((String)jComboBoxTipoFisico.getSelectedItem());
-       popularGridAtributo(doc);
-
-       docServico.save(doc);
-
-
-       //se foi insercao de documento;
-       if (isNewDocument) {
-           jFramePrincipal.addNode(jTextFieldNome.getText());
-           JOptionPane.showMessageDialog(this,"Documento " + jTextFieldNome.getText() + " criado");
-       }
-       else {
-           JOptionPane.showMessageDialog(this,"Documento " + jTextFieldNome.getText() + " atualizado");
-       }
-
-
-       jFramePrincipal.atualizarCampos(entidadeDocumento);
+    //caso ja exista um documento
+    if (doc != null) {
+    isNewDocument = false;
+    if (JOptionPane.YES_OPTION !=
+    JOptionPane.showConfirmDialog(this,"Documento " + jTextFieldNome.getText() + " já existe. Deseja sobrescrevê-lo?","Sobrescrever entidade",2))
+    return;
+    }else {
+    doc = new TemplateDocumento();
     }
-*/
 
 
+
+    doc.setNome(jTextFieldNome.getText());
+    doc.setDirecao((String)jComboBoxTipo.getSelectedItem());
+    doc.setArquivoXsd(jTextFieldClasseValidacao.getText());
+    doc.setTipoFisico((String)jComboBoxTipoFisico.getSelectedItem());
+    popularGridAtributo(doc);
+
+    docServico.save(doc);
+
+
+    //se foi insercao de documento;
+    if (isNewDocument) {
+    jFramePrincipal.addNode(jTextFieldNome.getText());
+    JOptionPane.showMessageDialog(this,"Documento " + jTextFieldNome.getText() + " criado");
+    }
+    else {
+    JOptionPane.showMessageDialog(this,"Documento " + jTextFieldNome.getText() + " atualizado");
+    }
+
+
+    jFramePrincipal.atualizarCampos(entidadeDocumento);
+    }
+     */
     private void jButtonRegrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegrasActionPerformed
-         if (currentRegras == null) {
-             currentRegras = new CadRegras(this);
+        if (currentRegras == null) {
+            currentRegras = new CadRegras(this);
             // jFramePrincipal.addPanel(currentRegras);
-         }
+        }
         // currentRegras.setDocumento(DocumentoDAO.getDocumento(jTextFieldNome.getText()));
-         currentRegras.setDocumento(new DocumentoServico().getByName(jTextFieldNome.getText()));
-         setVisible(false);
-         currentRegras.setVisible(true);
-         jFramePrincipal.addPanel(currentRegras);
+        currentRegras.setDocumento(new DocumentoServico().getByName(jTextFieldNome.getText()));
+        setVisible(false);
+        currentRegras.setVisible(true);
+        jFramePrincipal.addPanel(currentRegras);
     }//GEN-LAST:event_jButtonRegrasActionPerformed
 
     private void popularRegistro(String nome) {
-     // TemplateDocumento doc = DocumentoDAO.getDocumento(nome);
-         TemplateDocumento doc = new DocumentoServico().getByName(nome);
-       if (doc != null) {
-           jTextFieldNome.setText(doc.getNome());
-           jTextFieldNome.setEditable(false);
-           jComboBoxTipo.setSelectedItem(doc.getDirecao());
-           jComboBoxTipoFisico.setSelectedItem(doc.getTipoFisico());
-           jTextFieldClasseValidacao.setText(doc.getArquivoXsd());
+        // TemplateDocumento doc = DocumentoDAO.getDocumento(nome);
+        TemplateDocumento doc = new DocumentoServico().getByName(nome);
+        if (doc != null) {
+            jTextFieldNome.setText(doc.getNome());
+            jTextFieldNome.setEditable(false);
+            jComboBoxTipo.setSelectedItem(doc.getDirecao());
+            jComboBoxTipoFisico.setSelectedItem(doc.getTipoFisico());
+            jTextFieldClasseValidacao.setText(doc.getArquivoXsd());
 
-          Vector <Object> vectorAtributo = null;
-          Vector <Vector> vector = new Vector();
+            Vector<Object> vectorAtributo = null;
+            Vector<Vector> vector = new Vector();
 
-           for (Atributo atributo : doc.getAtributoCollection()) {               
-               vectorAtributo = new Vector();
+            for (Atributo atributo : doc.getAtributoCollection()) {
+                vectorAtributo = new Vector();
 
-               vectorAtributo.add(atributo.getOrderId());
-               vectorAtributo.add(atributo.getTag());
-               vectorAtributo.add(atributo.getIdClasseEquivalencia().getId());
-               vectorAtributo.add(Boolean.parseBoolean(atributo.getOpcional()));
-               vectorAtributo.add(atributo.getNumeroMaximoOcorrencias());             
+                vectorAtributo.add(atributo.getOrderId());
+                vectorAtributo.add(atributo.getTag());
+                vectorAtributo.add(atributo.getIdClasseEquivalencia().getId());
+                vectorAtributo.add(Boolean.parseBoolean(atributo.getOpcional()));
+                vectorAtributo.add(atributo.getNumeroMaximoOcorrencias());
 
-               vector.addElement(vectorAtributo);
-           }
-           g.fillGrid(vector);
-       }       
+                vector.addElement(vectorAtributo);
+            }
+            g.fillGrid(vector);
+        }
     }
 
     private void limparRegistro() {
@@ -345,53 +336,59 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
         jComboBoxTipo.setSelectedIndex(0);
         jComboBoxTipoFisico.setSelectedIndex(0);
         jTextFieldClasseValidacao.setText("");
- }
+    }
 
     private void popularGridAtributo(TemplateDocumento doc) {
 
-       //conjunto de atributos a serem salvos
-       List<Atributo> atributos = new ArrayList();
+        //conjunto de atributos a serem salvos
+        List<Atributo> atributos = new ArrayList();
 
-       //conjunto que representa uma linha do grid de atributos
-       List<Object> linha = new ArrayList(6);
+        //conjunto que representa uma linha do grid de atributos
+        List<Object> linha = new ArrayList(6);
 
-       //itera sobre todas as linha do grid
-       for (int index = 0; index < g.getGridData().size(); index++) {
+        //itera sobre todas as linha do grid
+        for (int index = 0; index < g.getGridData().size(); index++) {
 
             //cada linha encontrada no grid temos os dados que representarao
             //um objeto Atributo
             Atributo atributo = new Atributo();
-           
+
             //garante-se que cada linha tenha 6 objetos
             linha.clear();
-            for(int i = 0; i < 6; i++) 
-                linha.add(i, null);            
+            for (int i = 0; i < 6; i++) {
+                linha.add(i, null);
+            }
 
-            for (int indexC = 0; indexC < g.getGridData().get(index).size(); indexC++)
-                linha.set(indexC,g.getGridData().get(index).get(indexC));            
+            for (int indexC = 0; indexC < g.getGridData().get(index).size(); indexC++) {
+                linha.set(indexC, g.getGridData().get(index).get(indexC));
+            }
 
-            if (g.getGridData().get(index).get(0) != null)
+            if (g.getGridData().get(index).get(0) != null) {
                 atributo.setOrderId(Long.parseLong(linha.get(0).toString()));
+            }
 
-            if (linha.get(1) != null)
-                atributo.setTag((String)linha.get(1));
+            if (linha.get(1) != null) {
+                atributo.setTag((String) linha.get(1));
+            }
 
             if (linha.get(2) != null) {
-                ClasseEquivalencia ce = new ClasseEquivalenciaServico().getById(((Long)linha.get(2)).intValue());
-               // atributo.setIdClasseEquivalencia(ClasseEquivalenciaDAO.getClasseEquivalencia(((Long)linha.get(2)).intValue()));
-                 atributo.setIdClasseEquivalencia(ce);
-           }
+                ClasseEquivalencia ce = new ClasseEquivalenciaServico().getById(((Long) linha.get(2)).intValue());
+                // atributo.setIdClasseEquivalencia(ClasseEquivalenciaDAO.getClasseEquivalencia(((Long)linha.get(2)).intValue()));
+                atributo.setIdClasseEquivalencia(ce);
+            }
 
 
-            if (linha.get(3) == null)
+            if (linha.get(3) == null) {
                 atributo.setOpcional("false");
-            else
-                atributo.setOpcional(Boolean.toString((Boolean)linha.get(3)));
+            } else {
+                atributo.setOpcional(Boolean.toString((Boolean) linha.get(3)));
+            }
 
-            if (linha.get(4) != null)
+            if (linha.get(4) != null) {
                 atributo.setNumeroMaximoOcorrencias(Integer.parseInt(linha.get(4).toString()));
-            else
+            } else {
                 atributo.setNumeroMaximoOcorrencias(0);
+            }
 
             atributo.setIdTemplateDocumento(doc);
 
@@ -399,48 +396,46 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
             atributos.add(atributo);
         }
 
-       //salvo cada objeto de Atributo encontrado la lista atributos
+        //salvo cada objeto de Atributo encontrado la lista atributos
        /*for (int i = 0; i<atributos.size(); i++) {
-            try {
-                AtributoDAO.save(atributos.get(i));
-            }
-            catch(Exception e) {
-                JOptionPane.showMessageDialog(this,"Erro ao Salvar Atributo");
-            }
+        try {
+        AtributoDAO.save(atributos.get(i));
+        }
+        catch(Exception e) {
+        JOptionPane.showMessageDialog(this,"Erro ao Salvar Atributo");
+        }
         }*/
-       doc.setAtributoCollection(atributos);
- } 
- 
-    private void initCombos() {
-     jComboBoxTipo.removeAllItems();
-     jComboBoxTipo.addItem("");
-     jComboBoxTipo.addItem("Entrada");
-     jComboBoxTipo.addItem("Saida");
+        doc.setAtributoCollection(atributos);
+    }
 
-     jComboBoxTipoFisico.removeAllItems();
-     jComboBoxTipoFisico.addItem("");
-     jComboBoxTipoFisico.addItem("arquivo");
-     jComboBoxTipoFisico.addItem("mensagem");
- }
+    private void initCombos() {
+        jComboBoxTipo.removeAllItems();
+        jComboBoxTipo.addItem("");
+        jComboBoxTipo.addItem("Entrada");
+        jComboBoxTipo.addItem("Saida");
+
+        jComboBoxTipoFisico.removeAllItems();
+        jComboBoxTipoFisico.addItem("");
+        jComboBoxTipoFisico.addItem("arquivo");
+        jComboBoxTipoFisico.addItem("mensagem");
+    }
 
     private int validarCampos() {
-     int retorno = 0;
-     if (jTextFieldNome.getText().equals("")) {
-        JOptionPane.showMessageDialog(this,"Escolha um nome");
-        retorno = -1;
-     }
-     if(jComboBoxTipo.getSelectedItem() == null || jComboBoxTipo.getSelectedItem().equals("")) {
-        JOptionPane.showMessageDialog(this,"Escolha um tipo");
-        retorno = -1;
-     }
-     if(jComboBoxTipoFisico.getSelectedItem() == null || jComboBoxTipoFisico.getSelectedItem().equals("")) {
-        JOptionPane.showMessageDialog(this,"Escolha um tipo físico");
-        retorno =  -1;
-     }
-     return retorno;
- }
-
-
+        int retorno = 0;
+        if (jTextFieldNome.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Escolha um nome");
+            retorno = -1;
+        }
+        if (jComboBoxTipo.getSelectedItem() == null || jComboBoxTipo.getSelectedItem().equals("")) {
+            JOptionPane.showMessageDialog(this, "Escolha um tipo");
+            retorno = -1;
+        }
+        if (jComboBoxTipoFisico.getSelectedItem() == null || jComboBoxTipoFisico.getSelectedItem().equals("")) {
+            JOptionPane.showMessageDialog(this, "Escolha um tipo físico");
+            retorno = -1;
+        }
+        return retorno;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonRegras;
     private javax.swing.JButton jButtonSair;
@@ -454,5 +449,4 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
     private javax.swing.JTextField jTextFieldClasseValidacao;
     private javax.swing.JTextField jTextFieldNome;
     // End of variables declaration//GEN-END:variables
-
 }

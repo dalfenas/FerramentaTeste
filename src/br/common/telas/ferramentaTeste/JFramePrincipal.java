@@ -3,7 +3,6 @@ package br.common.telas.ferramentaTeste;
 import br.org.fdte.AtualizacaoTela;
 import br.org.fdte.ExecutionTreeNode;
 import br.org.fdte.MyRenderer;
-import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
 
 import java.awt.event.ActionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -23,8 +22,7 @@ import br.org.fdte.persistence.Regra;
 import br.org.fdte.persistence.SuiteValidacaoTesteValidacao;
 import br.org.fdte.persistence.Valor;
 
-//import br.org.fdte.dao.CaracterizacaoTstValidacaoDAO;
-import br.org.fdte.dao.EspecificoDAO;
+import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
 import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
 import br.org.fdte.dao.RegraDAO;
 
@@ -166,8 +164,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
 
         if (entidade.equalsIgnoreCase(AtualizacaoTela.entidadeDocumento)) {
-            currentTesteCase.atualizarTela();
-            currentDoc.atualizarRegras();
+            currentTesteCase.atualizarTela();           
         }
 
         if (entidade.equalsIgnoreCase(AtualizacaoTela.entidadeTesteValidacao)) {
@@ -534,6 +531,7 @@ public class JFramePrincipal extends javax.swing.JFrame
     }
 
     private void removeNode() {
+
         TreeNode parent = selNode.getParent();
         TreeNode root = ((DefaultMutableTreeNode) parent).getRoot();
 
@@ -579,20 +577,6 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
     }
 
-    /*public void removeGoldenNodesFromSuite() {
-    DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
-    TreeNode aChild;
-    //selNode representa a suite sendo executada
-    //remove todos os nos representando referentes a execucoes golden
-    for (int i=0; i<selNode.getChildCount(); i++) {
-    aChild = selNode.getChildAt(i);
-    if (aChild instanceof ExecutionTreeNode) {
-    ExecutionTreeNode aChildExecution = (ExecutionTreeNode)aChild;
-    if (aChildExecution.isGolden())
-    model.removeNodeFromParent((DefaultMutableTreeNode)aChild);
-    }
-    }
-    }*/
     public void removeExecs(String golden) {
         DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
         TreeNode aChild;
@@ -685,7 +669,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         TreeNode root = ((DefaultMutableTreeNode) parent).getRoot();
 
         int nPai = root.getIndex(parent);
-        int retorno = 0;
+        //int retorno = 0;
         String entidadeAtualizada = "";
 
         switch (Entidade.values()[nPai]) {
@@ -704,18 +688,18 @@ public class JFramePrincipal extends javax.swing.JFrame
                 entidadeAtualizada = AtualizacaoTela.entidadeTesteValidacao;
                 break;
             case SUITE_VALIDACAO:
-                retorno = copiarSuiteValidacao(selNode.getUserObject().toString(), nomeNovo);
+                copiarSuiteValidacao(selNode.getUserObject().toString(), nomeNovo);
                 entidadeAtualizada = AtualizacaoTela.entidadeSuiteValidacao;
                 break;
             default:
                 System.out.println("FALTA IMPLEMENTAR CopiarNo");
                 break;
         }
-        if (retorno >= 0) {
-            selNode = (DefaultMutableTreeNode) parent;
-            addNode(nomeNovo);
-            atualizarCampos(entidadeAtualizada);
-        }
+
+        selNode = (DefaultMutableTreeNode) parent;
+        addNode(nomeNovo);
+        atualizarCampos(entidadeAtualizada);
+
     }
 
     private void renomearNo() {
@@ -730,7 +714,6 @@ public class JFramePrincipal extends javax.swing.JFrame
         TreeNode root = ((DefaultMutableTreeNode) parent).getRoot();
 
         int nPai = root.getIndex(parent);
-        int retorno = 0;
         String entidadeAtualizada = "";
 
         switch (Entidade.values()[nPai]) {
@@ -782,12 +765,13 @@ public class JFramePrincipal extends javax.swing.JFrame
                 System.out.println("FALTA IMPLEMENTAR RenomearNode");
                 break;
         }
-        if (retorno >= 0) {
-            removeNode();
-            selNode = (DefaultMutableTreeNode) parent;
-            addNode(nomeNovo);
-            atualizarCampos(entidadeAtualizada);
-        }
+
+
+        removeNode();
+        selNode = (DefaultMutableTreeNode) parent;
+        addNode(nomeNovo);
+        atualizarCampos(entidadeAtualizada);
+
     }
 
     private void copiarClasseEquivalencia(String nomeNo, String novoNome) {
@@ -862,7 +846,6 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
         docCopia.setAtributoCollection(novosAtributos);
 
-
         Iterator itRegras = doc.getRegraCollection().iterator();
         while (itRegras.hasNext()) {
             Regra regraLida = (Regra) itRegras.next();
@@ -881,8 +864,8 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
 
         docCopia.setRegraCollection(doc.getRegraCollection());
-        docServico.save(docCopia);
 
+        docServico.save(docCopia);
     }
 
     private void copiarValidacaoTeste(String nomeNo, String novoNome) {
@@ -934,13 +917,13 @@ public class JFramePrincipal extends javax.swing.JFrame
 
     }
 
-    private int copiarSuiteValidacao(String nomeNo, String novoNome) {
+    private void copiarSuiteValidacao(String nomeNo, String novoNome) {
 
         SuiteServico suiteServico = new SuiteServico();
         if (null != suiteServico.getByName(novoNome)) {
             if (JOptionPane.YES_OPTION
                     != JOptionPane.showConfirmDialog(this, "Suite de Teste de Validação " + novoNome + " já existe. Deseja sobrescrevê-la?", "Sobrescrever entidade", 2)) {
-                return -1;
+                return;
             }
         }
 
@@ -961,7 +944,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         SuiteTesteValidacao suiteValCopia = new SuiteTesteValidacao();
         suiteValCopia.setNome(novoNome);
 
-        boolean isNewObject = suiteServico.save(suiteValCopia, listSVTV);
+        suiteServico.save(suiteValCopia, listSVTV);
 
         /*Iterator lst = SuiteValCarTstValDAO.getSuiteVal(suiteVal.getId()).iterator();
         while (lst.hasNext()) {
@@ -975,7 +958,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         svctstVal.setResult(svctstValLido.getResult());
         SuiteValCarTstValDAO.save(svctstVal);
         }*/
-        return 1;
+
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
