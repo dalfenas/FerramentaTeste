@@ -140,7 +140,7 @@ public class CadAtivacao extends javax.swing.JPanel {
                 break;
             //Falha
             case 1:
-                listaAtivacoes = AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "N");
+                listaAtivacoes = AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "F");
                 break;
             //Timeout
             case 2:
