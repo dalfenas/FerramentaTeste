@@ -24,7 +24,7 @@ import br.org.fdte.persistence.Valor;
 
 import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
 import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
-import br.org.fdte.dao.RegraDAO;
+//import br.org.fdte.dao.RegraDAO;
 
 import br.org.servicos.CaracterizacaoTesteValidacaoServico;
 import br.org.servicos.ClasseEquivalenciaServico;
@@ -846,6 +846,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
         docCopia.setAtributoCollection(novosAtributos);
 
+        Collection<Regra> novasRegras = new LinkedList<Regra>();
         Iterator itRegras = doc.getRegraCollection().iterator();
         while (itRegras.hasNext()) {
             Regra regraLida = (Regra) itRegras.next();
@@ -859,11 +860,11 @@ public class JFramePrincipal extends javax.swing.JFrame
             regra.setSeAtributo(regraLida.getSeAtributo());
             regra.setSeRelacao(regraLida.getSeRelacao());
             regra.setSeValor(regraLida.getSeValor());
-
-            RegraDAO.save(regra);
+            novasRegras.add(regra);
+            //24/02/2011 lrb
+            //RegraDAO.save(regra);
         }
-
-        docCopia.setRegraCollection(doc.getRegraCollection());
+        docCopia.setRegraCollection(novasRegras);
 
         docServico.save(docCopia);
     }

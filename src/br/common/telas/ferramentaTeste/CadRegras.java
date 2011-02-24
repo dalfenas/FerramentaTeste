@@ -132,6 +132,7 @@ public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTel
         ComboBoxGeneric cba = new ComboBoxGeneric();
         cba.setItemList((List<Atributo>) doc.getAtributoCollection());
         g.getOGridTableModel().getColumnConfiguration(1).setcBoxDataSource(cba);
+        g.getOGridTableModel().getColumnConfiguration(4).setcBoxDataSource(cba);
         g.configureTableColumns();
 
         List<Regra> lstRegra = DocumentoDAO.getRegras(doc);
