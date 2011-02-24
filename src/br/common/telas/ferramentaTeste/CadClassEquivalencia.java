@@ -16,6 +16,10 @@ import br.org.fdte.persistence.ClasseEquivalencia;
 import br.org.fdte.persistence.TipoClasseEquivalencia;
 import br.org.fdte.persistence.Valor;
 import br.org.servicos.ClasseEquivalenciaServico;
+import com.google.common.collect.Collections2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class CadClassEquivalencia extends javax.swing.JPanel implements AtualizacaoTela {
 
@@ -180,23 +184,22 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
         ClasseEquivalenciaServico servicoClasseEq = new ClasseEquivalenciaServico();
         ClasseEquivalencia ce = new ClasseEquivalencia();
         ce.setNome(jTextFieldNome.getText());
-        ce.setTipo(tipoCe);        
+        ce.setTipo(tipoCe);
         popularGridValores(ce);
 
-        boolean isNewDocument  = servicoClasseEq.save(ce);
+        boolean isNewDocument = servicoClasseEq.save(ce);
 
         //se foi insercao;
-       if (isNewDocument) {
-           jFramePrincipal.addNode(jTextFieldNome.getText());
-           JOptionPane.showMessageDialog(this,"Classe de Equivalencia " + jTextFieldNome.getText() + " criada");
-       }
-       else {
-           JOptionPane.showMessageDialog(this, "Classe de Equivalencia " + jTextFieldNome.getText() + " atualizada");
-       }
+        if (isNewDocument) {
+            jFramePrincipal.addNode(jTextFieldNome.getText());
+            JOptionPane.showMessageDialog(this, "Classe de Equivalencia " + jTextFieldNome.getText() + " criada");
+        } else {
+            JOptionPane.showMessageDialog(this, "Classe de Equivalencia " + jTextFieldNome.getText() + " atualizada");
+        }
 
 
         jFramePrincipal.atualizarCampos(AtualizacaoTela.entidadeClasseEquivalencia);
-        
+
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -261,10 +264,7 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
 
             valores.add(valor);
         }
-/*        for (int i = 0; i < valores.size(); i++) {
-            ValorDAO.save(valores.get(i));
 
-        }*/
         ce.setValorCollection(valores);
     }
 
@@ -280,10 +280,29 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
                 jcmbHeranca.setSelectedItem(ce.getHeranca().getNome());
             }
 
+            ArrayList<Valor> listValores = new ArrayList<Valor>(ce.getValorCollection());
+            Collections.sort(listValores, new Comparator() {
+                @Override
+                public int compare(Object obj1, Object obj2) {
+                    Valor v1 = (Valor) obj1;
+                    Valor v2 = (Valor) obj2;
+
+                    if (v1.getOrderId() < v2.getOrderId()) {
+                        return -1;
+                    } else if (v1.getOrderId() == v2.getOrderId()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+
+
             Vector<Object> vectorValor = null;
             Vector<Vector> vector = new Vector();
-
-            for (Valor val : ce.getValorCollection()) {
+            
+            //for (Valor val : ce.getValorCollection()) {
+            for (Valor val : listValores) {
                 Boolean positivo = false;
                 if ((val.getPositivoNegativo() != null) && (val.getPositivoNegativo().equals("P"))) {
                     positivo = true;

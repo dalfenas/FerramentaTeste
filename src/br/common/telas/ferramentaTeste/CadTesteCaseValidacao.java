@@ -17,6 +17,9 @@ import br.org.fdte.persistence.Especificos;
 import br.org.fdte.persistence.TemplateDocumento;
 import br.org.servicos.CaracterizacaoTesteValidacaoServico;
 import br.org.servicos.DocumentoServico;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JOptionPane;
@@ -406,6 +409,23 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
                 jrdbTodosNeg.setSelected(true);
             }
 
+            ArrayList<Especificos> listaEspecificos = new ArrayList<Especificos>(tstVal.getEspecificosCollection());
+            Collections.sort(listaEspecificos, new Comparator() {
+                @Override
+                 public int compare(Object obj1, Object obj2) {
+                    Especificos espec1 = (Especificos) obj1;
+                    Especificos espec2 = (Especificos) obj2;
+
+                    if (espec1.getOrderId() < espec2.getOrderId()) {
+                        return -1;
+                    } else if (espec1.getOrderId() == espec2.getOrderId()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+
 
             Vector<Object> vectorEspecifico = null;
             Vector<Vector> vectorPositivo = new Vector();
@@ -414,7 +434,7 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
             Vector<Vector> vectorRepeticao = new Vector();
 
 
-            for (Especificos especifico : tstVal.getEspecificosCollection()) {
+            for (Especificos especifico : listaEspecificos) {
                 vectorEspecifico = new Vector();
 
                 vectorEspecifico.add(especifico.getOrderId());

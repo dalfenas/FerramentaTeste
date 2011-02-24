@@ -18,6 +18,8 @@ import br.org.servicos.ClasseEquivalenciaServico;
 import br.org.servicos.DocumentoServico;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -315,7 +317,25 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
             Vector<Object> vectorAtributo = null;
             Vector<Vector> vector = new Vector();
 
-            for (Atributo atributo : doc.getAtributoCollection()) {
+            ArrayList<Atributo> listaAtributos = new ArrayList<Atributo>(doc.getAtributoCollection());
+            Collections.sort(listaAtributos, new Comparator() {
+                 @Override
+                public int compare(Object obj1, Object obj2) {
+                    Atributo a1 = (Atributo) obj1;
+                    Atributo a2 = (Atributo) obj2;
+
+                    if (a1.getOrderId() < a2.getOrderId()) {
+                        return -1;
+                    } else if (a1.getOrderId() == a2.getOrderId()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+
+
+            for (Atributo atributo : listaAtributos) {
                 vectorAtributo = new Vector();
 
                 vectorAtributo.add(atributo.getOrderId());

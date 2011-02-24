@@ -11,6 +11,8 @@ import br.org.fdte.persistence.SuiteTesteValidacao;
 import br.org.fdte.persistence.SuiteValidacaoTesteValidacao;
 import br.org.servicos.SuiteServico;
 import java.awt.event.ItemEvent;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JOptionPane;
@@ -218,6 +220,22 @@ public class CadSuiteTeste extends javax.swing.JPanel implements AtualizacaoTela
         jTextFieldName.setText(nome);
         jTextFieldName.setEditable(false);
         jComboBoxTipo.setSelectedItem("validação");
+
+        Collections.sort(listSVCTV, new Comparator() {
+            @Override
+            public int compare(Object obj1, Object obj2) {
+                SuiteValidacaoTesteValidacao r1 = (SuiteValidacaoTesteValidacao) obj1;
+                SuiteValidacaoTesteValidacao r2 = (SuiteValidacaoTesteValidacao) obj2;
+
+                if (r1.getOrderId() < r2.getOrderId()) {
+                    return -1;
+                } else if (r1.getOrderId() == r2.getOrderId()) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
 
         Vector<Object> vectorCasoTeste = null;
         Vector<Vector> vector = new Vector();

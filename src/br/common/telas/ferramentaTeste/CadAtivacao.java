@@ -9,6 +9,8 @@ import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import java.awt.Color;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -148,6 +150,22 @@ public class CadAtivacao extends javax.swing.JPanel {
                 break;
           }
 
+          Collections.sort(listaAtivacoes, new Comparator() {
+               @Override
+                public int compare(Object obj1, Object obj2) {
+                    AtivacaoTesteValidacao v1 = (AtivacaoTesteValidacao) obj1;
+                    AtivacaoTesteValidacao v2 = (AtivacaoTesteValidacao) obj2;
+
+                    if (v1.getSequencial() < v2.getSequencial()) {
+                        return -1;
+                    } else if (v1.getSequencial() == v2.getSequencial()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+
           SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
          
           Vector <Object> vectorAtributo = null;
@@ -170,6 +188,8 @@ public class CadAtivacao extends javax.swing.JPanel {
             int nRow =  tableModel.getRowCount();
             for (int i = 0; i < nRow; i++)
             tableModel.deleteLine(i);
+
+            
 
             g.fillGrid(vector);      
         

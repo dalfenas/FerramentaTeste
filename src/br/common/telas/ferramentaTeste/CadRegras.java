@@ -15,6 +15,8 @@ import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.TemplateDocumento;
 import br.org.fdte.persistence.Regra;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -133,6 +135,23 @@ public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTel
         g.configureTableColumns();
 
         List<Regra> lstRegra = DocumentoDAO.getRegras(doc);
+
+        Collections.sort(lstRegra, new Comparator() {
+            @Override
+            public int compare(Object obj1, Object obj2) {
+                Regra r1 = (Regra) obj1;
+                Regra r2 = (Regra) obj2;
+
+                if (r1.getOrderId() < r2.getOrderId()) {
+                    return -1;
+                } else if (r1.getOrderId() == r2.getOrderId()) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
+
 
         if (lstRegra != null) {
             Vector<Object> vectorRegra = null;
