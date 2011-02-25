@@ -861,8 +861,7 @@ public class JFramePrincipal extends javax.swing.JFrame
             regra.setSeRelacao(regraLida.getSeRelacao());
             regra.setSeValor(regraLida.getSeValor());
             novasRegras.add(regra);
-            //24/02/2011 lrb
-            //RegraDAO.save(regra);
+            
         }
         docCopia.setRegraCollection(novasRegras);
 

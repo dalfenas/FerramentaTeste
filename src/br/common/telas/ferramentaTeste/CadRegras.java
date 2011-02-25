@@ -14,6 +14,7 @@ import br.org.fdte.dao.RelacaoSeDAO;
 import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.TemplateDocumento;
 import br.org.fdte.persistence.Regra;
+import br.org.servicos.DocumentoServico;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +22,10 @@ import java.util.List;
 import java.util.Vector;
 
 public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTela {
+
+    private static TemplateDocumento doc;
+    private OGrid g;
+    private CadDocumento telaCadDoc;
 
     public class ComboBoxGeneric implements ComboBoxDataSource {
 
@@ -37,9 +42,7 @@ public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTel
             }
         }
     }
-    private static TemplateDocumento doc;
-    private OGrid g;
-    private CadDocumento telaCadDoc;
+    
 
     /** Creates new form CadRegras */
     public CadRegras(CadDocumento cadDoc) {
@@ -135,7 +138,8 @@ public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTel
         g.getOGridTableModel().getColumnConfiguration(4).setcBoxDataSource(cba);
         g.configureTableColumns();
 
-        List<Regra> lstRegra = DocumentoDAO.getRegras(doc);
+        //lrb 25/02/2011 List<Regra> lstRegra = DocumentoDAO.getRegras(doc);
+        List<Regra> lstRegra = new ArrayList<Regra>(doc.getRegraCollection());
 
         Collections.sort(lstRegra, new Comparator() {
             @Override
@@ -154,7 +158,7 @@ public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTel
         });
 
 
-        if (lstRegra != null) {
+        if (lstRegra != null && (false == lstRegra.isEmpty())) {
             Vector<Object> vectorRegra = null;
             Vector<Vector> vector = new Vector();
 
@@ -255,6 +259,15 @@ public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTel
         for (int i = 0; i < regras.size(); i++) {
             RegraDAO.save(regras.get(i));
         }
+
+        //lrb 25/02/2011
+        doc.setRegraCollection(regras);
+        this.setDocumento(doc);
+        CadRegras.doc = doc;
+
+
+        
+        
 }//GEN-LAST:event_jButtonSalvarActionPerformed
 
     private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed

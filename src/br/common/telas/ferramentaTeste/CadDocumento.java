@@ -12,7 +12,6 @@ import java.awt.Color;
 // persistence test
 import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.ClasseEquivalencia;
-import br.org.fdte.persistence.Regra;
 import br.org.fdte.persistence.TemplateDocumento;
 
 import br.org.servicos.ClasseEquivalenciaServico;
@@ -213,26 +212,15 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
         }
 
         boolean isNewDocument = true;
-        DocumentoServico docServico = new DocumentoServico();
-        //TemplateDocumento doc = docServico.getByName(jTextFieldNome.getText());
-
-        //caso ja exista um documento
-/*       if (doc != null) {
-        isNewDocument = false;
-        if (JOptionPane.YES_OPTION !=
-        JOptionPane.showConfirmDialog(this,"Documento " + jTextFieldNome.getText() + " já existe. Deseja sobrescrevê-lo?","Sobrescrever entidade",2))
-        return;
-        }*/
+        DocumentoServico docServico = new DocumentoServico();               
 
 
         TemplateDocumento doc = new TemplateDocumento();
         doc.setNome(jTextFieldNome.getText());
         doc.setDirecao((String) jComboBoxTipo.getSelectedItem());
         doc.setArquivoXsd(jTextFieldClasseValidacao.getText());
-        doc.setTipoFisico((String) jComboBoxTipoFisico.getSelectedItem());
-       // doc.setRegraCollection(new ArrayList<Regra>());
+        doc.setTipoFisico((String) jComboBoxTipoFisico.getSelectedItem());       
         popularGridAtributo(doc);
-
 
         isNewDocument = docServico.save(doc);
 
@@ -244,62 +232,14 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
             JOptionPane.showMessageDialog(this, "Documento " + jTextFieldNome.getText() + " atualizado");
         }
 
-
         jFramePrincipal.atualizarCampos(entidadeDocumento);
-
-
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
-
-    /*private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {
-
-    if (validarCampos() < 0)
-    return;
-
-    boolean isNewDocument = true;
-    DocumentoServico docServico = new DocumentoServico();
-    TemplateDocumento doc = docServico.getByName(jTextFieldNome.getText());
-
-    //caso ja exista um documento
-    if (doc != null) {
-    isNewDocument = false;
-    if (JOptionPane.YES_OPTION !=
-    JOptionPane.showConfirmDialog(this,"Documento " + jTextFieldNome.getText() + " já existe. Deseja sobrescrevê-lo?","Sobrescrever entidade",2))
-    return;
-    }else {
-    doc = new TemplateDocumento();
-    }
-
-
-
-    doc.setNome(jTextFieldNome.getText());
-    doc.setDirecao((String)jComboBoxTipo.getSelectedItem());
-    doc.setArquivoXsd(jTextFieldClasseValidacao.getText());
-    doc.setTipoFisico((String)jComboBoxTipoFisico.getSelectedItem());
-    popularGridAtributo(doc);
-
-    docServico.save(doc);
-
-
-    //se foi insercao de documento;
-    if (isNewDocument) {
-    jFramePrincipal.addNode(jTextFieldNome.getText());
-    JOptionPane.showMessageDialog(this,"Documento " + jTextFieldNome.getText() + " criado");
-    }
-    else {
-    JOptionPane.showMessageDialog(this,"Documento " + jTextFieldNome.getText() + " atualizado");
-    }
-
-
-    jFramePrincipal.atualizarCampos(entidadeDocumento);
-    }
-     */
+   
     private void jButtonRegrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegrasActionPerformed
         if (currentRegras == null) {
-            currentRegras = new CadRegras(this);
-            // jFramePrincipal.addPanel(currentRegras);
-        }
-        // currentRegras.setDocumento(DocumentoDAO.getDocumento(jTextFieldNome.getText()));
+            currentRegras = new CadRegras(this);            
+        }        
         currentRegras.setDocumento(new DocumentoServico().getByName(jTextFieldNome.getText()));
         setVisible(false);
         currentRegras.setVisible(true);
@@ -307,7 +247,7 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
     }//GEN-LAST:event_jButtonRegrasActionPerformed
 
     private void popularRegistro(String nome) {
-        // TemplateDocumento doc = DocumentoDAO.getDocumento(nome);
+        
         TemplateDocumento doc = new DocumentoServico().getByName(nome);
         if (doc != null) {
             jTextFieldNome.setText(doc.getNome());
@@ -417,16 +357,7 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
             //o atributo é adicionado na lista atributos a ser processada ao final desse método
             atributos.add(atributo);
         }
-
-        //salvo cada objeto de Atributo encontrado la lista atributos
-       /*for (int i = 0; i<atributos.size(); i++) {
-        try {
-        AtributoDAO.save(atributos.get(i));
-        }
-        catch(Exception e) {
-        JOptionPane.showMessageDialog(this,"Erro ao Salvar Atributo");
-        }
-        }*/
+        
         doc.setAtributoCollection(atributos);
     }
 
