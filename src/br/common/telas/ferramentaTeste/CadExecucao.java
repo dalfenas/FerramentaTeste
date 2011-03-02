@@ -147,6 +147,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
     }
 
     public void setRegistro(SuiteTesteValidacao suite) {
+        jComboBoxSuite.setEditable(true);
         jComboBoxSuite.setSelectedItem(suite.getNome());
         jComboBoxSuite.setEnabled(false);
         jButtonExec.setEnabled(true);
