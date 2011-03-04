@@ -7,8 +7,6 @@ import br.org.fdte.ComboBoxRelacaoSe;
 import br.org.fdte.OGrid;
 import br.org.fdte.OGridTableModel;
 import br.org.fdte.dao.AtributoDAO;
-import br.org.fdte.dao.DocumentoDAO;
-import br.org.fdte.dao.RegraDAO;
 import br.org.fdte.dao.RelacaoEntaoDAO;
 import br.org.fdte.dao.RelacaoSeDAO;
 import br.org.fdte.persistence.Atributo;
@@ -138,7 +136,7 @@ public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTel
         g.getOGridTableModel().getColumnConfiguration(4).setcBoxDataSource(cba);
         g.configureTableColumns();
 
-        //lrb 25/02/2011 List<Regra> lstRegra = DocumentoDAO.getRegras(doc);
+        
         List<Regra> lstRegra = new ArrayList<Regra>(doc.getRegraCollection());
 
         Collections.sort(lstRegra, new Comparator() {
@@ -230,9 +228,6 @@ public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTel
         Vector<Vector> dataGrid = g.getGridData();
         Vector<Object> vector = new Vector(8);
 
-        //Remove todas as regras relacionadas ao template de documento;
-        DocumentoDAO.removeRegras(doc.getId());
-
         for (int i = 0; i < 8; i++) {
             vector.add("");
         }
@@ -256,13 +251,10 @@ public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTel
             regras.add(regra);
         }
 
-        for (int i = 0; i < regras.size(); i++) {
-            RegraDAO.save(regras.get(i));
-        }
-
-        //lrb 25/02/2011
+        
         doc.setRegraCollection(regras);
         this.setDocumento(doc);
+        new DocumentoServico().save(doc);
         CadRegras.doc = doc;
 
 

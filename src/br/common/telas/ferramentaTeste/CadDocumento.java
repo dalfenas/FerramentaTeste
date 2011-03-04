@@ -12,6 +12,7 @@ import java.awt.Color;
 // persistence test
 import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.ClasseEquivalencia;
+import br.org.fdte.persistence.Regra;
 import br.org.fdte.persistence.TemplateDocumento;
 
 import br.org.servicos.ClasseEquivalenciaServico;
@@ -219,7 +220,16 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
         doc.setNome(jTextFieldNome.getText());
         doc.setDirecao((String) jComboBoxTipo.getSelectedItem());
         doc.setArquivoXsd(jTextFieldClasseValidacao.getText());
-        doc.setTipoFisico((String) jComboBoxTipoFisico.getSelectedItem());       
+        doc.setTipoFisico((String) jComboBoxTipoFisico.getSelectedItem());
+        //doc.setRegraCollection(new ArrayList<Regra>());
+        TemplateDocumento docAux = docServico.getByName(jTextFieldNome.getText());
+        if (docAux != null)  {
+            doc.setRegraCollection(docAux.getRegraCollection());
+        }
+        else {
+            doc.setRegraCollection(new ArrayList<Regra>());
+        }
+
         popularGridAtributo(doc);
 
         isNewDocument = docServico.save(doc);
