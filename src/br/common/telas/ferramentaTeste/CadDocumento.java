@@ -344,11 +344,9 @@ public class CadDocumento extends javax.swing.JPanel implements AtualizacaoTela 
             }
 
             if (linha.get(2) != null) {
-                ClasseEquivalencia ce = new ClasseEquivalenciaServico().getById(((Long) linha.get(2)).intValue());
-                // atributo.setIdClasseEquivalencia(ClasseEquivalenciaDAO.getClasseEquivalencia(((Long)linha.get(2)).intValue()));
+                ClasseEquivalencia ce = new ClasseEquivalenciaServico().getById(((Long) linha.get(2)).intValue());                
                 atributo.setIdClasseEquivalencia(ce);
             }
-
 
             if (linha.get(3) == null) {
                 atributo.setOpcional("false");

@@ -12,6 +12,7 @@ import br.org.fdte.dao.RelacaoSeDAO;
 import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.TemplateDocumento;
 import br.org.fdte.persistence.Regra;
+import br.org.fdte.persistence.RelacaoEntao;
 import br.org.servicos.DocumentoServico;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -244,7 +245,7 @@ public class CadRegras extends javax.swing.JPanel { // implements AtualizacaoTel
             regra.setSeRelacao(RelacaoSeDAO.get((Long) vector.get(2)));
             regra.setSeValor((String) vector.get(3));
             regra.setEntaoAtributo(AtributoDAO.get((Long) vector.get(4)).getId());
-            regra.setEntaoRelacao(RelacaoEntaoDAO.get((Long) vector.get(5)));
+            regra.setEntaoRelacao(RelacaoEntaoDAO.get((Long) vector.get(5)));            
             regra.setEntaoValor((String) vector.get(6));
             regra.setIdTemplateDocumento(doc);
             regra.setComentario((String) vector.get(7));

@@ -6,10 +6,10 @@ import br.org.fdte.OGrid;
 import br.org.fdte.OGridTableModel;
 import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
 import br.org.fdte.dao.SuiteTesteSequenciaDAO;
-import br.org.fdte.dao.SuiteTesteValidacaoDAO;
 import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import br.org.fdte.persistence.SuiteTesteSequencia;
 import br.org.fdte.persistence.SuiteTesteValidacao;
+import br.org.servicos.SuiteServico;
 import executortestevalidacao.ExecutionCallback;
 import java.util.List;
 import java.awt.Font;
@@ -270,7 +270,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
 
     private void initCombos() {
         List<SuiteTesteSequencia> lstTstSeq = SuiteTesteSequenciaDAO.getAll();
-        List<SuiteTesteValidacao> lstTstVal = SuiteTesteValidacaoDAO.getAll();
+        List<SuiteTesteValidacao> lstTstVal = new SuiteServico().getAll();
 
         for (SuiteTesteValidacao s : lstTstVal) {
             jComboBoxSuite.addItem(s.getNome());
@@ -441,7 +441,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
         limparTextLog();
         limparAreaGrid();
 
-        suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(jComboBoxSuite.getSelectedItem().toString());
+        suite = new SuiteServico().getByName(jComboBoxSuite.getSelectedItem().toString());
 
         ex = new ExecutorTesteValidacao();
         ex.setExecutionCallback(this);

@@ -16,7 +16,6 @@ import br.org.fdte.persistence.ClasseEquivalencia;
 import br.org.fdte.persistence.TipoClasseEquivalencia;
 import br.org.fdte.persistence.Valor;
 import br.org.servicos.ClasseEquivalenciaServico;
-import com.google.common.collect.Collections2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -178,8 +177,7 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
             return;
         }
 
-        TipoClasseEquivalencia tipoCe =
-                TipoClasseEquivalenciaDAO.getTipoClasseEquivalencia((String) jComboBoxTipo.getSelectedItem());
+        TipoClasseEquivalencia tipoCe = (TipoClasseEquivalencia)jComboBoxTipo.getSelectedItem();
 
         ClasseEquivalenciaServico servicoClasseEq = new ClasseEquivalenciaServico();
         ClasseEquivalencia ce = new ClasseEquivalencia();
@@ -274,7 +272,7 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
         if (ce != null) {
             jTextFieldNome.setText(ce.getNome());
             jTextFieldNome.setEditable(false);
-            jComboBoxTipo.setSelectedItem(ce.getTipo().getTipoClasseEquivalencia());
+            jComboBoxTipo.setSelectedItem(ce.getTipo());
 
             if (ce.getHeranca() != null) {
                 jcmbHeranca.setSelectedItem(ce.getHeranca().getNome());
@@ -342,7 +340,7 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
         jcmbHeranca.addItem("");
         List<TipoClasseEquivalencia> lst = TipoClasseEquivalenciaDAO.getAll();
         for (TipoClasseEquivalencia s : lst) {
-            jComboBoxTipo.addItem(s.getTipoClasseEquivalencia());
+            jComboBoxTipo.addItem(s);//.getTipoClasseEquivalencia());
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
