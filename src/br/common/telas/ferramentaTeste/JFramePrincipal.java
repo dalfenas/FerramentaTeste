@@ -24,7 +24,6 @@ import br.org.fdte.persistence.Valor;
 
 import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
 import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
-//import br.org.fdte.dao.RegraDAO;
 
 import br.org.servicos.CaracterizacaoTesteValidacaoServico;
 import br.org.servicos.ClasseEquivalenciaServico;
