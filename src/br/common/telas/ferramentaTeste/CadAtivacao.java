@@ -14,13 +14,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
-
 public class CadAtivacao extends javax.swing.JPanel {
 
     private CadExecucao telaExecucao;
-
     private ExecucaoTesteValidacao execucaoTesteValidacao = null;
-
     private OGrid g;
 
     /** Creates new form CadAtivacao */
@@ -43,25 +40,25 @@ public class CadAtivacao extends javax.swing.JPanel {
         g.addColumn(c);
 
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("Tipo");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
-        c.setWidth(20);       
+        c.setWidth(20);
         g.addColumn(c);
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("Inicio");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
-        c.setWidth(100);              
+        c.setWidth(100);
         g.addColumn(c);
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("Termino");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
-        c.setWidth(100);        
+        c.setWidth(100);
         g.addColumn(c);
 
-        c= new ColumnConfiguration();
+        c = new ColumnConfiguration();
         c.setTitle("Resultado");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(20);
@@ -86,7 +83,7 @@ public class CadAtivacao extends javax.swing.JPanel {
         jComboResultado.addItem("Falha");
         jComboResultado.addItem("Timeout");
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -124,18 +121,16 @@ public class CadAtivacao extends javax.swing.JPanel {
 
     private void jComboResultadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboResultadoItemStateChanged
         // TODO add your handling code here:
-        if (execucaoTesteValidacao != null)
-        obtemAtivacoes();
+        if (execucaoTesteValidacao != null) {
+            obtemAtivacoes();
+        }
     }
 
     private void obtemAtivacoes() {
 
-        String str = jComboResultado.getSelectedItem().toString();
-        int index = jComboResultado.getSelectedIndex();
-
         List<AtivacaoTesteValidacao> listaAtivacoes = null;
-        
-          switch(index) {
+
+        switch (jComboResultado.getSelectedIndex()) {
             //Sucesso
             case 0:
                 listaAtivacoes = AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "S");
@@ -146,66 +141,63 @@ public class CadAtivacao extends javax.swing.JPanel {
                 break;
             //Timeout
             case 2:
-                listaAtivacoes =  AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "T");
+                listaAtivacoes = AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "T");
                 break;
-          }
+        }
 
-          Collections.sort(listaAtivacoes, new Comparator() {
-               @Override
-                public int compare(Object obj1, Object obj2) {
-                    AtivacaoTesteValidacao v1 = (AtivacaoTesteValidacao) obj1;
-                    AtivacaoTesteValidacao v2 = (AtivacaoTesteValidacao) obj2;
+        Collections.sort(listaAtivacoes, new Comparator() {
 
-                    if (v1.getSequencial() < v2.getSequencial()) {
-                        return -1;
-                    } else if (v1.getSequencial() == v2.getSequencial()) {
-                        return 0;
-                    } else {
-                        return 1;
-                    }
+            @Override
+            public int compare(Object obj1, Object obj2) {
+                AtivacaoTesteValidacao v1 = (AtivacaoTesteValidacao) obj1;
+                AtivacaoTesteValidacao v2 = (AtivacaoTesteValidacao) obj2;
+
+                if (v1.getSequencial() < v2.getSequencial()) {
+                    return -1;
+                } else if (v1.getSequencial() == v2.getSequencial()) {
+                    return 0;
+                } else {
+                    return 1;
                 }
-            });
+            }
+        });
 
-          SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-         
-          Vector <Object> vectorAtributo = null;
-          Vector <Vector> vector = new Vector();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-           for (AtivacaoTesteValidacao ativacao : listaAtivacoes) {
-               vectorAtributo = new Vector();
+        Vector<Object> vectorAtributo = null;
+        Vector<Vector> vector = new Vector();
 
-               vectorAtributo.add(ativacao.getId());
-               vectorAtributo.add(ativacao.getTipo());
-               vectorAtributo.add(dateFormat.format(ativacao.getInicio()));
-               vectorAtributo.add(dateFormat.format(ativacao.getTermino()));
-               vectorAtributo.add(ativacao.getResultado());
+        for (AtivacaoTesteValidacao ativacao : listaAtivacoes) {
+            vectorAtributo = new Vector();
 
-               vector.addElement(vectorAtributo);
-           }
-           
-           //Limpar registros que estejam no grid de Ativacoes
-            OGridTableModel tableModel = (OGridTableModel)g.getOGridTableModel();
-            int nRow =  tableModel.getRowCount();
-            for (int i = 0; i < nRow; i++)
+            vectorAtributo.add(ativacao.getId());
+            vectorAtributo.add(ativacao.getTipo());
+            vectorAtributo.add(dateFormat.format(ativacao.getInicio()));
+            vectorAtributo.add(dateFormat.format(ativacao.getTermino()));
+            vectorAtributo.add(ativacao.getResultado());
+
+            vector.addElement(vectorAtributo);
+        }
+
+        //Limpar registros que estejam no grid de Ativacoes
+        OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
+        int nRow = tableModel.getRowCount();
+        for (int i = 0; i < nRow; i++) {
             tableModel.deleteLine(i);
+        }
 
-            
+        g.fillGrid(vector);
 
-            g.fillGrid(vector);      
-        
     }//GEN-LAST:event_jComboResultadoItemStateChanged
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         telaExecucao.setEnabledPanelFilho(false);
     }//GEN-LAST:event_jButton1ActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jComboResultado;
     private javax.swing.JLabel jLblREsultado;
     private javax.swing.JLabel jlblExecutionId;
     // End of variables declaration//GEN-END:variables
-
 }

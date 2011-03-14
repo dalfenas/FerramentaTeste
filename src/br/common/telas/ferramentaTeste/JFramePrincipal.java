@@ -620,6 +620,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
 
         for (ExecucaoTesteValidacao exec : execs) {
+            AtivacaoTesteValidacaoDAO.deleteByExecution(exec);
             ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
         }
     }
