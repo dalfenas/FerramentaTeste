@@ -82,6 +82,8 @@ public class CadAtivacao extends javax.swing.JPanel {
         jComboResultado.addItem("Sucesso");
         jComboResultado.addItem("Falha");
         jComboResultado.addItem("Timeout");
+       //lrb 15/03/2011
+        jComboResultado.setSelectedIndex(0);
     }
 
     @SuppressWarnings("unchecked")
