@@ -221,8 +221,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
     }
 
     public void setRegistro(String execId) {
-        // mostrar as ativacoes da execucao. em um outro grid.
-        // melhor criar outra tela?
+        
         String execID = execId.substring(20);
         int id = Integer.parseInt(execID);
         ExecucaoTesteValidacao exec = ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(id);
@@ -447,8 +446,6 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
         ex.setExecutionCallback(this);
 
         if (jrdbGolden.isSelected()) {
-            //lrb 11/02/2011
-            //SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getUserObject().toString());
             List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
 
             //Remover do bd somente a execução golden dessa suite pois, existe somente um golden por suite
@@ -471,24 +468,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
             ex.setRunParameters(jComboBoxSuite.getSelectedItem().toString(), ExecutorTesteValidacao.ExecutionMode.GOLDEN_FILE);
             ex.start();
 
-            /* lrb 11/02/2011
-            // demonstrate use of checkForExistingGoldenfile for any test within a suite
-            //Collection<String> execs = ex.checkForExistingGoldenfile(jComboBoxSuite.getSelectedItem().toString());
-            if (execs != null && (execs.size() > 0)) {
-            if (JOptionPane.YES_OPTION
-            != JOptionPane.showConfirmDialog(this, "Suite " + jComboBoxSuite.getSelectedItem().toString() + " contem execucoes previas que serao deletadas", "Execucão de GoldenFile", 2)) {
-            return;
-            }
-            for (String s : execs) {
-            System.out.println("Execucao que sera´ removida " + s);
-            }
-            }
-            jFramePrincipal.removeExecs("G");
-            // jFramePrincipal.removeGoldenNodesFromSuite();
-            ex.setRunParameters(jComboBoxSuite.getSelectedItem().toString(), ExecutorTesteValidacao.ExecutionMode.GOLDEN_FILE);
-            ex.start();
-
-             */
+            
         } else {
             if (jrdbTestSistema.isSelected()) {
                 jFramePrincipal.removeExecs("T");
@@ -501,9 +481,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
                 }
             }
         }
-        /* lrb 11/02/2011 }  catch (ExecuteValidationTestException except) {
-        System.out.println(except.getMessage());
-        }*/
+        
     }//GEN-LAST:event_jButtonExecActionPerformed
 
     private void jComboBoxSuiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxSuiteActionPerformed

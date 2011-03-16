@@ -553,13 +553,7 @@ public class JFramePrincipal extends javax.swing.JFrame
                     new CaracterizacaoTesteValidacaoServico().delete(selNode.getUserObject().toString());
                     break;
                 case SUITE_VALIDACAO:
-                    new SuiteServico().delete(selNode.getUserObject().toString());
-                    /* SuiteTesteValidacao suite = SuiteTesteValidacaoDAO.getSuiteTesteValidacao(selNode.getUserObject().toString());
-                    List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
-                    for (ExecucaoTesteValidacao exec : execs) {
-                    ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
-                    }
-                    retorno = SuiteTesteValidacaoDAO.delete(selNode.getUserObject().toString());*/
+                    new SuiteServico().delete(selNode.getUserObject().toString());                    
                     break;
                 default:
                     System.out.println("FALTA IMPLEMENTAR RemoveNode");
