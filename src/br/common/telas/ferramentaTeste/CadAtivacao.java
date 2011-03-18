@@ -8,6 +8,7 @@ import br.org.fdte.persistence.AtivacaoTesteValidacao;
 import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,7 +19,7 @@ public class CadAtivacao extends javax.swing.JPanel {
 
     private CadExecucao telaExecucao;
     private ExecucaoTesteValidacao execucaoTesteValidacao = null;
-    private OGrid g;
+    private static OGrid g = null;
 
     /** Creates new form CadAtivacao */
     public CadAtivacao(CadExecucao telaExecucao) {
@@ -82,8 +83,7 @@ public class CadAtivacao extends javax.swing.JPanel {
         jComboResultado.addItem("Sucesso");
         jComboResultado.addItem("Falha");
         jComboResultado.addItem("Timeout");
-       //lrb 15/03/2011
-        jComboResultado.setSelectedIndex(0);
+      
     }
 
     @SuppressWarnings("unchecked")
@@ -123,12 +123,20 @@ public class CadAtivacao extends javax.swing.JPanel {
 
     private void jComboResultadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboResultadoItemStateChanged
         // TODO add your handling code here:
-        if (execucaoTesteValidacao != null) {
+        if (execucaoTesteValidacao != null && evt.getStateChange() == ItemEvent.SELECTED) {
             obtemAtivacoes();
         }
     }
 
     private void obtemAtivacoes() {
+
+        //Limpar registros que estejam no grid de Ativacoes
+        OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
+        int nRow = tableModel.getRowCount();
+        for (int i = 0; i < nRow; i++) {
+            tableModel.deleteLine(i);
+        }
+
 
         List<AtivacaoTesteValidacao> listaAtivacoes = null;
 
@@ -181,12 +189,6 @@ public class CadAtivacao extends javax.swing.JPanel {
             vector.addElement(vectorAtributo);
         }
 
-        //Limpar registros que estejam no grid de Ativacoes
-        OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
-        int nRow = tableModel.getRowCount();
-        for (int i = 0; i < nRow; i++) {
-            tableModel.deleteLine(i);
-        }
 
         g.fillGrid(vector);
 
@@ -196,6 +198,7 @@ public class CadAtivacao extends javax.swing.JPanel {
         // TODO add your handling code here:
         telaExecucao.setEnabledPanelFilho(false);
     }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jComboResultado;

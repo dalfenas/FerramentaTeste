@@ -30,6 +30,7 @@ import br.org.servicos.ClasseEquivalenciaServico;
 import br.org.servicos.DocumentoServico;
 
 import br.org.servicos.SuiteServico;
+import java.io.File;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -163,7 +164,7 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
 
         if (entidade.equalsIgnoreCase(AtualizacaoTela.entidadeDocumento)) {
-            currentTesteCase.atualizarTela();           
+            currentTesteCase.atualizarTela();
         }
 
         if (entidade.equalsIgnoreCase(AtualizacaoTela.entidadeTesteValidacao)) {
@@ -553,7 +554,7 @@ public class JFramePrincipal extends javax.swing.JFrame
                     new CaracterizacaoTesteValidacaoServico().delete(selNode.getUserObject().toString());
                     break;
                 case SUITE_VALIDACAO:
-                    new SuiteServico().delete(selNode.getUserObject().toString());                    
+                    new SuiteServico().delete(selNode.getUserObject().toString());
                     break;
                 default:
                     System.out.println("FALTA IMPLEMENTAR RemoveNode");
@@ -617,6 +618,9 @@ public class JFramePrincipal extends javax.swing.JFrame
             AtivacaoTesteValidacaoDAO.deleteByExecution(exec);
             ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
         }
+
+        //remover os arquivos.xml correspondentes as execucoes sendo removidas
+        removeTestCaseFile(selNode.getUserObject().toString(), null);
     }
 
     private void removerGrupoExecs() {
@@ -646,10 +650,16 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
 
         for (String idExe : execucoes) {
+            AtivacaoTesteValidacaoDAO.deleteByExecution(ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(Integer.parseInt(idExe)));
             ExecucaoTesteValidacaoDAO.delete(Integer.parseInt(idExe));
         }
 
+        String suiteName = selNode.getParent().toString();
+
         model.removeNodeFromParent(selNode);
+
+        //remover os arquivos.xml correspondentes as execucoes sendo removidas        
+        removeTestCaseFile(suiteName, execucoes);
 
     }
 
@@ -855,7 +865,7 @@ public class JFramePrincipal extends javax.swing.JFrame
             regra.setSeRelacao(regraLida.getSeRelacao());
             regra.setSeValor(regraLida.getSeValor());
             novasRegras.add(regra);
-            
+
         }
         docCopia.setRegraCollection(novasRegras);
 
@@ -953,6 +963,34 @@ public class JFramePrincipal extends javax.swing.JFrame
         SuiteValCarTstValDAO.save(svctstVal);
         }*/
 
+    }
+
+    private void removeTestCaseFile(String suiteName, List<String> execucoes) {
+
+        List<SuiteValidacaoTesteValidacao> listSuiteValCarcVal = new SuiteServico().getAllSuiteValTesteVal(suiteName);
+        for (SuiteValidacaoTesteValidacao svtv : listSuiteValCarcVal) {
+            String testCase = svtv.getTestCase();
+            File dir = new File(svtv.getTestCase());
+            //a lista de execucoes sendo nula, remove-se todas as execucoes do diretorio de testCase            
+            if (execucoes == null) {
+                for (File file : dir.listFiles()) {
+                    file.delete();
+                }
+            }
+            //remove-se somente os arquivos identificado pelo item em execucoes
+            else {
+                Iterator it = execucoes.iterator();
+                while (it.hasNext()) {
+                    String execId = it.next().toString();
+                    for (File file : dir.listFiles()) {
+                        if (file.getName().contains(execId)) {
+                            file.delete();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;

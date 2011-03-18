@@ -221,7 +221,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
     }
 
     public void setRegistro(String execId) {
-        
+
         String execID = execId.substring(20);
         int id = Integer.parseInt(execID);
         ExecucaoTesteValidacao exec = ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(id);
@@ -435,7 +435,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
     private void jButtonExecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExecActionPerformed
         jButtonExec.setEnabled(false);
         jFramePrincipal.setEnabled(false);
-        
+
         line = 0;
         limparTextLog();
         limparAreaGrid();
@@ -468,7 +468,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
             ex.setRunParameters(jComboBoxSuite.getSelectedItem().toString(), ExecutorTesteValidacao.ExecutionMode.GOLDEN_FILE);
             ex.start();
 
-            
+
         } else {
             if (jrdbTestSistema.isSelected()) {
                 jFramePrincipal.removeExecs("T");
@@ -481,7 +481,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
                 }
             }
         }
-        
+
     }//GEN-LAST:event_jButtonExecActionPerformed
 
     private void jComboBoxSuiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxSuiteActionPerformed
