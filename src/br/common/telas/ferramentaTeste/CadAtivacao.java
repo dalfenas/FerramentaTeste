@@ -38,6 +38,7 @@ public class CadAtivacao extends javax.swing.JPanel {
         c.setWidth(20);
         c.setFont(new Font("Verdana", Font.BOLD, 12));
         c.setColor(Color.ORANGE);
+        c.setEditable(false);
         g.addColumn(c);
 
 
@@ -45,24 +46,28 @@ public class CadAtivacao extends javax.swing.JPanel {
         c.setTitle("Tipo");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(20);
+        c.setEditable(false);
         g.addColumn(c);
 
         c = new ColumnConfiguration();
         c.setTitle("Inicio");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(100);
+        c.setEditable(false);
         g.addColumn(c);
 
         c = new ColumnConfiguration();
         c.setTitle("Termino");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(100);
+        c.setEditable(false);
         g.addColumn(c);
 
         c = new ColumnConfiguration();
         c.setTitle("Resultado");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(20);
+        c.setEditable(false);
         g.addColumn(c);
 
         // render table
