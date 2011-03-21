@@ -2,6 +2,7 @@ package br.common.telas.ferramentaTeste;
 
 import br.org.fdte.ColumnConfiguration;
 import br.org.fdte.OGrid;
+import br.org.fdte.OGridDoubleClickListener;
 import br.org.fdte.OGridTableModel;
 import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
 import br.org.fdte.persistence.AtivacaoTesteValidacao;
@@ -9,13 +10,23 @@ import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
-public class CadAtivacao extends javax.swing.JPanel {
+public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickListener {
 
     private CadExecucao telaExecucao;
     private ExecucaoTesteValidacao execucaoTesteValidacao = null;
@@ -74,6 +85,8 @@ public class CadAtivacao extends javax.swing.JPanel {
         g.renderAndDisableButtons();
         g.setVisible(true);
 
+        g.setDoubleClickListener(this);
+
         add(g);
     }
 
@@ -88,7 +101,7 @@ public class CadAtivacao extends javax.swing.JPanel {
         jComboResultado.addItem("Sucesso");
         jComboResultado.addItem("Falha");
         jComboResultado.addItem("Timeout");
-      
+
     }
 
     @SuppressWarnings("unchecked")
@@ -204,6 +217,50 @@ public class CadAtivacao extends javax.swing.JPanel {
         telaExecucao.setEnabledPanelFilho(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    @Override
+    public void event(int row, int column) {
+        System.out.println("Acionado o evento de double click na linha: " + row + "coluna: " + column);
+
+        OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
+        Long idActivation = (Long) tableModel.getValueAt(row, 0);
+
+        AtivacaoTesteValidacao ativacao = AtivacaoTesteValidacaoDAO.findById(idActivation);
+
+        if (ativacao.getScreenshot() != null) {
+        File fileOut = null;
+        try {
+
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            for (int i = 0; i < ativacao.getScreenshot().length; i++) {
+                out.write(ativacao.getScreenshot()[i]);
+
+            }
+            out.close();
+
+            fileOut = new File("C:\\Users\\FDTE-Luciana\\Documents\\LucianaRios\\FDTE\\outUserSearch\\lixo.png");
+            FileOutputStream fout = new FileOutputStream(fileOut);
+            fout.write(out.toByteArray());
+            fout.close();
+
+
+        } catch (IOException ioex) {
+        }
+        ImageIcon imageIcon = new ImageIcon(fileOut.getPath());
+        //ImageIcon imageIcon = new ImageIcon("C:\\Users\\FDTE-Luciana\\Documents\\LucianaRios\\FDTE\\outCriarUser\\Exec3361_7304.png");
+        /*JLabel jlblImage = new JLabel(imageIcon);
+        JPanel jPanel = new JPanel();
+        jPanel.add(jlblImage);*/
+        JOptionPane.showMessageDialog(null, imageIcon);
+
+        /*ImageIcon imageIcon1 = new ImageIcon(ativacao.getScreenshot());
+        JOptionPane.showMessageDialog(null, imageIcon1);*/
+
+        //mostrar a imagem salva
+        // ativacao.getImagem();
+        }
+
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jComboResultado;
