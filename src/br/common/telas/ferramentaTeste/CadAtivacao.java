@@ -224,33 +224,8 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
         AtivacaoTesteValidacao ativacao = AtivacaoTesteValidacaoDAO.findById(idActivation);
 
         if (ativacao.getScreenshot() != null) {
-
-            File fileOut = null;
-            try {
-                //Gera-se um arquivo temporario com os dados obtidos do campo screenshot no bd
-
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                out.write(ativacao.getScreenshot());
-
-                //fileOut = new File("C:\\Users\\FDTE-Luciana\\Documents\\LucianaRios\\FDTE\\outUserSearch\\lixo.png");
-                fileOut = new File("lixo.png");
-
-                FileOutputStream fout = new FileOutputStream(fileOut);
-                fout.write(out.toByteArray());
-                fout.close();
-
-            }
-            catch (IOException ioex) {
-            }
-
-            //cria-se a imagem a partir do arquivo temporario
-            ImageIcon imageIcon = new ImageIcon(fileOut.getPath());
-
-            //exibe a imagem gerada num messageDialog
-            JOptionPane.showMessageDialog(null, imageIcon);
-
-            //remove-se o arquivo temporario
-            fileOut.delete();
+            ImageIcon imageIcon2 = new ImageIcon(ativacao.getScreenshot());
+            JOptionPane.showMessageDialog(null, imageIcon2);      
         }
 
     }
