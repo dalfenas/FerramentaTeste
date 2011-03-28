@@ -130,9 +130,8 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
     @SuppressWarnings("unchecked")
     public void visualizarAtivacoes(ExecucaoTesteValidacao execucao) {
         if (cadAtivacoes == null) {
-            cadAtivacoes = new CadAtivacao(this);
-            // jFramePrincipal.addPanel(currentRegras);
-        }
+            cadAtivacoes = new CadAtivacao(this);            
+        } 
 
         cadAtivacoes.setExecucao(execucao);
 
@@ -141,6 +140,7 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
 
     }
 
+    @Override
     public void atualizarTela() {
         jComboBoxSuite.removeAllItems();
         initCombos();
