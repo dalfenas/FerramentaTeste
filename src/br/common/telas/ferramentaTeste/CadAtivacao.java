@@ -231,9 +231,9 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboResultadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboResultadoItemStateChanged
-        // TODO add your handling code here:
+        // TODO add your handling code here:        
         if (execucaoTesteValidacao != null && evt.getStateChange() == ItemEvent.SELECTED) {
-            limparGrid();
+            limparGrid();            
             obtemAtivacoes();
         }
     }//GEN-LAST:event_jComboResultadoItemStateChanged
