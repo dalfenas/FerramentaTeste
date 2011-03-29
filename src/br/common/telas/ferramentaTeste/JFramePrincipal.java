@@ -950,19 +950,6 @@ public class JFramePrincipal extends javax.swing.JFrame
 
         suiteServico.save(suiteValCopia, listSVTV);
 
-        /*Iterator lst = SuiteValCarTstValDAO.getSuiteVal(suiteVal.getId()).iterator();
-        while (lst.hasNext()) {
-        SuiteValidacaoTesteValidacao svctstValLido = (SuiteValidacaoTesteValidacao) lst.next();
-        SuiteValidacaoTesteValidacao svctstVal = new SuiteValidacaoTesteValidacao();
-        svctstVal.setOrderId(svctstValLido.getOrderId());
-        svctstVal.setSuiteTesteValidacao(suiteValCopia);
-        svctstVal.setCaracterizacaoTesteValidacao(svctstValLido.getCaracterizacaoTesteValidacao());
-        svctstVal.setWorkflow(svctstValLido.getWorkflow());
-        svctstVal.setTestCase(svctstValLido.getTestCase());
-        svctstVal.setResult(svctstValLido.getResult());
-        SuiteValCarTstValDAO.save(svctstVal);
-        }*/
-
     }
 
     private void removeTestCaseFile(String suiteName, List<String> execucoes) {

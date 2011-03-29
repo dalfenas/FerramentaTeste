@@ -48,7 +48,7 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
         c = new ColumnConfiguration();
         c.setTitle("Tipo");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
-        c.setWidth(20);
+        c.setWidth(10);
         c.setEditable(false);
         g.addColumn(c);
 
@@ -67,9 +67,16 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
         g.addColumn(c);
 
         c = new ColumnConfiguration();
-        c.setTitle("Resultado");
+        c.setTitle("Teste");
         c.setFieldType(ColumnConfiguration.FieldType.TEXT);
         c.setWidth(20);
+        c.setEditable(false);
+        g.addColumn(c);
+
+        c = new ColumnConfiguration();
+        c.setTitle("GoldenCompare");
+        c.setFieldType(ColumnConfiguration.FieldType.TEXT);
+        c.setWidth(30);
         c.setEditable(false);
         g.addColumn(c);
 
@@ -83,8 +90,16 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
     }
 
     public void setExecucao(ExecucaoTesteValidacao execucao) {
+
+        if (execucao.getModoAtivacao().equals("G")) {
+            jComboGolden.setEnabled(false);
+        } else {
+            jComboGolden.setEnabled(true);
+        }
+
         execucaoTesteValidacao = execucao;
         jlblExecutionId.setText("Execucão " + execucao.getId().toString());
+        limparGrid();
         obtemAtivacoes();
     }
 
@@ -93,30 +108,37 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
         jComboResultado.addItem("Sucesso");
         jComboResultado.addItem("Falha");
         jComboResultado.addItem("Timeout");
+
+        jComboGolden.removeAllItems();
+        jComboGolden.addItem("Sucesso");
+        jComboGolden.addItem("Falha");
+
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLblREsultado = new javax.swing.JLabel();
-        jComboResultado = new javax.swing.JComboBox();
+        jLblGoldenCompare = new javax.swing.JLabel();
+        jComboGolden = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
         jlblExecutionId = new javax.swing.JLabel();
+        jComboResultado = new javax.swing.JComboBox();
+        jLblResultado = new javax.swing.JLabel();
 
         setLayout(null);
 
-        jLblREsultado.setText("Resultado");
-        add(jLblREsultado);
-        jLblREsultado.setBounds(10, 40, 70, 14);
+        jLblGoldenCompare.setText("GoldenCompare");
+        add(jLblGoldenCompare);
+        jLblGoldenCompare.setBounds(140, 40, 100, 14);
 
-        jComboResultado.addItemListener(new java.awt.event.ItemListener() {
+        jComboGolden.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboResultadoItemStateChanged(evt);
+                jComboGoldenItemStateChanged(evt);
             }
         });
-        add(jComboResultado);
-        jComboResultado.setBounds(10, 60, 110, 20);
+        add(jComboGolden);
+        jComboGolden.setBounds(140, 60, 110, 20);
 
         jButton1.setText("Sair");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -128,24 +150,26 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
         jButton1.setBounds(700, 570, 60, 23);
         add(jlblExecutionId);
         jlblExecutionId.setBounds(10, 10, 160, 20);
+
+        jComboResultado.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboResultadoItemStateChanged(evt);
+            }
+        });
+        add(jComboResultado);
+        jComboResultado.setBounds(10, 60, 110, 20);
+
+        jLblResultado.setText("Teste");
+        add(jLblResultado);
+        jLblResultado.setBounds(10, 40, 70, 14);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboResultadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboResultadoItemStateChanged
+    private void jComboGoldenItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboGoldenItemStateChanged
         // TODO add your handling code here:
-        if (execucaoTesteValidacao != null && evt.getStateChange() == ItemEvent.SELECTED) {
-            obtemAtivacoes();
-        }
+
     }
 
-    private void obtemAtivacoes() {
-
-        //Limpar registros que estejam no grid de Ativacoes
-        OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
-        int nRow = tableModel.getRowCount();
-        for (int i = 0; i < nRow; i++) {
-            tableModel.deleteLine(i);
-        }
-
+    private void obtemAtivacoes() {        
 
         List<AtivacaoTesteValidacao> listaAtivacoes = null;
 
@@ -188,25 +212,31 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
 
         for (AtivacaoTesteValidacao ativacao : listaAtivacoes) {
             vectorAtributo = new Vector();
-
             vectorAtributo.add(ativacao.getId());
             vectorAtributo.add(ativacao.getTipo());
             vectorAtributo.add(dateFormat.format(ativacao.getInicio()));
             vectorAtributo.add(dateFormat.format(ativacao.getTermino()));
             vectorAtributo.add(ativacao.getResultado());
-
+            vectorAtributo.add(ativacao.getGoldenCompare());
             vector.addElement(vectorAtributo);
         }
 
-
         g.fillGrid(vector);
 
-    }//GEN-LAST:event_jComboResultadoItemStateChanged
+    }//GEN-LAST:event_jComboGoldenItemStateChanged
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         telaExecucao.setEnabledPanelFilho(false);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jComboResultadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboResultadoItemStateChanged
+        // TODO add your handling code here:
+        if (execucaoTesteValidacao != null && evt.getStateChange() == ItemEvent.SELECTED) {
+            limparGrid();
+            obtemAtivacoes();
+        }
+    }//GEN-LAST:event_jComboResultadoItemStateChanged
 
     @Override
     public void event(int row, int column) {
@@ -221,14 +251,25 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
 
         if (ativacao.getScreenshot() != null) {
             ImageIcon imageIcon2 = new ImageIcon(ativacao.getScreenshot());
-            JOptionPane.showMessageDialog(null, imageIcon2);      
+            JOptionPane.showMessageDialog(null, imageIcon2);
         }
 
     }
+
+    private void limparGrid() {
+        //Limpar registros que estejam no grid de Ativacoes
+        OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
+        int nRow = tableModel.getRowCount();
+        for (int i = 0; i < nRow; i++) {
+            tableModel.deleteLine(i);
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox jComboGolden;
     private javax.swing.JComboBox jComboResultado;
-    private javax.swing.JLabel jLblREsultado;
+    private javax.swing.JLabel jLblGoldenCompare;
+    private javax.swing.JLabel jLblResultado;
     private javax.swing.JLabel jlblExecutionId;
     // End of variables declaration//GEN-END:variables
 }
