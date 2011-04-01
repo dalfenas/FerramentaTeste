@@ -4,7 +4,7 @@ import br.org.fdte.AtualizacaoTela;
 import br.org.fdte.ColumnConfiguration;
 import br.org.fdte.OGrid;
 import br.org.fdte.OGridTableModel;
-import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
+//import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
 import br.org.fdte.dao.SuiteTesteSequenciaDAO;
 import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import br.org.fdte.persistence.SuiteTesteSequencia;
@@ -167,7 +167,8 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
     }
 
     public void setRegistro(SuiteTesteValidacao suite, String grupoNode) {
-        List<ExecucaoTesteValidacao> listExecs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacaoPerGroup(suite);
+        //List<ExecucaoTesteValidacao> listExecs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacaoPerGroup(suite);
+        List<ExecucaoTesteValidacao> listExecs = new ExecucaoTstValidacaoServico().getExecucoesTesteValidacaoPerGroup(suite);
         Vector<ExecucaoTesteValidacao> listExecValidas = new Vector();
 
         String grupoId;

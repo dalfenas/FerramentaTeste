@@ -22,8 +22,8 @@ import br.org.fdte.persistence.Regra;
 import br.org.fdte.persistence.SuiteValidacaoTesteValidacao;
 import br.org.fdte.persistence.Valor;
 
-import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
-import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
+//import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
+//import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
 
 import br.org.servicos.CaracterizacaoTesteValidacaoServico;
 import br.org.servicos.ClasseEquivalenciaServico;
@@ -355,7 +355,8 @@ public class JFramePrincipal extends javax.swing.JFrame
                         DefaultMutableTreeNode nodeSuite = new DefaultMutableTreeNode(suiteVal.getNome());
                         nodeFather.add(nodeSuite);
                         //Cada execucao de teste de validacao relacionada a esta suite, possui um identificador de grupo
-                        List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacaoPerGroup(suiteVal);
+                        //List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacaoPerGroup(suiteVal);
+                        List<ExecucaoTesteValidacao> execs = new ExecucaoTstValidacaoServico().getExecucoesTesteValidacaoPerGroup(suiteVal);
                         int idGrupoExec = -1;
                         DefaultMutableTreeNode nodeGrupo = null;
                         for (ExecucaoTesteValidacao exec : execs) {

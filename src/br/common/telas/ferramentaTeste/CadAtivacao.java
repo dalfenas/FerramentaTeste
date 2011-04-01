@@ -4,9 +4,10 @@ import br.org.fdte.ColumnConfiguration;
 import br.org.fdte.OGrid;
 import br.org.fdte.OGridDoubleClickListener;
 import br.org.fdte.OGridTableModel;
-import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
+//import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
 import br.org.fdte.persistence.AtivacaoTesteValidacao;
 import br.org.fdte.persistence.ExecucaoTesteValidacao;
+import br.org.servicos.ExecucaoTstValidacaoServico;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
@@ -270,7 +271,8 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
         Long idActivation = (Long) tableModel.getValueAt(row, 0);
 
         //buscar a imagem salva no banco pelo id da ativacao
-        AtivacaoTesteValidacao ativacao = AtivacaoTesteValidacaoDAO.findById(idActivation);
+        //AtivacaoTesteValidacao ativacao = AtivacaoTesteValidacaoDAO.findById(idActivation);
+        AtivacaoTesteValidacao ativacao = new ExecucaoTstValidacaoServico().getActivation(idActivation);
 
         if (ativacao.getScreenshot() != null) {
             ImageIcon imageIcon2 = new ImageIcon(ativacao.getScreenshot());
