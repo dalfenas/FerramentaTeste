@@ -11,6 +11,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -171,20 +173,39 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
 
     private void obtemAtivacoes() {        
 
-        List<AtivacaoTesteValidacao> listaAtivacoes = null;
+        //List<AtivacaoTesteValidacao> listaAtivacoes = null;
+        List<AtivacaoTesteValidacao> listaAtivacoes = new ArrayList<AtivacaoTesteValidacao>();
+
+        Collection<AtivacaoTesteValidacao> colectionAtivacao = this.execucaoTesteValidacao.getAtivacaoTesteValidacaoCollection();
+
 
         switch (jComboResultado.getSelectedIndex()) {
             //Sucesso
             case 0:
-                listaAtivacoes = AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "S");
+                for (AtivacaoTesteValidacao ativ : colectionAtivacao) {
+                   if(ativ.getResultado().equalsIgnoreCase("S")) {
+                        listaAtivacoes.add(ativ);
+                    }
+                }
+                //listaAtivacoes = AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "S");
                 break;
             //Falha
             case 1:
-                listaAtivacoes = AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "F");
+                for (AtivacaoTesteValidacao ativ : colectionAtivacao) {
+                    if (ativ.getResultado().equalsIgnoreCase("F")) {
+                        listaAtivacoes.add(ativ);
+                    }
+                }
+                //listaAtivacoes = AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "F");
                 break;
             //Timeout
             case 2:
-                listaAtivacoes = AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "T");
+                for (AtivacaoTesteValidacao ativ : colectionAtivacao) {
+                    if (ativ.getResultado().equalsIgnoreCase("T")) {
+                        listaAtivacoes.add(ativ);
+                    }
+                }
+                //istaAtivacoes = AtivacaoTesteValidacaoDAO.findByExecution(execucaoTesteValidacao, "T");
                 break;
         }
 
@@ -219,9 +240,11 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
             vectorAtributo.add(ativacao.getResultado());
             vectorAtributo.add(ativacao.getGoldenCompare());
             vector.addElement(vectorAtributo);
+            System.out.println ("*****CadAtivacoes Id: " + ativacao.getId() + " Tipo: " + ativacao.getTipo() + " Resultado: "  + ativacao.getResultado());
+            System.out.println ("*****CadAtivacoes in vector Id: " + vectorAtributo.get(0).toString() + " Tipo: " + vectorAtributo.get(1).toString() + " Resultado: "  + vectorAtributo.get(4).toString());
         }
 
-        g.fillGrid(vector);
+        g.fillGrid(vector);       
 
     }//GEN-LAST:event_jComboGoldenItemStateChanged
 

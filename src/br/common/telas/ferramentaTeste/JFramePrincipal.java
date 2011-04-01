@@ -28,6 +28,7 @@ import br.org.fdte.dao.ExecucaoTesteValidacaoDAO;
 import br.org.servicos.CaracterizacaoTesteValidacaoServico;
 import br.org.servicos.ClasseEquivalenciaServico;
 import br.org.servicos.DocumentoServico;
+import br.org.servicos.ExecucaoTstValidacaoServico;
 
 import br.org.servicos.SuiteServico;
 import java.io.File;
@@ -150,9 +151,10 @@ public class JFramePrincipal extends javax.swing.JFrame
             removerGrupoExecs();
         }
         if (e.getActionCommand().equals("VisualizarAtivacoes")) {
-            currentExec.visualizarAtivacoes(
+           /* currentExec.visualizarAtivacoes(
                     ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(
-                    Integer.parseInt(selNode.toString().substring(20))));
+                    Integer.parseInt(selNode.toString().substring(20))));*/
+            currentExec.visualizarAtivacoes(new ExecucaoTstValidacaoServico().getById(Long.parseLong(selNode.toString().substring(20))));
         }
     }
 
@@ -195,7 +197,8 @@ public class JFramePrincipal extends javax.swing.JFrame
             nPai = selNode.getParent().getIndex(selNode);
 
             //nPai não é mais o identificador do no de execução dentro do grupo e sim o identificador do grupo
-            ExecucaoTesteValidacao exec = ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(Integer.parseInt(nodeName.substring(20)));
+            //ExecucaoTesteValidacao exec = ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(Integer.parseInt(nodeName.substring(20)));
+            ExecucaoTesteValidacao exec = new ExecucaoTstValidacaoServico().getById(Long.parseLong(nodeName.substring(20)));
             String grupoId = "Grupo Exec" + exec.getIdGrupoExec().toString();
             nodeFather = null;
             for (int i = 0; i < selNode.getChildCount(); i++) {
@@ -586,13 +589,17 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
 
         SuiteTesteValidacao suite = new SuiteServico().getByName(selNode.getUserObject().toString());
-        List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
+        //List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
+        List<ExecucaoTesteValidacao> execs = new ExecucaoTstValidacaoServico().getExecucoesTesteValidacao(suite);
 
         //Remover do bd somente a execução golden dessa suite pois, existe somente um golden por suite
         for (ExecucaoTesteValidacao exec : execs) {
             if (exec.getModoAtivacao().equalsIgnoreCase(golden)) {
-                AtivacaoTesteValidacaoDAO.deleteByExecution(exec);
-                ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
+                ExecucaoTstValidacaoServico execServ = new ExecucaoTstValidacaoServico();
+                execServ.deleteAtivacoes(exec);
+                execServ.delete(exec);
+               // AtivacaoTesteValidacaoDAO.deleteByExecution(exec);
+                //ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
             }
         }
     }
@@ -612,11 +619,16 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
 
         SuiteTesteValidacao suite = new SuiteServico().getByName(selNode.getUserObject().toString());
-        List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
+       // List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
+         List<ExecucaoTesteValidacao> execs = new ExecucaoTstValidacaoServico().getExecucoesTesteValidacao(suite);
 
         for (ExecucaoTesteValidacao exec : execs) {
-            AtivacaoTesteValidacaoDAO.deleteByExecution(exec);
-            ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
+            ExecucaoTstValidacaoServico execServ = new ExecucaoTstValidacaoServico();            
+            execServ.deleteAtivacoes(exec);
+            execServ.delete(exec);
+            //ExecucaoTesteValidacao execObtida = execServ.getById(exec.getId());
+            //AtivacaoTesteValidacaoDAO.deleteByExecution(exec);
+            //ExecucaoTesteValidacaoDAO.delete(exec.getId().intValue());
         }
 
         //remover os arquivos.xml correspondentes as execucoes sendo removidas
@@ -627,7 +639,8 @@ public class JFramePrincipal extends javax.swing.JFrame
 
         //So eh possivel a remocao de um grupo de execucoes caso estas nao sejam Golden       
         String execId = selNode.getFirstChild().toString().substring(selNode.getFirstChild().toString().length() - 4, selNode.getFirstChild().toString().length());
-        ExecucaoTesteValidacao execucao = ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(Integer.parseInt(execId));
+        //ExecucaoTesteValidacao execucao = ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(Integer.parseInt(execId));
+        ExecucaoTesteValidacao execucao = new ExecucaoTstValidacaoServico().getById(Long.parseLong(execId));
 
         if (execucao.getModoAtivacao().equals("G")) {
             JOptionPane.showMessageDialog(this, "Este grupo é um grupo golden e não pode ser removido", "Remover Grupo de Execuções", JOptionPane.INFORMATION_MESSAGE);
@@ -650,8 +663,12 @@ public class JFramePrincipal extends javax.swing.JFrame
         }
 
         for (String idExe : execucoes) {
-            AtivacaoTesteValidacaoDAO.deleteByExecution(ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(Integer.parseInt(idExe)));
-            ExecucaoTesteValidacaoDAO.delete(Integer.parseInt(idExe));
+            ExecucaoTstValidacaoServico execServ = new ExecucaoTstValidacaoServico();
+            ExecucaoTesteValidacao exec = execServ.getById(Long.parseLong(idExe));
+            execServ.deleteAtivacoes(exec);
+            execServ.delete(exec);
+            //AtivacaoTesteValidacaoDAO.deleteByExecution(ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(Integer.parseInt(idExe)));
+            //ExecucaoTesteValidacaoDAO.delete(Integer.parseInt(idExe));
         }
 
         String suiteName = selNode.getParent().toString();

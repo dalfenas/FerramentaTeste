@@ -9,6 +9,7 @@ import br.org.fdte.dao.SuiteTesteSequenciaDAO;
 import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import br.org.fdte.persistence.SuiteTesteSequencia;
 import br.org.fdte.persistence.SuiteTesteValidacao;
+import br.org.servicos.ExecucaoTstValidacaoServico;
 import br.org.servicos.SuiteServico;
 import executortestevalidacao.ExecutionCallback;
 import java.util.List;
@@ -93,8 +94,9 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
     public void endOfExecution() {
 
         SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        List<ExecucaoTesteValidacao> execucoes =
-                ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
+        /* List<ExecucaoTesteValidacao> execucoes =
+        ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);*/
+        List<ExecucaoTesteValidacao> execucoes = new ExecucaoTstValidacaoServico().getExecucoesTesteValidacao(suite);
 
         //Adicionando todas as execuçoes como nos da arvore da suite executada
         for (ExecucaoTesteValidacao exec : execucoes) {
@@ -130,8 +132,8 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
     @SuppressWarnings("unchecked")
     public void visualizarAtivacoes(ExecucaoTesteValidacao execucao) {
         if (cadAtivacoes == null) {
-            cadAtivacoes = new CadAtivacao(this);            
-        } 
+            cadAtivacoes = new CadAtivacao(this);
+        }
 
         cadAtivacoes.setExecucao(execucao);
 
@@ -223,8 +225,10 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
     public void setRegistro(String execId) {
 
         String execID = execId.substring(20);
-        int id = Integer.parseInt(execID);
-        ExecucaoTesteValidacao exec = ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(id);
+        //int id = Integer.parseInt(execID);
+        // ExecucaoTesteValidacao exec = ExecucaoTesteValidacaoDAO.getExecucaoTesteValidacao(id);
+        long id = Long.parseLong(execID);
+        ExecucaoTesteValidacao exec = new ExecucaoTstValidacaoServico().getById(id);
         jComboBoxSuite.setSelectedItem(exec.getIdSuite().getNome());
         jComboBoxSuite.setEnabled(false);
         jButtonExec.setEnabled(false);
@@ -442,24 +446,27 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
 
         suite = new SuiteServico().getByName(jComboBoxSuite.getSelectedItem().toString());
 
+        // List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
+        List<ExecucaoTesteValidacao> execs = new ExecucaoTstValidacaoServico().getExecucoesTesteValidacao(suite);
+
+        //Verificar a existencia de uma execucao Golden dessa suite
+        boolean temExecucaoGolden = false;
+        for (ExecucaoTesteValidacao exec : execs) {
+            if (exec.getModoAtivacao().equalsIgnoreCase("G")) {
+                temExecucaoGolden = true;
+                break;
+            }
+        }
+
         ex = new ExecutorTesteValidacao();
         ex.setExecutionCallback(this);
 
         if (jrdbGolden.isSelected()) {
-            List<ExecucaoTesteValidacao> execs = ExecucaoTesteValidacaoDAO.getExecucoesTesteValidacao(suite);
-
-            //Remover do bd somente a execução golden dessa suite pois, existe somente um golden por suite
-            boolean temExecucaoGolden = false;
-            for (ExecucaoTesteValidacao exec : execs) {
-                if (exec.getModoAtivacao().equalsIgnoreCase("G")) {
-                    temExecucaoGolden = true;
-                    break;
-                }
-            }
-
             if (temExecucaoGolden) {
                 if (JOptionPane.YES_OPTION
                         != JOptionPane.showConfirmDialog(this, "Suite " + jComboBoxSuite.getSelectedItem().toString() + " contem execucoes previas que serao deletadas", "Execucão de GoldenFile", 2)) {
+                    jButtonExec.setEnabled(true);
+                    jFramePrincipal.setEnabled(true);
                     return;
                 }
             }
@@ -468,17 +475,22 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
             ex.setRunParameters(jComboBoxSuite.getSelectedItem().toString(), ExecutorTesteValidacao.ExecutionMode.GOLDEN_FILE);
             ex.start();
 
-
         } else {
+            //eh necessaria a existencia de uma execucao golden para executar outros tipos de modos de execucao
+            if (!temExecucaoGolden) {
+                jButtonExec.setEnabled(true);
+                jFramePrincipal.setEnabled(true);
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Suite " + jComboBoxSuite.getSelectedItem().toString() + " não contém execução Golden prévia, execute a suite no modo Golden");
+                return;
+            }
+
             if (jrdbTestSistema.isSelected()) {
                 jFramePrincipal.removeExecs("T");
                 ex.setRunParameters(jComboBoxSuite.getSelectedItem().toString(), ExecutorTesteValidacao.ExecutionMode.SYSTEM_TEST);
                 ex.start();
             } else {
-                if (jrdbSimplesExec.isSelected()) {
-                    ex.setRunParameters(jComboBoxSuite.getSelectedItem().toString(), ExecutorTesteValidacao.ExecutionMode.SYSTEM_EXERCIZE);
-                    ex.start();
-                }
+                ex.setRunParameters(jComboBoxSuite.getSelectedItem().toString(), ExecutorTesteValidacao.ExecutionMode.SYSTEM_EXERCIZE);
+                ex.start();
             }
         }
 
