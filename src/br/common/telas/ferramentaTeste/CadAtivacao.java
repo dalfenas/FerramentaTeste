@@ -96,11 +96,11 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
             jComboGolden.setSelectedItem(" ");
             jComboGolden.setEnabled(false);
             jLblGoldenCompare.setEnabled(false);
-        } else {
+        } /*else {
             jComboGolden.setEnabled(true);
             jLblGoldenCompare.setEnabled(true);
             jComboGolden.setSelectedItem(" ");
-        }
+        }*/
 
         jComboResultado.setSelectedIndex(0);
 
@@ -146,11 +146,6 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
                 jComboGoldenItemStateChanged(evt);
             }
         });
-        jComboGolden.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboGoldenActionPerformed(evt);
-            }
-        });
         add(jComboGolden);
         jComboGolden.setBounds(140, 60, 110, 20);
 
@@ -168,11 +163,6 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
         jComboResultado.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboResultadoItemStateChanged(evt);
-            }
-        });
-        jComboResultado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboResultadoActionPerformed(evt);
             }
         });
         add(jComboResultado);
@@ -283,6 +273,7 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
                 if (!execucaoTesteValidacao.getModoAtivacao().equalsIgnoreCase("G")) {
                     jComboGolden.setSelectedIndex(0);
                     jComboGolden.setEnabled(true);
+                    jLblGoldenCompare.setEnabled(true);
                 }
             }
 
@@ -290,14 +281,6 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
             obtemAtivacoes();
         }
     }//GEN-LAST:event_jComboResultadoItemStateChanged
-
-    private void jComboResultadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboResultadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboResultadoActionPerformed
-
-    private void jComboGoldenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboGoldenActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboGoldenActionPerformed
 
     @Override
     public void event(int row, int column) {
