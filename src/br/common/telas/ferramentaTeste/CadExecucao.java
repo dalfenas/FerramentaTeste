@@ -483,13 +483,17 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
                 jFramePrincipal.setEnabled(true);
                 JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Suite " + jComboBoxSuite.getSelectedItem().toString() + " não contém execução Golden prévia, execute a suite no modo Golden");
                 return;
-            }
-
+            }            
+            
             if (jrdbTestSistema.isSelected()) {
                 jFramePrincipal.removeExecs("T");
                 ex.setRunParameters(jComboBoxSuite.getSelectedItem().toString(), ExecutorTesteValidacao.ExecutionMode.SYSTEM_TEST);
                 ex.start();
             } else {
+                //lrb 04/04/2011 - remove todos os nos de execucao da suite sendo executada pois, no método
+                //endOfexecution chamado ao terminar a execucao da suite a arvore será montada com todas as execucoes
+                //existentes
+                jFramePrincipal.removeExecs("T");
                 ex.setRunParameters(jComboBoxSuite.getSelectedItem().toString(), ExecutorTesteValidacao.ExecutionMode.SYSTEM_EXERCIZE);
                 ex.start();
             }
