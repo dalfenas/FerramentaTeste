@@ -4,7 +4,6 @@ import br.org.fdte.ColumnConfiguration;
 import br.org.fdte.OGrid;
 import br.org.fdte.OGridDoubleClickListener;
 import br.org.fdte.OGridTableModel;
-//import br.org.fdte.dao.AtivacaoTesteValidacaoDAO;
 import br.org.fdte.persistence.AtivacaoTesteValidacao;
 import br.org.fdte.persistence.ExecucaoTesteValidacao;
 import br.org.servicos.ExecucaoTstValidacaoServico;
@@ -27,7 +26,6 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
     private ExecucaoTesteValidacao execucaoTesteValidacao = null;
     private static OGrid g = null;
 
-    /** Creates new form CadAtivacao */
     public CadAtivacao(CadExecucao telaExecucao) {
         this.telaExecucao = telaExecucao;
         initComponents();
@@ -101,11 +99,11 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
         } else {
             jComboGolden.setEnabled(true);
             jLblGoldenCompare.setEnabled(true);
-            jComboGolden.setSelectedItem(" ");            
+            jComboGolden.setSelectedItem(" ");
         }
 
         jComboResultado.setSelectedIndex(0);
-        
+
         execucaoTesteValidacao = execucao;
         jlblExecutionId.setText("Execucão " + execucao.getId().toString());
         limparGrid();
@@ -196,11 +194,11 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
         }
 
         limparGrid();
-        
+
         List<AtivacaoTesteValidacao> listaAtivacoes = new ArrayList<AtivacaoTesteValidacao>();
 
         Collection<AtivacaoTesteValidacao> colectionAtivacao = this.execucaoTesteValidacao.getAtivacaoTesteValidacaoCollection();
-        
+
         switch (jComboGolden.getSelectedIndex()) {
             //Sucesso
             case 0:
@@ -208,8 +206,8 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
                     if (ativ.getGoldenCompare().equalsIgnoreCase("S")) {
                         listaAtivacoes.add(ativ);
                     }
-                }                
-            break;
+                }
+                break;
             //Falha
             case 1:
                 for (AtivacaoTesteValidacao ativ : colectionAtivacao) {
@@ -217,43 +215,13 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
                         listaAtivacoes.add(ativ);
                     }
                 }
-            break;            
-        }
-        
-        Collections.sort(listaAtivacoes, new Comparator() {
-
-            @Override
-            public int compare(Object obj1, Object obj2) {
-                AtivacaoTesteValidacao v1 = (AtivacaoTesteValidacao) obj1;
-                AtivacaoTesteValidacao v2 = (AtivacaoTesteValidacao) obj2;
-
-                if (v1.getSequencial() < v2.getSequencial()) {
-                    return -1;
-                } else if (v1.getSequencial() == v2.getSequencial()) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            }
-        });
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-        Vector<Object> vectorAtributo = null;
-        Vector<Vector> vector = new Vector();
-
-        for (AtivacaoTesteValidacao ativacao : listaAtivacoes) {
-            vectorAtributo = new Vector();
-            vectorAtributo.add(ativacao.getId());
-            vectorAtributo.add(ativacao.getTipo());
-            vectorAtributo.add(dateFormat.format(ativacao.getInicio()));
-            vectorAtributo.add(dateFormat.format(ativacao.getTermino()));
-            vectorAtributo.add(ativacao.getResultado());
-            vectorAtributo.add(ativacao.getGoldenCompare());
-            vector.addElement(vectorAtributo);            
+                break;
         }
 
-        g.fillGrid(vector);
+        sortByAtivId(listaAtivacoes);
+
+        fillGrid(listaAtivacoes);
+
     }
 
     private void obtemAtivacoes() {
@@ -269,16 +237,16 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
                     if (ativ.getResultado().equalsIgnoreCase("S")) {
                         listaAtivacoes.add(ativ);
                     }
-                }                
-            break;
+                }
+                break;
             //Falha
             case 1:
                 for (AtivacaoTesteValidacao ativ : colectionAtivacao) {
                     if (ativ.getResultado().equalsIgnoreCase("F")) {
                         listaAtivacoes.add(ativ);
                     }
-                }                
-            break;
+                }
+                break;
             //Timeout
             case 2:
                 for (AtivacaoTesteValidacao ativ : colectionAtivacao) {
@@ -286,50 +254,17 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
                         listaAtivacoes.add(ativ);
                     }
                 }
-            break;
+                break;
             case 3:
                 for (AtivacaoTesteValidacao ativ : colectionAtivacao) {
                     listaAtivacoes.add(ativ);
                 }
-            break;
+                break;
         }
 
-        Collections.sort(listaAtivacoes, new Comparator() {
+        sortByAtivId(listaAtivacoes);
 
-            @Override
-            public int compare(Object obj1, Object obj2) {
-                AtivacaoTesteValidacao v1 = (AtivacaoTesteValidacao) obj1;
-                AtivacaoTesteValidacao v2 = (AtivacaoTesteValidacao) obj2;
-
-                if (v1.getSequencial() < v2.getSequencial()) {
-                    return -1;
-                } else if (v1.getSequencial() == v2.getSequencial()) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            }
-        });
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-        Vector<Object> vectorAtributo = null;
-        Vector<Vector> vector = new Vector();
-
-        for (AtivacaoTesteValidacao ativacao : listaAtivacoes) {
-            vectorAtributo = new Vector();
-            vectorAtributo.add(ativacao.getId());
-            vectorAtributo.add(ativacao.getTipo());
-            vectorAtributo.add(dateFormat.format(ativacao.getInicio()));
-            vectorAtributo.add(dateFormat.format(ativacao.getTermino()));
-            vectorAtributo.add(ativacao.getResultado());
-            vectorAtributo.add(ativacao.getGoldenCompare());
-            vector.addElement(vectorAtributo);
-            System.out.println("*****CadAtivacoes Id: " + ativacao.getId() + " Tipo: " + ativacao.getTipo() + " Resultado: " + ativacao.getResultado());
-            System.out.println("*****CadAtivacoes in vector Id: " + vectorAtributo.get(0).toString() + " Tipo: " + vectorAtributo.get(1).toString() + " Resultado: " + vectorAtributo.get(4).toString());
-        }
-
-        g.fillGrid(vector);
+        fillGrid(listaAtivacoes);
 
     }//GEN-LAST:event_jComboGoldenItemStateChanged
 
@@ -345,8 +280,10 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
                 jComboGolden.setSelectedItem(" ");
                 jComboGolden.setEnabled(false);
             } else {
-                jComboGolden.setSelectedIndex(0);
-                jComboGolden.setEnabled(true);
+                if (!execucaoTesteValidacao.getModoAtivacao().equalsIgnoreCase("G")) {
+                    jComboGolden.setSelectedIndex(0);
+                    jComboGolden.setEnabled(true);
+                }
             }
 
             limparGrid();
@@ -364,7 +301,6 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
 
     @Override
     public void event(int row, int column) {
-        System.out.println("Acionado o evento de double click na linha: " + row + "coluna: " + column);
 
         OGridTableModel tableModel = (OGridTableModel) g.getOGridTableModel();
         // id da ativacao esta setado na coluna 0
@@ -388,6 +324,47 @@ public class CadAtivacao extends javax.swing.JPanel implements OGridDoubleClickL
         for (int i = 0; i < nRow; i++) {
             tableModel.deleteLine(i);
         }
+    }
+
+    private void sortByAtivId(List<AtivacaoTesteValidacao> listRecebida) {
+
+        Collections.sort(listRecebida, new Comparator() {
+
+            @Override
+            public int compare(Object obj1, Object obj2) {
+                AtivacaoTesteValidacao v1 = (AtivacaoTesteValidacao) obj1;
+                AtivacaoTesteValidacao v2 = (AtivacaoTesteValidacao) obj2;
+
+                if (v1.getSequencial() < v2.getSequencial()) {
+                    return -1;
+                } else if (v1.getSequencial() == v2.getSequencial()) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
+    }
+
+    private void fillGrid(List<AtivacaoTesteValidacao> listaAtivacoes) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        Vector<Object> vectorAtributo = null;
+        Vector<Vector> vector = new Vector();
+
+        for (AtivacaoTesteValidacao ativacao : listaAtivacoes) {
+            vectorAtributo = new Vector();
+            vectorAtributo.add(ativacao.getId());
+            vectorAtributo.add(ativacao.getTipo());
+            vectorAtributo.add(dateFormat.format(ativacao.getInicio()));
+            vectorAtributo.add(dateFormat.format(ativacao.getTermino()));
+            vectorAtributo.add(ativacao.getResultado());
+            vectorAtributo.add(ativacao.getGoldenCompare());
+            vector.addElement(vectorAtributo);
+        }
+
+        g.fillGrid(vector);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
