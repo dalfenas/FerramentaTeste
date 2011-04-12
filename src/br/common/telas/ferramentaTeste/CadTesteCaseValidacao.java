@@ -5,11 +5,7 @@ import br.org.fdte.ColumnConfiguration;
 import br.org.fdte.ComboBoxAtributo;
 import br.org.fdte.OGrid;
 import br.org.fdte.OGridTableModel;
-//import br.org.fdte.dao.AtributoDAO;
-//import br.org.fdte.dao.CaracterizacaoTstValidacaoDAO;
 import br.org.fdte.dao.ClasseValidacaoDAO;
-//import br.org.fdte.dao.DocumentoDAO;
-//import br.org.fdte.dao.EspecificoDAO;
 import br.org.fdte.persistence.Atributo;
 import br.org.fdte.persistence.CaracterizacaoTesteValidacao;
 import br.org.fdte.persistence.ClasseValidacao;
@@ -518,13 +514,15 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jcmbDocSaidaNeg.addItem("");
         jcmbDocEntrada.addItem("");
 
-        List<TemplateDocumento> lstDocumento = new DocumentoServico().getAll();
-        for (TemplateDocumento doc : lstDocumento) {
+        List<Object> lstDocumento = new DocumentoServico().getAll();
+        for (Object obj : lstDocumento) {
+            TemplateDocumento doc = (TemplateDocumento)obj;
             jcmbDocEntrada.addItem(doc.getNome());
             jcmbDocSaidaPos.addItem(doc.getNome());
             jcmbDocSaidaNeg.addItem(doc.getNome());
         }
 
+       
         List<ClasseValidacao> lstClasse = ClasseValidacaoDAO.getAll();
         for (ClasseValidacao cv : lstClasse) {
             jcmbClassSaidaPos.addItem(cv.getNome());
@@ -652,8 +650,9 @@ public class CadTesteCaseValidacao extends javax.swing.JPanel implements Atualiz
         jcmbDocSaidaNeg.addItem("");
         jcmbDocEntrada.addItem("");
 
-        List<TemplateDocumento> lstDocumento = new DocumentoServico().getAll();
-        for (TemplateDocumento doc : lstDocumento) {
+        List<Object> lstDocumento = new DocumentoServico().getAll();
+        for (Object obj : lstDocumento) {
+            TemplateDocumento doc = (TemplateDocumento)obj;
             jcmbDocEntrada.addItem(doc.getNome());
             jcmbDocSaidaPos.addItem(doc.getNome());
             jcmbDocSaidaNeg.addItem(doc.getNome());

@@ -317,32 +317,33 @@ public class JFramePrincipal extends javax.swing.JFrame
             //Verifica-se de que tipo eh o no
             switch (Entidade.values()[i]) {
                 //No de Classe_equivalencia
-                case CLASSE_EQUIVALENCIA:
-                    //List<ClasseEquivalencia> lstCE = ClasseEquivalenciaDAO.getAll();
-                    List<ClasseEquivalencia> lstCE = new ClasseEquivalenciaServico().getAll();
+                case CLASSE_EQUIVALENCIA:                    
+                    List<Object> lstCE = new ClasseEquivalenciaServico().getAll();
                     //A cada Classe Equivalencia existente no bd, é adicionado uma
-                    //folha na arvore de Classe de Equivalencia
-                    for (ClasseEquivalencia ce : lstCE) {
+                    //folha na arvore de Classe de Equivalencia                    
+                    for (Object obj : lstCE) {
+                        ClasseEquivalencia ce = (ClasseEquivalencia)obj;
                         nodeFather.add(new DefaultMutableTreeNode(ce.getNome()));
                     }
                     break;
                 //No de documento
                 case DOCUMENTO:
                     //List<TemplateDocumento> lstDoc = DocumentoDAO.getAll();
-                    List<TemplateDocumento> lstDoc = new DocumentoServico().getAll();
+                    List<Object> lstDoc = new DocumentoServico().getAll();
                     //A cada Documento existente no bd, eh adicionado uma
                     //folha na arvore de Documeto
-                    for (TemplateDocumento doc : lstDoc) {
+                    for (Object obj : lstDoc) {
+                        TemplateDocumento doc = (TemplateDocumento)obj;
                         nodeFather.add(new DefaultMutableTreeNode(doc.getNome()));
                     }
                     break;
                 //No de caso de teste
                 case TESTE_VALIDACAO:
                     //A cada caracterizacao de teste de validacao existente no bd, eh adicionado uma
-                    //folha na arvore de Caso de teste
-                    //List<CaracterizacaoTesteValidacao> lstTV = CaracterizacaoTstValidacaoDAO.getAll();
-                    List<CaracterizacaoTesteValidacao> lstTV = new CaracterizacaoTesteValidacaoServico().getAll();
-                    for (CaracterizacaoTesteValidacao tstVal : lstTV) {
+                    //folha na arvore de Caso de teste                    
+                    List<Object> lstTV = new CaracterizacaoTesteValidacaoServico().getAll();
+                    for (Object obj : lstTV) {
+                        CaracterizacaoTesteValidacao tstVal = (CaracterizacaoTesteValidacao)obj;
                         nodeFather.add(new DefaultMutableTreeNode(tstVal.getNome()));
                     }
                     break;
@@ -350,8 +351,9 @@ public class JFramePrincipal extends javax.swing.JFrame
                 case SUITE_VALIDACAO:
                     //A cada suite de validacao existente no bd, é adicionado um
                     //no na arvore de suite
-                    List<SuiteTesteValidacao> lstSTV = new SuiteServico().getAll();
-                    for (SuiteTesteValidacao suiteVal : lstSTV) {
+                    List<Object> lstSTV = new SuiteServico().getAll();
+                    for (Object obj : lstSTV) {
+                        SuiteTesteValidacao suiteVal = (SuiteTesteValidacao)obj;
                         DefaultMutableTreeNode nodeSuite = new DefaultMutableTreeNode(suiteVal.getNome());
                         nodeFather.add(nodeSuite);
                         //Cada execucao de teste de validacao relacionada a esta suite, possui um identificador de grupo

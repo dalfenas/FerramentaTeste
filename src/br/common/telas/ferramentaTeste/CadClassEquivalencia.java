@@ -90,13 +90,6 @@ public class CadClassEquivalencia extends javax.swing.JPanel implements Atualiza
 
     @Override
     public void atualizarTela() {
-        /* jcmbHeranca.removeAllItems();
-        jcmbHeranca.addItem("");
-        //List<ClasseEquivalencia> lstCE = ClasseEquivalenciaDAO.getAll();
-        List<ClasseEquivalencia> lstCE = new ClasseEquivalenciaServico().getAll();
-        for (ClasseEquivalencia ce : lstCE) {
-        jcmbHeranca.addItem(ce.getNome());
-        }*/
     }
 
     /** This method is called from within the constructor to

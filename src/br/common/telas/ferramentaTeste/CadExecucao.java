@@ -274,9 +274,10 @@ public class CadExecucao extends javax.swing.JPanel implements AtualizacaoTela, 
 
     private void initCombos() {
         List<SuiteTesteSequencia> lstTstSeq = SuiteTesteSequenciaDAO.getAll();
-        List<SuiteTesteValidacao> lstTstVal = new SuiteServico().getAll();
+        List<Object> lstTstVal = new SuiteServico().getAll();
 
-        for (SuiteTesteValidacao s : lstTstVal) {
+        for (Object obj : lstTstVal) {
+            SuiteTesteValidacao s = (SuiteTesteValidacao)obj;
             jComboBoxSuite.addItem(s.getNome());
         }
         for (SuiteTesteSequencia s : lstTstSeq) {
